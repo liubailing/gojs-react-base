@@ -1,0 +1,56 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules*
+/.pnp
+.pnp.js
+
+# 打包
+/build
+/app
+/pack
+/pack.dev
+/pack.ja
+/pack.en
+
+# 每次打包动态生成 忽略
+**.bak**
+package-lock.json
+/public/installer.nsh
+/public/package.json
+/src/config/localeConfig.json
+/src/config/versionConfig.json
+/src/config/moduleSwitchByOS.ts
+/src/config/versionVerfiy.ts
+/src/renderer/oap/OapSwitcher.ts
+
+# testing
+/coverage
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+#*.png
+*.log
+*.data-journal
+jest-config.js
+.vscode/launch.json
+*.db
+/database
+test.xml
+temp/
+data.txt
+rule.txt
+/ExtractTemplate.xml
+/bzy.designer.xml
+
+log.txt
+/*.lock
+/.idea
+

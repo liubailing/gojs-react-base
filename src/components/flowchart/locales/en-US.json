@@ -1,0 +1,35 @@
+{
+    "FCEntities": {
+		"Condition": "Branch Conditions",
+		"ExtractData": "Extract Data",
+		"Complete": "End Workflow",
+		"EnterText": "Enter Text",
+		"Loop": "Loop",
+		"BreakActivity": "End Loop",
+		"Click": "Click",
+		"MouseOver": "Hover Over",
+		"Navigate": "Open Page",
+		"SwitchCombo": "Iterate through Dropdown",
+		"EnterCapacha": "Solve CAPTCHA",
+		"Branch": "Branch Conditions",
+		"WFGuideNode": "Drop an action here "
+	},
+	"FCSettings": {
+		"DragDropProcessHere": "Drop an action here"
+	},
+	"FlowChart": {
+		"FlowChart": "Workflow",
+		"ModifyName": "Rename",
+		"OpenSteps": "Open",
+		"BackTop": "Back",
+		"Copy": "Copy",
+		"Paste": "Paste",
+		"Delete": "Delete",
+		"Cut": "Cut"
+	},
+	"FlowChartDiagram": {
+		"SwitchingLoopTerm": "Rotate loop items ",
+		"OpenStepSet": "Action Settings",
+		"ForMoreMenus": "More"
+	}
+}
