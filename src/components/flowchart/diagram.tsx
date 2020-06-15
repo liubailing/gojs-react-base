@@ -512,7 +512,6 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 * 画节点
 		 */
 		const drawNode = (fcNode: DiagramEnum) => {
-			console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', fcNode);
 			myDiagram.nodeTemplateMap.add(
 				fcNode,
 				$(
@@ -549,13 +548,6 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 						{
 							padding: 5
 						},
-						// $(go.Picture, IAttention,
-						//     {
-						//         name: 'node_Iattention',
-						//         margin: new Margin(0, 5, 0, 5),
-						//         visible: false
-						//     }
-						// ),
 						nodeTitleHelper(fcNode)
 					),
 					nodeSpotTitleHelper(fcNode)
@@ -1253,11 +1245,11 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		// 	return;
 		// }
 
-		this.hideContextMenu();
-		this.hideAddNodeMenu();
-		//结束循环，结束流程两种节点类型不显示节点信息提示
-		if (node.data.diagramType != DiagramEnum.StopLoopOrFlow) {
-		}
+		// this.hideContextMenu();
+		// this.hideAddNodeMenu();
+		// //结束循环，结束流程两种节点类型不显示节点信息提示
+		// if (node.data.diagramType != DiagramEnum.StopLoopOrFlow) {
+		// }
 	};
 
 	/**

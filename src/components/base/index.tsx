@@ -16,7 +16,7 @@ import './index.css';
  * and modelData for demonstration purposes. Note, though, that
  * both are optional props in ReactDiagram.
  */
-interface AppState {
+interface BaseState {
 	nodeDataArray: Array<go.ObjectData>;
 	linkDataArray: Array<go.ObjectData>;
 	modelData: go.ObjectData;
@@ -24,7 +24,7 @@ interface AppState {
 	skipsDiagramUpdate: boolean;
 }
 
-class App extends React.Component<{}, AppState> {
+class Base extends React.Component<{}, BaseState> {
 	// Maps to store key -> arr index for quick lookups
 	private mapNodeKeyIdx: Map<go.Key, number>;
 	private mapLinkKeyIdx: Map<go.Key, number>;
@@ -94,7 +94,7 @@ class App extends React.Component<{}, AppState> {
 			case 'ChangedSelection': {
 				const sel = e.subject.first();
 				this.setState(
-					produce((draft: AppState) => {
+					produce((draft: BaseState) => {
 						if (sel) {
 							if (sel instanceof go.Node) {
 								const idx = this.mapNodeKeyIdx.get(sel.key);
@@ -139,7 +139,7 @@ class App extends React.Component<{}, AppState> {
 		const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
 		const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
 		this.setState(
-			produce((draft: AppState) => {
+			produce((draft: BaseState) => {
 				let narr = draft.nodeDataArray;
 				if (modifiedNodeData) {
 					modifiedNodeData.forEach((nd: go.ObjectData) => {
@@ -226,7 +226,7 @@ class App extends React.Component<{}, AppState> {
 	 */
 	public handleInputChange(path: string, value: string, isBlur: boolean) {
 		this.setState(
-			produce((draft: AppState) => {
+			produce((draft: BaseState) => {
 				const data = draft.selectedData as go.ObjectData; // only reached if selectedData isn't null
 				data[path] = value;
 				if (isBlur) {
@@ -298,4 +298,4 @@ class App extends React.Component<{}, AppState> {
 	}
 }
 
-export default App;
+export default Base;

@@ -16,7 +16,7 @@ import './flowchartDiagram.css';
  * and modelData for demonstration purposes. Note, though, that
  * both are optional props in ReactDiagram.
  */
-interface AppState {
+interface FlowchartState {
 	nodeDataArray: Array<go.ObjectData>;
 	linkDataArray: Array<go.ObjectData>;
 	modelData: go.ObjectData;
@@ -26,7 +26,7 @@ interface AppState {
 
 export interface FlowChartProps {}
 
-class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
+class FlowchartDiagram extends React.Component<FlowChartProps, FlowchartState> {
 	// Maps to store key -> arr index for quick lookups
 	private mapNodeKeyIdx: Map<go.Key, number>;
 	private mapLinkKeyIdx: Map<go.Key, number>;
@@ -107,7 +107,7 @@ class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
 			case 'ChangedSelection': {
 				const sel = e.subject.first();
 				this.setState(
-					produce((draft: AppState) => {
+					produce((draft: FlowchartState) => {
 						if (sel) {
 							if (sel instanceof go.Node) {
 								const idx = this.mapNodeKeyIdx.get(sel.key);
@@ -152,7 +152,7 @@ class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
 		const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
 		const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
 		this.setState(
-			produce((draft: AppState) => {
+			produce((draft: FlowchartState) => {
 				let narr = draft.nodeDataArray;
 				if (modifiedNodeData) {
 					modifiedNodeData.forEach((nd: go.ObjectData) => {
@@ -239,7 +239,7 @@ class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
 	 */
 	public handleInputChange(path: string, value: string, isBlur: boolean) {
 		this.setState(
-			produce((draft: AppState) => {
+			produce((draft: FlowchartState) => {
 				const data = draft.selectedData as go.ObjectData; // only reached if selectedData isn't null
 				data[path] = value;
 				if (isBlur) {
@@ -274,20 +274,10 @@ class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
 	}
 
 	public render() {
-		const selectedData = this.state.selectedData;
-		let inspector;
-		if (selectedData !== null) {
-			// inspector = (
-			// 	// <SelectionInspector selectedData={this.state.selectedData} onInputChange={this.handleInputChange} />
-			// );
-		}
-
+		// const selectedData = this.state.selectedData;
 		let domId = 'divFlowChart';
 		return (
 			<div className={'div-flowchart'}>
-				{/* <p>
-          Check out the <a href='https://gojs.net/latest/intro/react.html' target='_blank' rel='noopener noreferrer'>Intro page on using GoJS with React</a> for more information.
-        </p> */}
 				<div id={domId} className={'div-flowchart-diagram'}></div>
 				<FlowChartDiagram
 					diagramId={domId}
@@ -298,16 +288,6 @@ class FlowchartDiagram extends React.Component<FlowChartProps, AppState> {
 					onDiagramEvent={this.handleDiagramEvent}
 					onModelChange={this.handleModelChange}
 				/>
-				<label>
-					Allow Relinking?
-					<input
-						type="checkbox"
-						id="relink"
-						checked={this.state.modelData.canRelink}
-						onChange={this.handleRelinkChange}
-					/>
-				</label>
-				{inspector}
 			</div>
 		);
 	}

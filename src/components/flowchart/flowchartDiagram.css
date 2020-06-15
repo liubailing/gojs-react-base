@@ -1,7 +1,11 @@
 .div-flowchart {
-	height: 100%;
-	width: 600px;
+	height: 600px;
+	width: 800px;
+	overflow: hidden;
+	border: 1px solid black;
 }
 .div-flowchart-diagram {
+	/* height: 100%;
+	width: 100%; */
 	display: block;
 }

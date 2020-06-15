@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import Base from './components/base/index';
+// import Base from './components/base/index';
 import Flowchart, { FlowChartProps } from './components/flowchart/flowchartDiagram';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
@@ -23,7 +23,7 @@ class App extends React.Component<{}> {
 		return (
 			<>
 				<Flowchart {...this.flowChartProps}></Flowchart>
-				<Base> </Base>
+				{/* <Base> </Base> */}
 			</>
 		);
 	}
