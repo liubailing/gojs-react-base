@@ -1,7 +1,7 @@
 /**
  * 操作节点类型
  */
-export enum FCNodeEnum {
+export enum NodeEnum {
 	//点击元素
 	Click = 'ClickAction',
 

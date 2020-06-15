@@ -1,8 +1,7 @@
-
 /**
  * 图形分类
  */
-export enum FCDiagramEnum {
+export enum DiagramEnum {
 	//节点
 	FCNode = 'FCNode',
 	// 线

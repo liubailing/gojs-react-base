@@ -1,3 +1,4 @@
-export type { FCLinkModel } from './FCLinkModel';
-export type { FCNodeModel } from './FCNodeModel';
-export type { NodeEvent } from './NodeEvent';
+export type { DiagramModel } from './diagramModel';
+export type { LinkModel } from './linkModel';
+export type { NodeModel } from './nodeModel';
+export type { NodeEvent } from './nodeEvent';

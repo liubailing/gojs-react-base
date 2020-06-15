@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import Base from './components/base/index';
-import Flowchart, { FlowChartProps } from './components/flowchart/index';
+import Flowchart, { FlowChartProps } from './components/flowchart/flowchartDiagram';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that

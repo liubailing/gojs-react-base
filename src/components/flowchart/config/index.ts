@@ -1,5 +1,5 @@
-export {BaseColors} from './BaseColors'
-export {DiagramSetting} from './DiagramSetting'
-export {DragColors} from './DragColors'
-export {HoverColors} from './HoverColors'
-export {SelectedColors} from './SelectedColors'
+export { BaseColors } from './baseColors';
+export { DiagramSetting } from './diagramSetting';
+export { DragColors } from './dragColors';
+export { HoverColors } from './hoverColors';
+export { SelectedColors } from './selectedColors';

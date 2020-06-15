@@ -1,5 +1,5 @@
-export {CallbackFuncEnum} from './CallbackFuncEnum'
-export {FCActEnum} from './FCActEnum'
-export {FCDiagramEnum} from './FCDiagramEnum'
-export {FCNodeEnum} from './FCNodeEnum'
-export {NodeEventEnum} from './NodeEventEnum'
+export { CallbackFuncEnum } from './callbackEnum';
+export { FCActEnum } from './actEnum';
+export { DiagramEnum } from './diagramEnum';
+export { NodeEnum } from './nodeEnum';
+export { NodeEventEnum } from './nodeEventEnum';

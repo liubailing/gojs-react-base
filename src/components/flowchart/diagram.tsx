@@ -8,8 +8,8 @@ import * as React from 'react';
 import FCDiagramDragTool from './tools/draggingTool';
 import FCCommandHandler from './tools/commandHandler';
 import { DiagramSetting, BaseColors } from './config';
-import { FCDiagramEnum, NodeEventEnum, FCActEnum, CallbackFuncEnum } from './enum';
-import { FCNodeModel } from './interface';
+import { DiagramEnum, NodeEventEnum, FCActEnum, CallbackFuncEnum } from './enum';
+import { NodeModel } from './interface';
 import ISet from '../../assets/flowchart/i-node-set.png';
 import ISetHover from '../../assets/flowchart/i-node-set-hover.png';
 import IMenu from '../../assets/flowchart/i-node-menu.png';
@@ -46,23 +46,46 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		this.diagramRef = React.createRef();
 	}
 
-	componentDidUpdate() {}
-
-	componentDidMount() {
-		let tabPane = document.querySelector('#flow-chart-edit-content'); //流程图区域
-		//鼠标移出流程图区域后，隐藏所有的小菜单、小弹窗提示
-		tabPane &&
-			tabPane.addEventListener(
-				'mouseleave',
-				() => {
-					this.hideNodeInfo();
-					this.hideTitle();
-					this.hideLoopInfo();
-					this.hideContextMenu();
-				},
-				false
-			);
+	/**
+	 * Get the diagram reference and add any desired diagram listeners.
+	 * Typically the same function will be used for each listener, with the function using a switch statement to handle the events.
+	 */
+	public componentDidMount() {
+		if (!this.diagramRef.current) return;
+		const diagram = this.diagramRef.current.getDiagram();
+		if (diagram instanceof go.Diagram) {
+			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+		}
 	}
+
+	/**
+	 * Get the diagram reference and remove listeners that were added during mounting.
+	 */
+	public componentWillUnmount() {
+		if (!this.diagramRef.current) return;
+		const diagram = this.diagramRef.current.getDiagram();
+		if (diagram instanceof go.Diagram) {
+			diagram.removeDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+		}
+	}
+
+	// componentDidUpdate() {}
+
+	// componentDidMount() {
+	// 	let tabPane = document.querySelector('#flow-chart-edit-content'); //流程图区域
+	// 	//鼠标移出流程图区域后，隐藏所有的小菜单、小弹窗提示
+	// 	tabPane &&
+	// 		tabPane.addEventListener(
+	// 			'mouseleave',
+	// 			() => {
+	// 				this.hideNodeInfo();
+	// 				this.hideTitle();
+	// 				this.hideLoopInfo();
+	// 				this.hideContextMenu();
+	// 			},
+	// 			false
+	// 		);
+	// }
 
 	/**
 	 * Diagram initialization method, which is passed to the ReactDiagram component.
@@ -75,7 +98,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		const $ = go.GraphObject.make;
 		const diagramId = this.props.diagramId;
 
-		const myDiagram: Diagram = $(go.Diagram, {
+		const myDiagram: Diagram = $(go.Diagram, this.props.diagramId, {
 			'undoManager.isEnabled': true,
 			draggingTool: new FCDiagramDragTool(this.doDragEvent),
 			commandHandler: new FCCommandHandler(this.doEvent),
@@ -93,27 +116,44 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 				myDiagram.layoutDiagram(true);
 			},
 			InitialLayoutCompleted: this.InitialLayoutCompleted,
-			LayoutCompleted: this.LayoutCompleted
+			LayoutCompleted: this.LayoutCompleted,
+			model: $(go.GraphLinksModel, {
+				linkKeyProperty: 'key', // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
+				// positive keys for nodes
+				makeUniqueKeyFunction: (m: go.Model, data: any) => {
+					let k = data.key || 1;
+					while (m.findNodeDataForKey(k)) k++;
+					data.key = k;
+					return k;
+				},
+				// negative keys for links
+				makeUniqueLinkKeyFunction: (m: go.GraphLinksModel, data: any) => {
+					let k = data.key || -1;
+					while (m.findLinkDataForKey(k)) k--;
+					data.key = k;
+					return k;
+				}
+			})
 			// TextEdited: this.onTextEdited
 		});
 
 		// myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
 		/**
 		 * 节点标题 辅助方法
-		 * @param fcDiagramEnum 节点类型
+		 * @param DiagramEnum 节点类型
 		 */
-		const nodeTitleHelper = (fcDiagramEnum: FCDiagramEnum): go.Panel => {
+		const nodeTitleHelper = (diagramEnum: DiagramEnum): go.Panel => {
 			let obj = {};
-			switch (fcDiagramEnum) {
-				case FCDiagramEnum.FCNode:
+			switch (diagramEnum) {
+				case DiagramEnum.FCNode:
 					obj = {
 						name: 'node_Title',
 						margin: new Margin(1, 0, 0, 0)
 					};
 					break;
-				case FCDiagramEnum.ConditionGroup:
-				case FCDiagramEnum.ConditionSwitch:
-				case FCDiagramEnum.LoopGroup:
+				case DiagramEnum.ConditionGroup:
+				case DiagramEnum.ConditionSwitch:
+				case DiagramEnum.LoopGroup:
 					obj = {
 						name: 'group_Title',
 						margin: new Margin(0, 5, 0, 5)
@@ -150,9 +190,9 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 
 		/**
 		 * 利用 节点 spot 实现靠右
-		 * @param fcDiagramEnum
+		 * @param DiagramEnum
 		 */
-		const nodeSpotTitleHelper = (fcDiagramEnum: FCDiagramEnum): go.Panel => {
+		const nodeSpotTitleHelper = (diagramEnum: DiagramEnum): go.Panel => {
 			// 节点基本样式
 			let spotCss = {
 				alignment: go.Spot.TopRight,
@@ -171,8 +211,8 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			let hoverCss = {
 				background: '#ffffff'
 			};
-			switch (fcDiagramEnum) {
-				case FCDiagramEnum.ConditionSwitch:
+			switch (diagramEnum) {
+				case DiagramEnum.ConditionSwitch:
 					spotCss = {
 						...spotCss,
 						...{
@@ -184,7 +224,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 					break;
 			}
 
-			if (fcDiagramEnum == FCDiagramEnum.StopLoopOrFlow) {
+			if (diagramEnum == DiagramEnum.StopLoopOrFlow) {
 				return $(
 					go.Panel,
 					'Auto',
@@ -309,7 +349,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 
 		/**
 		 * 利用 节点 spot 实现靠右
-		 * @param fcDiagramEnum
+		 * @param DiagramEnum
 		 */
 		const loopSpotTitleHelper = (): go.Panel => {
 			// 节点基本样式
@@ -406,7 +446,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 */
 		const drawLink = () => {
 			myDiagram.linkTemplateMap.add(
-				FCDiagramEnum.WFLink,
+				DiagramEnum.WFLink,
 				$(
 					go.Link,
 					{
@@ -471,7 +511,8 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		/**
 		 * 画节点
 		 */
-		const drawNode = (fcNode: FCDiagramEnum) => {
+		const drawNode = (fcNode: DiagramEnum) => {
+			console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', fcNode);
 			myDiagram.nodeTemplateMap.add(
 				fcNode,
 				$(
@@ -498,8 +539,8 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 							strokeWidth: 1,
 							stroke: BaseColors.transparent,
 							fill: BaseColors.backgroud
-						}
-						//new go.Binding('fill', 'color'),
+						},
+						new go.Binding('fill', 'color')
 						//new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
 					),
 					$(
@@ -527,7 +568,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 */
 		const drawNodeGuide = () => {
 			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideNode,
+				DiagramEnum.WFGuideNode,
 				$(
 					go.Node,
 					'Auto',
@@ -566,7 +607,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 */
 		const drawGroupLoop = () => {
 			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.LoopGroup,
+				DiagramEnum.LoopGroup,
 				$(
 					go.Group,
 					'Auto',
@@ -620,7 +661,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 							$('SubGraphExpanderButton', {
 								alignment: go.Spot.Center
 							}),
-							nodeTitleHelper(FCDiagramEnum.LoopGroup)
+							nodeTitleHelper(DiagramEnum.LoopGroup)
 						),
 						// create a placeholder to represent the area where the contents of the group are
 						$(go.Placeholder, {
@@ -630,7 +671,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 						})
 					), // end Vertical Panel
 					loopSpotTitleHelper(),
-					nodeSpotTitleHelper(FCDiagramEnum.LoopGroup)
+					nodeSpotTitleHelper(DiagramEnum.LoopGroup)
 				)
 			); // end Group
 		};
@@ -640,7 +681,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 */
 		const drawGroupCond = () => {
 			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.ConditionGroup,
+				DiagramEnum.ConditionGroup,
 				$(
 					go.Group,
 					'Auto',
@@ -691,7 +732,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 							$('SubGraphExpanderButton', {
 								alignment: go.Spot.Center
 							}),
-							nodeTitleHelper(FCDiagramEnum.ConditionGroup)
+							nodeTitleHelper(DiagramEnum.ConditionGroup)
 						),
 						// create a placeholder to represent the area where the contents of the group are
 						$(go.Placeholder, {
@@ -700,7 +741,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 							minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
 						})
 					), // end Vertical Panel
-					nodeSpotTitleHelper(FCDiagramEnum.LoopGroup)
+					nodeSpotTitleHelper(DiagramEnum.LoopGroup)
 				)
 			); // end Group
 		};
@@ -710,7 +751,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 */
 		const drawGroupCondBranch = () => {
 			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.ConditionSwitch,
+				DiagramEnum.ConditionSwitch,
 				$(
 					go.Group,
 					'Auto',
@@ -787,7 +828,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 								$('SubGraphExpanderButton', {
 									alignment: go.Spot.Center
 								}),
-								nodeTitleHelper(FCDiagramEnum.ConditionSwitch)
+								nodeTitleHelper(DiagramEnum.ConditionSwitch)
 							),
 							// create a placeholder to represent the area where the contents of the group are
 							$(go.Placeholder, {
@@ -815,7 +856,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 								// 	eType: NodeEventEnum.AddNodeToBefore,
 								// 	setSelected: true,
 								// 	actType: 'userDrag',
-								// 	toNode: thisObj.part!.data as FCNodeModel
+								// 	toNode: thisObj.part!.data as NodeModel
 								// });
 							}
 						},
@@ -851,7 +892,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 								// 	eType: NodeEventEnum.AddNodeToAfter,
 								// 	setSelected: true,
 								// 	actType: 'userDrag',
-								// 	toNode: thisObj.part!.data as FCNodeModel
+								// 	toNode: thisObj.part!.data as NodeModel
 								// });
 							}
 						},
@@ -870,7 +911,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 							strokeWidth: 1
 						})
 					), // end output port
-					nodeSpotTitleHelper(FCDiagramEnum.ConditionSwitch)
+					nodeSpotTitleHelper(DiagramEnum.ConditionSwitch)
 				)
 			);
 		};
@@ -881,7 +922,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		const drawGuidNodes = () => {
 			// 起始点
 			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideStart,
+				DiagramEnum.WFGuideStart,
 				$(
 					go.Node,
 					'Panel',
@@ -914,7 +955,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 
 			//结束点
 			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideEnd,
+				DiagramEnum.WFGuideEnd,
 				$(
 					go.Node,
 					'Panel',
@@ -944,15 +985,15 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			);
 
 			// 辅助起始点
-			myDiagram.nodeTemplateMap.add(FCDiagramEnum.WFGuideSubOpen, $(go.Node, 'Panel'));
+			myDiagram.nodeTemplateMap.add(DiagramEnum.WFGuideSubOpen, $(go.Node, 'Panel'));
 
 			// 辅助结束点
-			myDiagram.nodeTemplateMap.add(FCDiagramEnum.WFGuideSubClose, $(go.Node, 'Panel'));
+			myDiagram.nodeTemplateMap.add(DiagramEnum.WFGuideSubClose, $(go.Node, 'Panel'));
 		};
 
 		drawAdornment();
-		drawNode(FCDiagramEnum.FCNode);
-		drawNode(FCDiagramEnum.StopLoopOrFlow);
+		drawNode(DiagramEnum.FCNode);
+		drawNode(DiagramEnum.StopLoopOrFlow);
 		drawNodeGuide();
 		drawLink();
 		drawGroupCond();
@@ -1020,7 +1061,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			// 		eType: NodeEventEnum.DragNode2Link,
 			// 		setSelected: true,
 			// 		actType: 'userDrag',
-			// 		toLink: to as FCLinkModel
+			// 		toLink: to as LinkModel
 			// 	};
 			// 	this.props.store.addNodeBy_DragNode2Link_Handler(ev);
 			// }
@@ -1032,7 +1073,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 	};
 
 	doEvent = {
-		canDelete: (node: FCNodeModel): boolean => {
+		canDelete: (node: NodeModel): boolean => {
 			// todo 8
 			// if (node && node.type === FCNodeType.Branch) {
 			// 	let brother = this.props.store.getSiblingKeys(node.key);
@@ -1045,11 +1086,11 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 
 			return true;
 		},
-		delete: (node: FCNodeModel) => {
+		delete: (node: NodeModel) => {
 			// todo 8,1
 			// this.props.store.onDeleteNode(node.key);
 		},
-		copy: (node: FCNodeModel) => {
+		copy: (node: NodeModel) => {
 			// todo 8.2
 			//this.props.store.executeCMD(FCActEnum.Copy, node.key);
 		},
@@ -1062,896 +1103,6 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			// 	this.props.store.executeCMD(FCActEnum.Paste, this.props.store.currNodeKey);
 			// }
 		}
-	};
-
-	private createDiagram = (diagramId: string): Diagram => {
-		const $ = go.GraphObject.make;
-		const myDiagram: Diagram = $(go.Diagram, 'liubl', {
-			'undoManager.isEnabled': true,
-			draggingTool: new FCDiagramDragTool(this.doDragEvent),
-			commandHandler: new FCCommandHandler(this.doEvent),
-			contentAlignment: go.Spot.TopCenter,
-			initialContentAlignment: go.Spot.RightCenter,
-			initialScale: 1.125,
-			layout: $(go.TreeLayout, {
-				angle: 90,
-				treeStyle: go.TreeLayout.StyleLayered,
-				layerSpacing: DiagramSetting.layerSpacing,
-				comparer: go.LayoutVertex.smartComparer
-			}),
-			click: this.onClick,
-			SelectionMoved: () => {
-				myDiagram.layoutDiagram(true);
-			},
-			InitialLayoutCompleted: this.InitialLayoutCompleted,
-			LayoutCompleted: this.LayoutCompleted
-		});
-
-		// myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
-		/**
-		 * 节点标题 辅助方法
-		 * @param fcDiagramEnum 节点类型
-		 */
-		const nodeTitleHelper = (fcDiagramEnum: FCDiagramEnum): go.Panel => {
-			let obj = {};
-			switch (fcDiagramEnum) {
-				case FCDiagramEnum.FCNode:
-					obj = {
-						name: 'node_Title',
-						margin: new Margin(1, 0, 0, 0)
-					};
-					break;
-				case FCDiagramEnum.ConditionGroup:
-				case FCDiagramEnum.ConditionSwitch:
-				case FCDiagramEnum.LoopGroup:
-					obj = {
-						name: 'group_Title',
-						margin: new Margin(0, 5, 0, 5)
-					};
-					break;
-				default:
-					break;
-			}
-
-			return $(
-				go.Panel,
-				'Horizontal',
-				{},
-				$(
-					go.TextBlock,
-					{
-						...obj,
-						...{
-							editable: DiagramSetting.renameable,
-							mouseEnter: this.onMouseEnterTitle,
-							mouseLeave: this.onMouseLeaveTitle,
-							stroke: BaseColors.font,
-							font: DiagramSetting.font,
-							textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
-								// todo 8
-								// this.props.store.iFlowChart.onSaveNodeNameHandler(newString);
-							}
-						}
-					},
-					new go.Binding('text', this.showLabel(), this.covShowLabel)
-				)
-			);
-		};
-
-		/**
-		 * 利用 节点 spot 实现靠右
-		 * @param fcDiagramEnum
-		 */
-		const nodeSpotTitleHelper = (fcDiagramEnum: FCDiagramEnum): go.Panel => {
-			// 节点基本样式
-			let spotCss = {
-				alignment: go.Spot.TopRight,
-				cursor: 'pointer',
-				height: 26,
-				width: 50
-			};
-			// 图标基本样式
-			let baseCss = {
-				margin: new Margin(0, 0, 0, 0),
-				visible: false,
-				background: '#2b71ed',
-				height: 26,
-				width: 25
-			};
-			let hoverCss = {
-				background: '#ffffff'
-			};
-			switch (fcDiagramEnum) {
-				case FCDiagramEnum.ConditionSwitch:
-					spotCss = {
-						...spotCss,
-						...{
-							margin: new Margin(0, 10, 0, 0)
-						}
-					};
-					break;
-				default:
-					break;
-			}
-
-			if (fcDiagramEnum == FCDiagramEnum.StopLoopOrFlow) {
-				return $(
-					go.Panel,
-					'Auto',
-					{
-						...spotCss,
-						...{ name: 'action_Spot', width: 25 }
-					},
-					$(
-						go.Panel,
-						'Horizontal',
-						{
-							...baseCss,
-							...{
-								name: 'node_Imenu',
-								click: this.onContextClick,
-								mouseEnter: this.onmouseEnterMenuHandler
-							}
-						},
-						$(go.Picture, IMenu, {
-							margin: new Margin(0, 6, 0, 6)
-						})
-					),
-					$(
-						go.Panel,
-						'Horizontal',
-						{
-							...baseCss,
-							...hoverCss,
-							...{
-								name: 'node_Imenu_Hover',
-								click: this.onContextClick,
-								mouseLeave: this.onmouseLeaveMenuHandler
-							}
-						},
-						$(go.Picture, IMenuHover, {
-							margin: new Margin(0, 6, 0, 6)
-						})
-					)
-				);
-			} else {
-				return $(
-					go.Panel,
-					'Auto',
-					{
-						...spotCss,
-						...{ name: 'action_Spot' }
-					},
-					$(
-						go.Panel,
-						'Horizontal',
-						{},
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								...baseCss,
-								...{
-									name: 'node_Iset',
-									click: this.onSettingClick,
-									mouseEnter: this.onmouseEnterSetHandler
-								}
-							},
-							$(go.Picture, ISet, {
-								alignment: go.Spot.Center,
-								margin: new Margin(0, 6, 0, 6)
-							})
-						),
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								...baseCss,
-								...hoverCss,
-								...{
-									name: 'node_Iset_Hover',
-									click: this.onSettingClick,
-									mouseLeave: this.onmouseLeaveSetHandler
-								}
-							},
-							$(go.Picture, ISetHover, {
-								alignment: go.Spot.Center,
-								margin: new Margin(0, 6, 0, 6)
-							})
-						),
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								...baseCss,
-								...{
-									name: 'node_Imenu',
-									click: this.onContextClick,
-									mouseEnter: this.onmouseEnterMenuHandler
-								}
-							},
-							$(go.Picture, IMenu, {
-								alignment: go.Spot.Center,
-								margin: new Margin(0, 6, 0, 6)
-							})
-						),
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								...baseCss,
-								...hoverCss,
-								...{
-									name: 'node_Imenu_Hover',
-									click: this.onContextClick,
-									mouseLeave: this.onmouseLeaveMenuHandler
-								}
-							},
-							$(go.Picture, IMenuHover, {
-								alignment: go.Spot.Center,
-								margin: new Margin(0, 6, 0, 6)
-							})
-						)
-					)
-				); // end output port
-			}
-		};
-
-		/**
-		 * 利用 节点 spot 实现靠右
-		 * @param fcDiagramEnum
-		 */
-		const loopSpotTitleHelper = (): go.Panel => {
-			// 节点基本样式
-			let spotCss = {
-				alignment: go.Spot.TopRight,
-				cursor: 'pointer',
-				height: 26,
-				width: 25,
-				margin: new Margin(0, 50, 0, 0)
-			};
-			// 图标基本样式
-			let baseCss = {
-				margin: new Margin(0, 0, 0, 0),
-				visible: false,
-				background: '#2b71ed',
-				height: 26,
-				width: 25
-			};
-			let hoverCss = {
-				background: '#ffffff'
-			};
-			return $(
-				go.Panel,
-				'Auto',
-				{
-					...spotCss,
-					...{ name: 'action_Spot', width: 25 }
-				},
-				$(
-					go.Panel,
-					'Horizontal',
-					{
-						...baseCss,
-						...{
-							name: 'node_Ilist',
-							click: this.handleLoopInfoClick,
-							mouseEnter: this.loopInfoMouseEnter
-						}
-					},
-					$(go.Picture, IList, {
-						margin: new Margin(0, 6, 0, 6)
-					})
-				),
-				$(
-					go.Panel,
-					'Horizontal',
-					{
-						...baseCss,
-						...hoverCss,
-						...{
-							name: 'node_Ilist_Hover',
-							click: this.handleLoopInfoClick,
-							mouseLeave: this.loopInfoMouseLeave
-						}
-					},
-					$(go.Picture, IListHover, {
-						margin: new Margin(0, 6, 0, 6)
-					})
-				)
-			);
-		};
-
-		/**
-		 * 修改选中样式
-		 */
-		const drawAdornment = () => {
-			//修改线
-			myDiagram.linkSelectionAdornmentTemplate = $(
-				go.Adornment,
-				'Auto',
-				$(go.Shape, this.getlinkSelectedCss()),
-				$(go.Placeholder)
-			);
-
-			//修改组
-			myDiagram.groupSelectionAdornmentTemplate = $(
-				go.Adornment,
-				'Auto',
-				$(go.Shape, this.getSelectedCss()),
-				$(go.Placeholder)
-			);
-
-			//修改点
-			myDiagram.nodeSelectionAdornmentTemplate = $(
-				go.Adornment,
-				'Auto',
-				$(go.Shape, this.getSelectedCss()),
-				$(go.Placeholder)
-			);
-		};
-
-		/**
-		 * 画线
-		 */
-		const drawLink = () => {
-			myDiagram.linkTemplateMap.add(
-				FCDiagramEnum.WFLink,
-				$(
-					go.Link,
-					{
-						mouseLeave: this.mouseLeaveHandler,
-						mouseEnter: this.mouseEnterHandler,
-						mouseDragEnter: this.mouseDragEnterHandler,
-						mouseDragLeave: this.mouseDragLeaveHandler,
-						selectionChanged: this.onselectionChangedHandler,
-						movable: false,
-						resizable: false,
-						deletable: false
-					},
-					$(go.Shape, {
-						name: 'link_Body',
-						stroke: BaseColors.link,
-						strokeWidth: 1
-					}),
-					$(go.Shape, {
-						name: 'link_Arr',
-						toArrow: 'Standard',
-						scale: 1,
-						strokeWidth: 0,
-						fill: BaseColors.link
-					}),
-					$(go.Panel, 'Auto', {
-						name: 'link_Hover',
-						width: DiagramSetting.nodeWith, //增加宽度，方便触发相关事件
-						height: DiagramSetting.layerSpacing, //增加高度，方便触发相关事件
-						opacity: 0,
-						background: BaseColors.link,
-						visible: false
-					}),
-					$(
-						go.Panel,
-						'Auto',
-						{
-							name: 'link_Add',
-							padding: new go.Margin(5, 0, 5, 0),
-							click: this.onAddNodeClick,
-							alignment: go.Spot.Top,
-							visible: false
-						},
-						$(go.Shape, 'Circle', {
-							name: 'btn_add',
-							width: DiagramSetting.linkIconWidth,
-							height: DiagramSetting.linkIconWidth,
-							fill: BaseColors.link_icon_bg,
-							strokeWidth: 0
-						}),
-						$(go.Shape, 'PlusLine', {
-							width: DiagramSetting.linkIconInWidth,
-							height: DiagramSetting.linkIconInWidth,
-							fill: null,
-							stroke: BaseColors.link_icon,
-							strokeWidth: 2
-						})
-					)
-				)
-			);
-		};
-
-		/**
-		 * 画节点
-		 */
-		const drawNode = (fcNode: FCDiagramEnum) => {
-			myDiagram.nodeTemplateMap.add(
-				fcNode,
-				$(
-					go.Node,
-					'Auto',
-					{
-						mouseEnter: this.mouseEnterHandler,
-						mouseLeave: this.mouseLeaveHandler,
-						movable: DiagramSetting.moveNode,
-						click: this.onClick,
-						contextClick: this.onContextClick,
-						doubleClick: this.onSettingClick,
-						selectionChanged: this.onselectionChangedHandler,
-						padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
-						minSize: new go.Size(DiagramSetting.nodeWith, DiagramSetting.nodeHeight),
-						cursor: 'pointer'
-					},
-					$(
-						go.Shape,
-						'RoundedRectangle',
-						{
-							parameter1: DiagramSetting.parameter1,
-							name: 'node_Body',
-							strokeWidth: 1,
-							stroke: BaseColors.transparent,
-							fill: BaseColors.backgroud
-						}
-						//new go.Binding('fill', 'color'),
-						//new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
-					),
-					$(
-						go.Panel,
-						'Horizontal',
-						{
-							padding: 5
-						},
-						// $(go.Picture, IAttention,
-						//     {
-						//         name: 'node_Iattention',
-						//         margin: new Margin(0, 5, 0, 5),
-						//         visible: false
-						//     }
-						// ),
-						nodeTitleHelper(fcNode)
-					),
-					nodeSpotTitleHelper(fcNode)
-				)
-			);
-		};
-
-		/**
-		 * 画辅助节点
-		 */
-		const drawNodeGuide = () => {
-			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideNode,
-				$(
-					go.Node,
-					'Auto',
-					{
-						movable: false,
-						deletable: false
-					},
-					$(
-						go.Shape,
-						'RoundedRectangle',
-						{
-							strokeWidth: 0,
-							fill: BaseColors.transparent
-						}
-						//new go.Binding('fill', 'color'),
-						//new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
-					),
-					$(
-						go.TextBlock,
-						{
-							editable: false,
-							stroke: BaseColors.group_font,
-							minSize: new go.Size(DiagramSetting.nodeWith, 10),
-							textAlign: 'center',
-							isMultiline: true,
-							font: DiagramSetting.groupTipFont
-						},
-						new go.Binding('text', this.showLabel())
-					)
-				)
-			);
-		};
-
-		/**
-		 * 划循环分组
-		 */
-		const drawGroupLoop = () => {
-			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.LoopGroup,
-				$(
-					go.Group,
-					'Auto',
-					{
-						layout: $(go.TreeLayout, {
-							angle: 90,
-
-							arrangement: go.TreeLayout.ArrangementHorizontal,
-							layerSpacing: DiagramSetting.layerSpacing,
-							arrangementSpacing: new go.Size(30, 10)
-						}),
-						mouseEnter: this.mouseEnterHandler,
-						mouseLeave: this.mouseLeaveHandler,
-						doubleClick: this.onSettingClick,
-						movable: DiagramSetting.moveLoop,
-						padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
-						isSubGraphExpanded: true,
-						resizable: false,
-						computesBoundsAfterDrag: false,
-						computesBoundsIncludingLinks: false,
-						computesBoundsIncludingLocation: false,
-						handlesDragDropForMembers: false,
-						ungroupable: false,
-						graduatedMax: 1,
-						selectionChanged: this.onselectionChangedHandler,
-						click: this.onClick,
-						contextClick: this.onContextClick
-					},
-					$(go.Shape, 'RoundedRectangle', {
-						name: 'group_main',
-						parameter1: DiagramSetting.parameter1Group,
-						fill: BaseColors.transparent,
-						stroke: BaseColors.group_border,
-						strokeWidth: 1
-					}),
-					$(
-						go.Panel,
-						'Vertical',
-						{
-							name: 'group_Top',
-							background: BaseColors.group_bg,
-							defaultAlignment: go.Spot.Left,
-							cursor: 'pointer'
-						},
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								padding: 5
-							},
-							$('SubGraphExpanderButton', {
-								alignment: go.Spot.Center
-							}),
-							nodeTitleHelper(FCDiagramEnum.LoopGroup)
-						),
-						// create a placeholder to represent the area where the contents of the group are
-						$(go.Placeholder, {
-							background: BaseColors.group_panel_bg,
-							padding: new go.Margin(10, 15),
-							minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
-						})
-					), // end Vertical Panel
-					loopSpotTitleHelper(),
-					nodeSpotTitleHelper(FCDiagramEnum.LoopGroup)
-				)
-			); // end Group
-		};
-
-		/**
-		 * 条件分组
-		 */
-		const drawGroupCond = () => {
-			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.ConditionGroup,
-				$(
-					go.Group,
-					'Auto',
-					{
-						layout: $(go.GridLayout, {
-							sorting: go.TreeLayout.SortingAscending,
-							comparer: function (va: any, vb: any) {
-								var da = va.data;
-								var db = vb.data;
-								if (da.sortIndex < db.sortIndex) return -1;
-								if (da.sortIndex > db.sortIndex) return 1;
-								return 0;
-							},
-							cellSize: new go.Size(10, 10),
-							wrappingWidth: 100000
-						}),
-
-						movable: DiagramSetting.moveCond,
-						mouseEnter: this.mouseEnterHandler,
-						mouseLeave: this.mouseLeaveHandler,
-						selectionChanged: this.onselectionChangedHandler,
-						click: this.onClick,
-						doubleClick: this.onSettingClick,
-						contextClick: this.onContextClick
-					},
-					$(go.Shape, 'RoundedRectangle', {
-						name: 'group_main',
-						parameter1: DiagramSetting.parameter1Group,
-						fill: BaseColors.transparent,
-						stroke: BaseColors.group_border,
-						strokeWidth: 1
-					}),
-					$(
-						go.Panel,
-						'Vertical',
-						{
-							name: 'group_Top',
-							background: BaseColors.group_bg,
-							defaultAlignment: go.Spot.Left,
-							cursor: 'pointer'
-						},
-						$(
-							go.Panel,
-							'Horizontal',
-							{
-								padding: 5
-							},
-							$('SubGraphExpanderButton', {
-								alignment: go.Spot.Center
-							}),
-							nodeTitleHelper(FCDiagramEnum.ConditionGroup)
-						),
-						// create a placeholder to represent the area where the contents of the group are
-						$(go.Placeholder, {
-							background: BaseColors.group_panel_bg,
-							padding: new go.Margin(10, 10),
-							minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
-						})
-					), // end Vertical Panel
-					nodeSpotTitleHelper(FCDiagramEnum.LoopGroup)
-				)
-			); // end Group
-		};
-
-		/**
-		 * 条件分支
-		 */
-		const drawGroupCondBranch = () => {
-			myDiagram.groupTemplateMap.add(
-				FCDiagramEnum.ConditionSwitch,
-				$(
-					go.Group,
-					'Auto',
-					{
-						// define the group's internal layout
-						layout: $(go.TreeLayout, {
-							angle: 90,
-							layerSpacing: DiagramSetting.layerSpacing
-						}),
-
-						selectionAdorned: false,
-						fromLinkable: false,
-						toLinkable: false,
-						movable: DiagramSetting.moveCondBranch,
-						mouseLeave: this.mouseLeaveHandler,
-						mouseEnter: this.mouseEnterHandler,
-						resizable: false,
-						selectionChanged: this.onselectionChangedHandler,
-						click: this.onClick,
-						doubleClick: this.onSettingClick,
-						contextClick: this.onContextClick,
-						isSubGraphExpanded: true,
-						subGraphExpandedChanged: function (_group: any) {
-							if (_group instanceof go.Adornment) _group = _group.adornedPart;
-							const cmd = myDiagram.commandHandler;
-							const lspot = _group.part.findObject('left_Spot');
-							const rspot = _group.part.findObject('right_Spot');
-							if (_group.isSubGraphExpanded) {
-								lspot && (lspot.visible = true);
-								rspot && (rspot.visible = true);
-								cmd.collapseSubGraph(_group);
-							} else {
-								cmd.expandSubGraph(_group);
-								lspot && (lspot.visible = false);
-								rspot && (rspot.visible = false);
-							}
-						}
-					},
-					new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
-					new go.Binding('height', 'height').makeTwoWay(),
-
-					$(go.Shape, 'RoundedRectangle', {
-						name: 'groupBranch_main',
-						parameter1: DiagramSetting.parameter1Group,
-						fill: BaseColors.transparent,
-						stroke: BaseColors.transparent,
-						strokeWidth: 1
-					}),
-					$(
-						go.Panel,
-						'RoundedRectangle',
-						{
-							name: '',
-							background: BaseColors.transparent,
-							defaultAlignment: go.Spot.Left,
-							padding: new go.Margin(0, 8, 0, 8),
-							cursor: 'pointer'
-						},
-						$(
-							go.Panel,
-							'Vertical',
-							{
-								name: 'group_Top',
-								background: BaseColors.group_bg,
-								defaultAlignment: go.Spot.Left,
-								padding: new go.Margin(0, 1, 1, 1)
-							},
-							$(
-								go.Panel,
-								'Horizontal',
-								{
-									padding: new go.Margin(5, 0, 5, 5)
-								},
-								$('SubGraphExpanderButton', {
-									alignment: go.Spot.Center
-								}),
-								nodeTitleHelper(FCDiagramEnum.ConditionSwitch)
-							),
-							// create a placeholder to represent the area where the contents of the group are
-							$(go.Placeholder, {
-								background: BaseColors.group_panel_bg,
-								padding: new go.Margin(10, 15),
-								minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
-							})
-						) // end Vertical Panel
-					),
-					// input port
-					$(
-						go.Panel,
-						'Auto',
-						{
-							name: 'left_Spot',
-							alignment: go.Spot.Left,
-							alignmentFocus: go.Spot.Right,
-							width: DiagramSetting.iconWidth + 2,
-							height: DiagramSetting.iconWidth + 2,
-							cursor: 'pointer',
-							opacity: DiagramSetting.spotOpacity,
-							click: (_e: go.InputEvent, thisObj: GraphObject) => {
-								// todo 9
-								// this.props.store.addNodeBy_AddCondtionBranch_Handler({
-								// 	eType: NodeEventEnum.AddNodeToBefore,
-								// 	setSelected: true,
-								// 	actType: 'userDrag',
-								// 	toNode: thisObj.part!.data as FCNodeModel
-								// });
-							}
-						},
-						$(go.Shape, 'Circle', {
-							width: DiagramSetting.iconWidth,
-							height: DiagramSetting.iconWidth,
-							fill: BaseColors.icon_bg,
-							stroke: BaseColors.icon_bg,
-							strokeWidth: 1
-						}),
-						$(go.Shape, 'PlusLine', {
-							width: DiagramSetting.iconInWidth,
-							height: DiagramSetting.iconInWidth,
-							fill: null,
-							stroke: BaseColors.icon,
-							strokeWidth: 1
-						})
-					),
-					//output port
-					$(
-						go.Panel,
-						'Auto',
-						{
-							name: 'right_Spot',
-							alignment: go.Spot.Right,
-							width: DiagramSetting.iconWidth + 2,
-							height: DiagramSetting.iconWidth + 2,
-							cursor: 'pointer',
-							opacity: DiagramSetting.spotOpacity,
-							click: (_e: go.InputEvent, thisObj: GraphObject) => {
-								// todo 10
-								// this.props.store.addNodeBy_AddCondtionBranch_Handler({
-								// 	eType: NodeEventEnum.AddNodeToAfter,
-								// 	setSelected: true,
-								// 	actType: 'userDrag',
-								// 	toNode: thisObj.part!.data as FCNodeModel
-								// });
-							}
-						},
-						$(go.Shape, 'Circle', {
-							width: DiagramSetting.iconWidth,
-							height: DiagramSetting.iconWidth,
-							fill: BaseColors.icon_bg,
-							stroke: BaseColors.icon_bg,
-							strokeWidth: 1
-						}),
-						$(go.Shape, 'PlusLine', {
-							width: DiagramSetting.iconInWidth,
-							height: DiagramSetting.iconInWidth,
-							fill: null,
-							stroke: BaseColors.icon,
-							strokeWidth: 1
-						})
-					), // end output port
-					nodeSpotTitleHelper(FCDiagramEnum.ConditionSwitch)
-				)
-			);
-		};
-
-		/**
-		 * 辅助点
-		 */
-		const drawGuidNodes = () => {
-			// 起始点
-			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideStart,
-				$(
-					go.Node,
-					'Panel',
-					{
-						margin: new go.Margin(25, 0, 0, 0),
-						padding: new go.Margin(5),
-						movable: false,
-						deletable: false,
-						selectable: false
-					},
-					$(
-						go.Panel,
-						'Auto',
-						$(go.Shape, 'Circle', {
-							minSize: new go.Size(DiagramSetting.startWidth, DiagramSetting.startWidth),
-							fill: null,
-							stroke: BaseColors.start,
-							strokeWidth: 1
-						}),
-						$(go.Shape, 'TriangleRight', {
-							width: DiagramSetting.startInWidth,
-							height: DiagramSetting.startInWidth,
-							fill: BaseColors.start,
-							strokeWidth: 0,
-							margin: new go.Margin(0, 0, 0, 2)
-						})
-					)
-				)
-			);
-
-			//结束点
-			myDiagram.nodeTemplateMap.add(
-				FCDiagramEnum.WFGuideEnd,
-				$(
-					go.Node,
-					'Panel',
-					{
-						padding: new go.Margin(5, 2),
-						movable: false,
-						deletable: false,
-						selectable: false
-					},
-					$(
-						go.Panel,
-						'Auto',
-						$(go.Shape, 'Circle', {
-							minSize: new go.Size(DiagramSetting.endWidth, DiagramSetting.endWidth),
-							fill: null,
-							stroke: BaseColors.end,
-							strokeWidth: 1
-						}),
-						$(go.Shape, 'Rectangle', {
-							width: DiagramSetting.endInWidth,
-							height: DiagramSetting.endInWidth,
-							fill: BaseColors.end,
-							strokeWidth: 0
-						})
-					)
-				)
-			);
-
-			// 辅助起始点
-			myDiagram.nodeTemplateMap.add(FCDiagramEnum.WFGuideSubOpen, $(go.Node, 'Panel'));
-
-			// 辅助结束点
-			myDiagram.nodeTemplateMap.add(FCDiagramEnum.WFGuideSubClose, $(go.Node, 'Panel'));
-		};
-
-		drawAdornment();
-		drawNode(FCDiagramEnum.FCNode);
-		drawNode(FCDiagramEnum.StopLoopOrFlow);
-		drawNodeGuide();
-		drawLink();
-		drawGroupCond();
-		drawGroupCondBranch();
-		drawGroupLoop();
-		drawGuidNodes();
-		// todo 11
-		// this.props.store.diagram = myDiagram;
-		return myDiagram;
 	};
 
 	/**
@@ -2054,7 +1205,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		this.hideAddNodeMenu();
 		// todo 14
 		// this.props.store.addNodeMenuLen = HalfNodeMenu;
-		if (_node && _node.data && _node.data.diagramType == FCDiagramEnum.WFLink) {
+		if (_node && _node.data && _node.data.diagramType == DiagramEnum.WFLink) {
 			return;
 		}
 		if (_node && _node.diagram) {
@@ -2098,14 +1249,14 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		// }
 
 		// this.props.store.contextNodeKey = (obj as any).part.data.key;
-		// if (node && node.data && node.data.diagramType == FCDiagramEnum.WFLink) {
+		// if (node && node.data && node.data.diagramType == DiagramEnum.WFLink) {
 		// 	return;
 		// }
 
 		this.hideContextMenu();
 		this.hideAddNodeMenu();
 		//结束循环，结束流程两种节点类型不显示节点信息提示
-		if (node.data.diagramType != FCDiagramEnum.StopLoopOrFlow) {
+		if (node.data.diagramType != DiagramEnum.StopLoopOrFlow) {
 		}
 	};
 

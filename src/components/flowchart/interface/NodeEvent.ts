@@ -1,5 +1,5 @@
-import { FCLinkModel } from './FCLinkModel';
-import { FCNodeModel } from './FCNodeModel';
+import { LinkModel } from './linkModel';
+import { NodeModel } from './nodeModel';
 import { NodeEventEnum } from '../enum';
 
 /**
@@ -12,9 +12,9 @@ export interface NodeEvent {
 	name?: string;
 	key?: string;
 	toKey?: string;
-	toLink?: FCLinkModel;
-	toNode?: FCNodeModel;
+	toLink?: LinkModel;
+	toNode?: NodeModel;
 	// newNodeToLink?: false;
-	newLinks?: FCLinkModel[];
-	// modelChanged?: DiagramModel<FCNodeModel, FCLinkModel>
+	newLinks?: LinkModel[];
+	// modelChanged?: DiagramModel<NodeModel, LinkModel>
 }
