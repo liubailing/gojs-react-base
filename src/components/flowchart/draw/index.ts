@@ -5,5 +5,6 @@ import DrawLoop from './loop';
 import DrawBranch from './branch';
 import DrawCondition from './conditon';
 import DrawAdornment from './adornment';
+import DrawBreak from './break';
 
-export { DrawLink, DrawSimple, DrawNode, DrawLoop, DrawBranch, DrawCondition, DrawAdornment };
+export { DrawLink, DrawSimple, DrawNode, DrawLoop, DrawBranch, DrawCondition, DrawAdornment, DrawBreak };

@@ -1,21 +1,19 @@
-import go, { GraphObject } from 'gojs';
+import go from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
-import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
-
 const $ = go.GraphObject.make;
 
-export class DrawNode extends Base {
-	getNode(): go.Part {
+export class DrawBreak extends Base {
+	getBreak(): go.Part {
 		return $(
 			go.Node,
 			'Auto',
 			{
-				mouseEnter: this.onMouseEnter,
-				mouseLeave: this.onMouseLeave,
+				mouseEnter: this.mouseEnterHandler,
+				mouseLeave: this.mouseLeaveHandler,
 				movable: DiagramSetting.moveNode,
 				click: this.onClick,
 				contextClick: this.onContextClick,
@@ -46,31 +44,11 @@ export class DrawNode extends Base {
 				},
 				DrawTitle.getTitle(DiagramEnum.FCNode)
 			),
-			DrawSpot.getSpot(DiagramEnum.FCNode)
+			DrawSpot.getSpotMenu(DiagramEnum.FCNode)
 		);
-	}
-
-	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
-		// console.log('node', node);
-
-		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, false);
-			BaseChanges.setNodeCss(node, false);
-		}
-	}
-
-	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
-		// console.log('node', node);
-
-		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, true);
-			BaseChanges.setNodeCss(node, true);
-		}
 	}
 }
 
-const drawNode = new DrawNode();
+const drawBreak = new DrawBreak();
 
-export default drawNode;
+export default drawBreak;

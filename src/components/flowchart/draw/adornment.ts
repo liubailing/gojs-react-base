@@ -7,8 +7,7 @@ const $ = go.GraphObject.make;
 
 export default class DrawAdornment {
 	static setAdornment(diagram: Diagram): Diagram {
-		
-		//修改线
+		/** 修改线 */
 		diagram.linkSelectionAdornmentTemplate = $(
 			go.Adornment,
 			'Auto',
@@ -21,7 +20,7 @@ export default class DrawAdornment {
 			$(go.Placeholder)
 		);
 
-		//修改组
+		/** 修改组 */
 		diagram.groupSelectionAdornmentTemplate = $(
 			go.Adornment,
 			'Auto',
@@ -35,7 +34,7 @@ export default class DrawAdornment {
 			$(go.Placeholder)
 		);
 
-		//修改点
+		/** 修改点 */
 		diagram.nodeSelectionAdornmentTemplate = $(
 			go.Adornment,
 			'Auto',
@@ -52,7 +51,3 @@ export default class DrawAdornment {
 		return diagram;
 	}
 }
-
-// const drawAdornment = new DrawAdornment();
-
-// export default drawAdornment;

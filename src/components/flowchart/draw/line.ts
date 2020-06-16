@@ -1,13 +1,9 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
+import go, { GraphObject } from 'gojs';
+import { DiagramSetting, BaseColors, HoverColors } from '../config';
 import Base from './base';
 const $ = go.GraphObject.make;
 
 export class DrawLink extends Base {
-	constructor() {
-		super();
-	}
 	/**
 	 * 画线
 	 */
@@ -73,10 +69,18 @@ export class DrawLink extends Base {
 	};
 
 	mouseEnterHandler = (_e: go.InputEvent, obj: GraphObject) => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		if (!node) return;
-		let link_Hover = node.findObject('link_Hover');
-		let link_Add = node.findObject('link_Add');
+		const link_Body = node.findObject('link_Body');
+		const link_Arr = node.findObject('link_Arr');
+		const link_Hover = node.findObject('link_Hover');
+		const link_Add = node.findObject('link_Add');
+		if (link_Body) {
+			link_Body.stroke = HoverColors.link;
+		}
+		if (link_Arr) {
+			link_Arr.fill = HoverColors.link;
+		}
 		if (link_Hover) link_Hover.visible = true;
 		if (link_Add) link_Add.visible = true;
 		super.mouseEnterHandler(_e, obj);
@@ -84,10 +88,18 @@ export class DrawLink extends Base {
 	};
 
 	mouseLeaveHandler = (_e: go.InputEvent, obj: GraphObject) => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		if (!node) return;
-		let link_Hover = node.findObject('link_Hover');
-		let link_Add = node.findObject('link_Add');
+		const link_Body = node.findObject('link_Body');
+		const link_Arr = node.findObject('link_Arr');
+		const link_Hover = node.findObject('link_Hover');
+		const link_Add = node.findObject('link_Add');
+		if (link_Body) {
+			link_Body.stroke = BaseColors.link;
+		}
+		if (link_Arr) {
+			link_Arr.fill = BaseColors.link;
+		}
 		if (link_Hover) link_Hover.visible = false;
 		if (link_Add) link_Add.visible = false;
 		super.mouseLeaveHandler(_e, obj);

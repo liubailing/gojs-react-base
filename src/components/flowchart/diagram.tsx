@@ -108,7 +108,8 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			InitialLayoutCompleted: this.InitialLayoutCompleted,
 			LayoutCompleted: this.LayoutCompleted,
 			model: $(go.GraphLinksModel, {
-				linkKeyProperty: 'key', // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
+				// IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
+				linkKeyProperty: 'key',
 				// positive keys for nodes
 				makeUniqueKeyFunction: (m: go.Model, data: any) => {
 					let k = data.key || 1;
@@ -127,15 +128,12 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 			// TextEdited: this.onTextEdited
 		});
 
-		// myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
+		myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
 
 		/**
 		 * 画线
 		 */
 		myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, DrawLink.getLink());
-		// const drawLink = () => {
-		// myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, DrawLink.getLink());
-		// };
 
 		/**
 		 * 画节点
@@ -191,8 +189,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		 * 设置辅助  选择后去掉框
 		 */
 		myDiagram = DrawAdornment.setAdornment(myDiagram);
-		// todo 4
-		// this.props.store.diagram = myDiagram;
+
 		return myDiagram;
 	};
 
@@ -303,12 +300,15 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 		} catch (e) {}
 	};
 
+	/**
+	 * 
+	 */
 	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {
 		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`)
 		// var dia = this.props.store.diagram;
 		// dia.div.style.height = (dia.documentBounds.height + 24) + "px";
 	};
-	
+
 	/**
 	 * 流程图画完
 	 */

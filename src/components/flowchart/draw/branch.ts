@@ -1,7 +1,11 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
+import go, { GraphObject } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
+import BaseChanges from './baseChanges';
+import DrawTitle from './title';
+import DrawSpot from './spot';
+
 const $ = go.GraphObject.make;
 
 export class DrawBranch extends Base {
@@ -20,8 +24,8 @@ export class DrawBranch extends Base {
 				fromLinkable: false,
 				toLinkable: false,
 				movable: DiagramSetting.moveCondBranch,
-				mouseLeave: this.mouseLeaveHandler,
-				mouseEnter: this.mouseEnterHandler,
+				mouseLeave: this.onMouseLeave,
+				mouseEnter: this.onMouseEnter,
 				resizable: false,
 				selectionChanged: this.onselectionChangedHandler,
 				click: this.onClick,
@@ -82,7 +86,7 @@ export class DrawBranch extends Base {
 						$('SubGraphExpanderButton', {
 							alignment: go.Spot.Center
 						}),
-						this.nodeTitleHelper(DiagramEnum.ConditionSwitch)
+						DrawTitle.getTitle(DiagramEnum.ConditionSwitch)
 					),
 					// create a placeholder to represent the area where the contents of the group are
 					$(go.Placeholder, {
@@ -165,8 +169,28 @@ export class DrawBranch extends Base {
 					strokeWidth: 1
 				})
 			), // end output port
-			this.nodeSpotTitleHelper(DiagramEnum.ConditionSwitch)
+			DrawSpot.getSpot(DiagramEnum.ConditionSwitch)
 		);
+	}
+
+	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			BaseChanges.setSpotCss(node, false);
+			BaseChanges.setBranchCss(node, false);
+		}
+	}
+
+	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			BaseChanges.setSpotCss(node, true);
+			BaseChanges.setBranchCss(node, true);
+		}
 	}
 }
 

@@ -1,7 +1,10 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
+import go, { GraphObject } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
+import BaseChanges from './baseChanges';
+import DrawTitle from './title';
+import DrawSpot from './spot';
 const $ = go.GraphObject.make;
 
 export class DrawCondition extends Base {
@@ -24,8 +27,8 @@ export class DrawCondition extends Base {
 				}),
 
 				movable: DiagramSetting.moveCond,
-				mouseEnter: this.mouseEnterHandler,
-				mouseLeave: this.mouseLeaveHandler,
+				mouseEnter: this.onMouseEnter,
+				mouseLeave: this.onMouseLeave,
 				selectionChanged: this.onselectionChangedHandler,
 				click: this.onClick,
 				doubleClick: this.onSettingClick,
@@ -56,7 +59,7 @@ export class DrawCondition extends Base {
 					$('SubGraphExpanderButton', {
 						alignment: go.Spot.Center
 					}),
-					this.nodeTitleHelper(DiagramEnum.ConditionGroup)
+					DrawTitle.getTitle(DiagramEnum.ConditionGroup)
 				),
 				// create a placeholder to represent the area where the contents of the group are
 				$(go.Placeholder, {
@@ -65,9 +68,29 @@ export class DrawCondition extends Base {
 					minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
 				})
 			), // end Vertical Panel
-			this.nodeSpotTitleHelper(DiagramEnum.LoopGroup)
+			DrawSpot.getSpot(DiagramEnum.LoopGroup)
 		);
 	}
+
+	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			// this.setCss(node, false);
+			BaseChanges.setSpotCss(node, false);
+		}
+	};
+
+	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			// this.setCss(node, true);
+			BaseChanges.setSpotCss(node, true);
+		}
+	};
 }
 
 const drawCondition = new DrawCondition();

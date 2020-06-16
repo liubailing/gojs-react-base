@@ -1,13 +1,11 @@
-import { NodeEnum, DiagramEnum } from '../enum';
-import { NodeModel, LinkModel } from '../interface';
+import { DiagramEnum } from '../enum';
+import { LinkModel } from '../interface';
 
 /**
  * 得到节点展示的类型
  * @param fcType
  */
 export class FCLink {
-	constructor() {}
-
 	/**
 	 * 得到线
 	 * @param from

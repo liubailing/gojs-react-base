@@ -5,7 +5,6 @@
 import * as go from 'gojs';
 import { produce } from 'immer';
 import * as React from 'react';
-import { NodeEnum } from './enum';
 import FlowChartDiagram from './diagram';
 import { TestData } from './workflow';
 

@@ -13,10 +13,6 @@ import Flowchart, { FlowChartProps } from './components/flowchart/flowchartDiagr
  */
 
 class App extends React.Component<{}> {
-	constructor({}) {
-		super({});
-	}
-
 	flowChartProps: FlowChartProps = { lang: 'en' };
 
 	public render() {

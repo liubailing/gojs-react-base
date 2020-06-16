@@ -1,9 +1,12 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
+import go, { GraphObject, Margin } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import IList from '../../../assets/flowchart/i-node-list.png';
 import IListHover from '../../../assets/flowchart/i-node-list-hover.png';
 import Base from './base';
+import BaseChanges from './baseChanges';
+import DrawTitle from './title';
+import DrawSpot from './spot';
 
 const $ = go.GraphObject.make;
 
@@ -25,7 +28,6 @@ export class DrawLoop extends Base {
 		let baseCss = {
 			margin: new Margin(0, 0, 0, 0),
 			visible: false,
-			background: '#2b71ed',
 			height: 26,
 			width: 25
 		};
@@ -85,8 +87,8 @@ export class DrawLoop extends Base {
 					layerSpacing: DiagramSetting.layerSpacing,
 					arrangementSpacing: new go.Size(30, 10)
 				}),
-				mouseEnter: this.mouseEnterHandler,
-				mouseLeave: this.mouseLeaveHandler,
+				mouseEnter: this.onMouseEnter,
+				mouseLeave: this.onMouseLeave,
 				doubleClick: this.onSettingClick,
 				movable: DiagramSetting.moveLoop,
 				padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
@@ -127,7 +129,7 @@ export class DrawLoop extends Base {
 					$('SubGraphExpanderButton', {
 						alignment: go.Spot.Center
 					}),
-					this.nodeTitleHelper(DiagramEnum.LoopGroup)
+					DrawTitle.getTitle(DiagramEnum.LoopGroup)
 				),
 				// create a placeholder to represent the area where the contents of the group are
 				$(go.Placeholder, {
@@ -137,7 +139,7 @@ export class DrawLoop extends Base {
 				})
 			), // end Vertical Panel
 			this.loopSpotTitleHelper(),
-			this.nodeSpotTitleHelper(DiagramEnum.LoopGroup)
+			DrawSpot.getSpot(DiagramEnum.LoopGroup)
 		);
 	}
 
@@ -173,8 +175,7 @@ export class DrawLoop extends Base {
 		try {
 			// this.changeNodeInfoOpacity(0);
 			if (_obj) {
-				this.onMouseEnterTitle(this.SwitchingLoopTerm, _obj);
-
+				// this.onMouseEnterTitle(this.SwitchingLoopTerm, _obj);
 				let node = (_obj as any).part;
 				if (node) {
 					let list = node.findObject('node_Ilist');
@@ -193,8 +194,7 @@ export class DrawLoop extends Base {
 		try {
 			// this.changeNodeInfoOpacity(1);
 			if (_obj) {
-				this.hideTitle();
-
+				// this.hideTitle();
 				let node = (_obj as any).part;
 				if (node) {
 					let list = node.findObject('node_Ilist');
@@ -204,6 +204,26 @@ export class DrawLoop extends Base {
 				}
 			}
 		} catch (e) {}
+	};
+
+	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			BaseChanges.setSpotCss(node, false);
+			BaseChanges.setListCss(node, false);
+		}
+	};
+
+	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
+		let node = (obj as any).part;
+		// console.log('node', node);
+
+		if (node && node.diagram) {
+			BaseChanges.setSpotCss(node, true);
+			BaseChanges.setListCss(node, true);
+		}
 	};
 }
 

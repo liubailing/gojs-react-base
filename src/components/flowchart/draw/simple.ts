@@ -1,6 +1,5 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
+import go from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
 import Base from './base';
 
 const $ = go.GraphObject.make;
@@ -40,6 +39,9 @@ export class DrawSimple extends Base {
 		);
 	};
 
+	/**
+	 * 结束点
+	 */
 	getEnd = (): go.Part => {
 		return $(
 			go.Node,
@@ -69,6 +71,9 @@ export class DrawSimple extends Base {
 		);
 	};
 
+	/**
+	 * 流程指示点
+	 */
 	getGuidNode = (): go.Part => {
 		return $(
 			go.Node,

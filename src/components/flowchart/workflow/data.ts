@@ -12,8 +12,6 @@ export class TestData {
 
 	curCount: number = 0;
 
-	constructor() {}
-
 	/**
 	 * 初始化
 	 * @param node
@@ -159,9 +157,9 @@ export class TestData {
 		//开始循环数据
 		childs.forEach((x, i) => {
 			//处理条件分支
-			let isBranchAndLayerByGroup = DiagramSetting.branchLayerGroup && parent.type == ActionNodeType.Condition;
+			let isBranchAndLayerByGroup = DiagramSetting.branchLayerGroup && parent.type === ActionNodeType.Condition;
 
-			if (i == 0 || i == childs.length) {
+			if (i === 0 || i === childs.length) {
 			} else {
 				//条件分支  不需要线
 				if (!isBranchAndLayerByGroup) {
@@ -170,7 +168,7 @@ export class TestData {
 							childs[i - 1].key,
 							childs[i].key,
 							parent.key,
-							parent.type == ActionNodeType.Condition
+							parent.type === ActionNodeType.Condition
 						)
 					);
 				}
