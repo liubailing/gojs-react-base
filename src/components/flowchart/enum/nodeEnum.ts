@@ -2,37 +2,37 @@
  * 操作节点类型
  */
 export enum NodeEnum {
-	//点击元素
+	/** 点击元素 */
 	Click = 'ClickAction',
 
-	//提取数据
+	/** 提取数据 */
 	ExtractData = 'ExtractDataAction',
 
-	//循环
+	/** 循环 */
 	Loop = 'LoopAction',
 
-	//判断条件
+	/** 判断条件 */
 	Condition = 'ConditionAction',
 
-	//打开网页
+	/** 打开网页 */
 	Navigate = 'NavigateAction',
 
-	//输入文字
+	/** 输入文字 */
 	EnterText = 'EnterTextAction',
 
-	//识别验证码
+	/** 识别验证码 */
 	EnterCapacha = 'EnterCapachaAction',
 
-	//切换下拉选项
+	/** 切换下拉选项 */
 	SwitchCombo = 'SwitchCombo2Action',
 
-	//移动鼠标到元素上
+	/** 移动鼠标到元素上 */
 	MouseOver = 'MouseOverAction',
 
-	//结束循环
+	/** 结束循环 */
 	BreakActivity = 'BreakActivity',
 
-	//某个流程结束
+	/** 某个流程结束 */
 	Complete = 'CompleteWF',
 
 	/**

@@ -3,19 +3,46 @@ import { DiagramEnum } from '../enum';
  * 图形节点属性
  */
 export type NodeModel = {
-	key: string; //唯一标识ID
 
-	label: string; //步骤名称
-	group: string; // 所在分组
-	type: string; // 节点  类型  FCNodeEnmu
-	isGroup: boolean; // 是否是组
+	/** 唯一标识ID */
+	key: string;
 
-	// hasChild?: boolean; // 是否有子步骤    当 isGroup == true ,必须给 hasChild赋值
-	// data?: any; // 对应的配置属性  交互使用的数据
+	/** 步骤名称 */
+	label: string;
 
-	//以下属性不用管
-	diagramType?: DiagramEnum; // 图形分类      对应 FCDiagramType     FCNode | LoopGroup | ConditionGroup | Condition | Start | End
-	opacity?: number; //
+	/** 所在分组 */
+	group: string;
+
+	/** 节点  类型  FCNodeEnmu */
+	type: string;
+
+	/** 是否是组 */
+	isGroup: boolean;
+
+
+
+	/***********************
+	 * 以下属性不用管
+	 **********************/
+
+	/** 是否有子步骤    当 isGroup == true ,必须给 hasChild赋值 */
+	hasChild?: boolean;
+
+	/** 对应的配置属性  交互使用的数据 */
+	data?: any;
+
+	/** 图形分类
+	 * 对应 FCDiagramType
+	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
+	 * */
+	diagramType?: DiagramEnum;
+
+	/** 透明度 */
+	opacity?: number; /**  */
+
+	/** 排序 */
 	sortIndex?: number;
-	category?: string; // 节点  类型  FCNodeType
+
+	/** 节点  类型  FCNodeEnum */
+	category?: string;
 };
