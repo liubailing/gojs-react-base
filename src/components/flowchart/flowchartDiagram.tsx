@@ -4,7 +4,6 @@
 
 import * as go from 'gojs';
 import * as React from 'react';
-import { produce } from 'immer';
 
 import Diagram from './diagram';
 import { HanderFlowchart } from './handle';
@@ -15,32 +14,25 @@ import './flowchartDiagram.css';
  * and modelData for demonstration purposes. Note, though, that
  * both are optional props in ReactDiagram.
  */
-interface FlowchartState {
-	nodeDataArray: Array<go.ObjectData>;
-	linkDataArray: Array<go.ObjectData>;
-	modelData: go.ObjectData;
-	selectedData: go.ObjectData | null;
-	skipsDiagramUpdate: boolean;
-}
 
 export interface FlowchartProps {
 	flowchart: HanderFlowchart;
 }
 
-class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
+class FlowchartDiagram extends React.Component<FlowchartProps> {
 	// Maps to store key -> arr index for quick lookups
-	private mapNodeKeyIdx: Map<go.Key, number>;
-	private mapLinkKeyIdx: Map<go.Key, number>;
+	// private mapNodeKeyIdx: Map<go.Key, number>;
+	// private mapLinkKeyIdx: Map<go.Key, number>;
 
 	constructor(props: FlowchartProps) {
 		super(props);
 		// init maps
-		this.mapNodeKeyIdx = new Map<go.Key, number>();
-		this.mapLinkKeyIdx = new Map<go.Key, number>();
+		// this.mapNodeKeyIdx = new Map<go.Key, number>();
+		// this.mapLinkKeyIdx = new Map<go.Key, number>();
 		this.init();
 		//
-		this.refreshNodeIndex(this.state.nodeDataArray);
-		this.refreshLinkIndex(this.state.linkDataArray);
+		this.refreshNodeIndex(this.props.flowchart.nodeDataArray);
+		this.refreshLinkIndex(this.props.flowchart.linkDataArray);
 		// bind handler methods
 		this.handleDiagramEvent = this.handleDiagramEvent.bind(this);
 		this.handleModelChange = this.handleModelChange.bind(this);
@@ -64,20 +56,20 @@ class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 	 * Update map of node keys to their index in the array.
 	 */
 	private refreshNodeIndex(nodeArr: Array<go.ObjectData>) {
-		this.mapNodeKeyIdx.clear();
-		nodeArr.forEach((n: go.ObjectData, idx: number) => {
-			this.mapNodeKeyIdx.set(n.key, idx);
-		});
+		// this.mapNodeKeyIdx.clear();
+		// nodeArr.forEach((n: go.ObjectData, idx: number) => {
+		// 	this.mapNodeKeyIdx.set(n.key, idx);
+		// });
 	}
 
 	/**
 	 * Update map of link keys to their index in the array.
 	 */
 	private refreshLinkIndex(linkArr: Array<go.ObjectData>) {
-		this.mapLinkKeyIdx.clear();
-		linkArr.forEach((l: go.ObjectData, idx: number) => {
-			this.mapLinkKeyIdx.set(l.key, idx);
-		});
+		// this.mapLinkKeyIdx.clear();
+		// linkArr.forEach((l: go.ObjectData, idx: number) => {
+		// 	this.mapLinkKeyIdx.set(l.key, idx);
+		// });
 	}
 
 	/**
@@ -87,35 +79,35 @@ class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 	 */
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const name = e.name;
-		switch (name) {
-			case 'ChangedSelection': {
-				const sel = e.subject.first();
-				this.setState(
-					produce((draft: FlowchartState) => {
-						if (sel) {
-							if (sel instanceof go.Node) {
-								const idx = this.mapNodeKeyIdx.get(sel.key);
-								if (idx !== undefined && idx >= 0) {
-									const nd = draft.nodeDataArray[idx];
-									draft.selectedData = nd;
-								}
-							} else if (sel instanceof go.Link) {
-								const idx = this.mapLinkKeyIdx.get(sel.key);
-								if (idx !== undefined && idx >= 0) {
-									const ld = draft.linkDataArray[idx];
-									draft.selectedData = ld;
-								}
-							}
-						} else {
-							draft.selectedData = null;
-						}
-					})
-				);
-				break;
-			}
-			default:
-				break;
-		}
+		// switch (name) {
+		// 	case 'ChangedSelection': {
+		// 		const sel = e.subject.first();
+		// 		this.setState(
+		// 			produce((draft: FlowchartState) => {
+		// 				if (sel) {
+		// 					if (sel instanceof go.Node) {
+		// 						const idx = this.mapNodeKeyIdx.get(sel.key);
+		// 						if (idx !== undefined && idx >= 0) {
+		// 							const nd = draft.nodeDataArray[idx];
+		// 							draft.selectedData = nd;
+		// 						}
+		// 					} else if (sel instanceof go.Link) {
+		// 						const idx = this.mapLinkKeyIdx.get(sel.key);
+		// 						if (idx !== undefined && idx >= 0) {
+		// 							const ld = draft.linkDataArray[idx];
+		// 							draft.selectedData = ld;
+		// 						}
+		// 					}
+		// 				} else {
+		// 					draft.selectedData = null;
+		// 				}
+		// 			})
+		// 		);
+		// 		break;
+		// 	}
+		// 	default:
+		// 		break;
+		// }
 	}
 
 	/**
@@ -135,84 +127,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 		// maintain maps of modified data so insertions don't need slow lookups
 		const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
 		const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
-		this.setState(
-			produce((draft: FlowchartState) => {
-				let narr = draft.nodeDataArray;
-				if (modifiedNodeData) {
-					modifiedNodeData.forEach((nd: go.ObjectData) => {
-						modifiedNodeMap.set(nd.key, nd);
-						const idx = this.mapNodeKeyIdx.get(nd.key);
-						if (idx !== undefined && idx >= 0) {
-							narr[idx] = nd;
-							if (draft.selectedData && draft.selectedData.key === nd.key) {
-								draft.selectedData = nd;
-							}
-						}
-					});
-				}
-				if (insertedNodeKeys) {
-					insertedNodeKeys.forEach((key: go.Key) => {
-						const nd = modifiedNodeMap.get(key);
-						const idx = this.mapNodeKeyIdx.get(key);
-						if (nd && idx === undefined) {
-							// nodes won't be added if they already exist
-							this.mapNodeKeyIdx.set(nd.key, narr.length);
-							narr.push(nd);
-						}
-					});
-				}
-				if (removedNodeKeys) {
-					narr = narr.filter((nd: go.ObjectData) => {
-						if (removedNodeKeys.includes(nd.key)) {
-							return false;
-						}
-						return true;
-					});
-					draft.nodeDataArray = narr;
-					this.refreshNodeIndex(narr);
-				}
-
-				let larr = draft.linkDataArray;
-				if (modifiedLinkData) {
-					modifiedLinkData.forEach((ld: go.ObjectData) => {
-						modifiedLinkMap.set(ld.key, ld);
-						const idx = this.mapLinkKeyIdx.get(ld.key);
-						if (idx !== undefined && idx >= 0) {
-							larr[idx] = ld;
-							if (draft.selectedData && draft.selectedData.key === ld.key) {
-								draft.selectedData = ld;
-							}
-						}
-					});
-				}
-				if (insertedLinkKeys) {
-					insertedLinkKeys.forEach((key: go.Key) => {
-						const ld = modifiedLinkMap.get(key);
-						const idx = this.mapLinkKeyIdx.get(key);
-						if (ld && idx === undefined) {
-							// links won't be added if they already exist
-							this.mapLinkKeyIdx.set(ld.key, larr.length);
-							larr.push(ld);
-						}
-					});
-				}
-				if (removedLinkKeys) {
-					larr = larr.filter((ld: go.ObjectData) => {
-						if (removedLinkKeys.includes(ld.key)) {
-							return false;
-						}
-						return true;
-					});
-					draft.linkDataArray = larr;
-					this.refreshLinkIndex(larr);
-				}
-				// handle model data changes, for now just replacing with the supplied object
-				if (modifiedModelData) {
-					draft.modelData = modifiedModelData;
-				}
-				draft.skipsDiagramUpdate = true; // the GoJS model already knows about these updates
-			})
-		);
 	}
 
 	/**
@@ -221,31 +135,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 	 * @param value the new value of that property
 	 * @param isBlur whether the input event was a blur, indicating the edit is complete
 	 */
-	public handleInputChange(path: string, value: string, isBlur: boolean) {
-		this.setState(
-			produce((draft: FlowchartState) => {
-				const data = draft.selectedData as go.ObjectData; // only reached if selectedData isn't null
-				data[path] = value;
-				if (isBlur) {
-					const key = data.key;
-					if (key < 0) {
-						// negative keys are links
-						const idx = this.mapLinkKeyIdx.get(key);
-						if (idx !== undefined && idx >= 0) {
-							draft.linkDataArray[idx] = data;
-							draft.skipsDiagramUpdate = false;
-						}
-					} else {
-						const idx = this.mapNodeKeyIdx.get(key);
-						if (idx !== undefined && idx >= 0) {
-							draft.nodeDataArray[idx] = data;
-							draft.skipsDiagramUpdate = false;
-						}
-					}
-				}
-			})
-		);
-	}
+	public handleInputChange(path: string, value: string, isBlur: boolean) {}
 
 	/**
 	 * Handle changes to the checkbox on whether to allow relinking.
@@ -265,10 +155,10 @@ class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 				<div id={domId} className={'div-flowchart-diagram'}></div>
 				<Diagram
 					diagramId={domId}
-					nodeDataArray={this.state.nodeDataArray}
-					linkDataArray={this.state.linkDataArray}
-					modelData={this.state.modelData}
-					skipsDiagramUpdate={this.state.skipsDiagramUpdate}
+					nodeDataArray={this.props.flowchart.nodeDataArray}
+					linkDataArray={this.props.flowchart.linkDataArray}
+					modelData={this.props.flowchart.modelData}
+					skipsDiagramUpdate={this.props.flowchart.skipsDiagramUpdate}
 					onDiagramEvent={this.handleDiagramEvent}
 					onModelChange={this.handleModelChange}
 				/>

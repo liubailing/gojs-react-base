@@ -1,10 +1,10 @@
 import go from 'gojs';
-import { produce } from 'immer';
+import { observable, computed, action } from 'mobx';
 
 import { IDiagramHander, IFlowchartHander, DiagramModel, NodeModel, LinkModel } from '../interface';
 import { TestData } from '../workflow';
 
-export  default class HanderFlowchart implements IDiagramHander {
+export default class HanderFlowchart implements IDiagramHander {
 	flowchartHander: IFlowchartHander;
 	constructor(handles: IFlowchartHander) {
 		this.initFlochart();
@@ -12,11 +12,12 @@ export  default class HanderFlowchart implements IDiagramHander {
 	}
 
 	data: DiagramModel<NodeModel, LinkModel> | null = null;
-	nodeDataArray: Array<go.ObjectData> = [];
-	linkDataArray: Array<go.ObjectData> = [];
-	modelData: go.ObjectData = {};
-	selectedData: go.ObjectData | null = null;
-	skipsDiagramUpdate: boolean = false;
+
+	@observable nodeDataArray: Array<go.ObjectData> = [];
+	@observable linkDataArray: Array<go.ObjectData> = [];
+	@observable modelData: go.ObjectData = {};
+	@observable selectedData: go.ObjectData | null = null;
+	@observable skipsDiagramUpdate: boolean = false;
 
 	/**
 	 * Update map of node keys to their index in the array.
