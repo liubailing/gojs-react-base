@@ -102,7 +102,7 @@ export class DrawSimple extends Base {
 					isMultiline: true,
 					font: DiagramSetting.groupTipFont
 				},
-				new go.Binding('text', this.showLabel())
+				new go.Binding('text', 'label')
 			)
 		);
 	};

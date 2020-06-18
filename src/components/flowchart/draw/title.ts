@@ -5,8 +5,6 @@ import { DiagramEnum } from '../enum';
 const $ = go.GraphObject.make;
 
 export class DrawTitle {
-	constructor() {}
-
 	/**
 	 * 节点标题 辅助方法
 	 * @param DiagramEnum 节点类型
@@ -49,10 +47,16 @@ export class DrawTitle {
 						font: DiagramSetting.font,
 						textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
 							// todo 1
-							// this.props.store.iFlowChart.onSaveNodeNameHandler(newString);
+							// this.props.store.iFlowchart.onSaveNodeNameHandler(newString);
 						}
 					}
 				},
+				// new go.Binding('text', 'isSel', function (s, y) {
+				// 	console.log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  33333333333`);
+				// 	if (s || y) return BaseColors.highlight;
+				// 	return BaseColors.backgroud;
+				// 	return s ? BaseColors.highlight : BaseColors.backgroud;
+				// }).ofObject()
 				new go.Binding('text', this.showLabel, this.covShowLabel)
 			)
 		);
@@ -90,7 +94,7 @@ export class DrawTitle {
 	private gbLenght = function (str: string) {
 		let len = 0;
 		for (let i = 0; i < str.length; i++) {
-			if (str.charCodeAt(i) > 127 || str.charCodeAt(i) == 94) {
+			if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {
 				len += 2;
 			} else {
 				len++;
@@ -103,14 +107,14 @@ export class DrawTitle {
 	 * 鼠标移入显示全名val
 	 */
 	private onMouseEnter = (_val: any, _obj: any): void => {
-		const node = (_obj as any).part;
+		// const node = (_obj as any).part;
 	};
 
 	/**
 	 * 鼠标移出隐藏
 	 */
 	private onMouseLeave = (_val: any, _obj: any): void => {
-		const node = (_obj as any).part;
+		// const node = (_obj as any).part;
 	};
 }
 

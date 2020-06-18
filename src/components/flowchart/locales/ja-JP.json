@@ -1,5 +1,5 @@
 {
-    "FCEntities": {
+	"FCEntities": {
 		"Condition": "条件分岐",
 		"ExtractData": "データを抽出",
 		"Complete": "ワークフローを終了",
@@ -17,8 +17,8 @@
 	"FCSettings": {
 		"DragDropProcessHere": "ステップをここにドロップする"
 	},
-	"FlowChart": {
-		"FlowChart": "ワークフロー",
+	"Flowchart": {
+		"Flowchart": "ワークフロー",
 		"ModifyName": "名前変更",
 		"OpenSteps": "ステップを開く",
 		"BackTop": "前へ",
@@ -27,7 +27,7 @@
 		"Delete": "削除",
 		"Cut": "切り取り"
 	},
-	"FlowChartDiagram": {
+	"FlowchartDiagram": {
 		"SwitchingLoopTerm": "ループアイテムを切り替える",
 		"OpenStepSet": "ステップ設定（ダブルクリックしても開ける）",
 		"ForMoreMenus": "ほかのオプション（右クリックしても開ける）"

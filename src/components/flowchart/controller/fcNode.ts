@@ -1,5 +1,5 @@
 import { NodeEnum, DiagramEnum } from '../enum';
-import { NodeModel, LinkModel } from '../interface';
+import { NodeModel } from '../interface';
 import { DiagramSetting } from '../config';
 
 /**
@@ -7,7 +7,6 @@ import { DiagramSetting } from '../config';
  * @param fcType
  */
 export class FCNode {
-	constructor() {}
 	static strCondition = '判断条件'; //lang.FCEntities.Condition;
 	static strExtractData = '提取数据'; //lang.FCEntities.ExtractData;
 	static strComplete = '结束流程'; //lang.FCEntities.Complete;
@@ -39,7 +38,7 @@ export class FCNode {
 			type: '',
 			group: '',
 			label: '',
-
+			isSel: false,
 			key: FCNode.getRandomKey(),
 			isGroup: false,
 			// hasChild: false,
@@ -53,54 +52,54 @@ export class FCNode {
 		let node: NodeModel = FCNode.baseModel;
 		// this.fcType = type;
 		let title = '';
-		let src = '';
+		// let src = '';
 		let isGroup = false;
 		switch (fcType as string) {
 			case NodeEnum.Condition:
 				title = FCNode.strCondition; // lang.FCEntities.Condition;
-				src = 'condition';
+				// src = 'condition';
 				isGroup = true;
 				break;
 			case NodeEnum.ExtractData:
 				title = FCNode.strExtractData; //lang.FCEntities.ExtractData;
-				src = 'data';
+				// src = 'data';
 				break;
 			case NodeEnum.Complete:
 				title = FCNode.strComplete; //lang.FCEntities.Complete;
-				src = 'subend';
+				// src = 'subend';
 				break;
 			case NodeEnum.EnterText:
 				title = FCNode.strEnterText; //lang.FCEntities.EnterText;
-				src = 'input';
+				// src = 'input';
 				break;
 			case NodeEnum.Loop:
 				title = FCNode.strLoop; //lang.FCEntities.Loop;
-				src = 'loop';
+				// src = 'loop';
 				isGroup = true;
 				break;
 			case NodeEnum.BreakActivity:
 				title = FCNode.strBreakActivity; //lang.FCEntities.BreakActivity;
-				src = 'loopbreak';
+				// src = 'loopbreak';
 				break;
 			case NodeEnum.Click:
 				title = FCNode.strClick; //lang.FCEntities.Click;
-				src = 'mouseclick';
+				// src = 'mouseclick';
 				break;
 			case NodeEnum.MouseOver:
 				title = FCNode.strMouseOver; //lang.FCEntities.MouseOver;
-				src = 'mousehover';
+				// src = 'mousehover';
 				break;
 			case NodeEnum.Navigate:
 				title = FCNode.strNavigate; //lang.FCEntities.Navigate;
-				src = 'openweb';
+				// src = 'openweb';
 				break;
 			case NodeEnum.SwitchCombo:
 				title = FCNode.strSwitchCombo; // lang.FCEntities.SwitchCombo;
-				src = 'switch';
+				// src = 'switch';
 				break;
 			case NodeEnum.EnterCapacha:
 				title = FCNode.strEnterCapacha; //lang.FCEntities.EnterCapacha;
-				src = 'verify';
+				// src = 'verify';
 				break;
 			case NodeEnum.Branch:
 				title = FCNode.strBranch; //lang.FCEntities.Branch;

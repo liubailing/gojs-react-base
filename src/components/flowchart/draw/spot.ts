@@ -1,5 +1,4 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
+import go, { GraphObject, Margin } from 'gojs';
 import { DiagramEnum } from '../enum';
 
 import ISet from '../../../assets/flowchart/i-node-set.png';
@@ -7,25 +6,24 @@ import ISetHover from '../../../assets/flowchart/i-node-set-hover.png';
 import IMenu from '../../../assets/flowchart/i-node-menu.png';
 import IMenuHover from '../../../assets/flowchart/i-node-menu-hover.png';
 
-import Base from './base';
-
 const $ = go.GraphObject.make;
 
-// 节点基本样式
+/** 节点基本样式 */
 let spotCss = {
 	alignment: go.Spot.TopRight,
 	cursor: 'pointer',
 	height: 26,
 	width: 50
 };
-// 图标基本样式
+/** 图标基本样式 */
 let baseCss = {
 	margin: new Margin(0, 0, 0, 0),
 	visible: false,
-	background: '#2b71ed',
+	// background: '#2b71ed',
 	height: 26,
 	width: 25
 };
+/** 图标基本样式 */
 let hoverCss = {
 	background: '#ffffff'
 };
@@ -83,8 +81,6 @@ export default class DrawSpot {
 			$(go.Panel, 'Horizontal', {}, DrawSpot.getMenu(), DrawSpot.getMenuHover())
 		);
 	}
-
-	
 
 	private static getSet(): go.Panel {
 		return $(

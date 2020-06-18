@@ -156,7 +156,7 @@ export class DrawLoop extends Base {
 		// let loopInfoEl: HTMLElement | null = document.getElementsByClassName(
 		// 	this.props.store.getLoopInfo
 		// )[0] as HTMLElement | null;
-		// let res = await this.props.store.iFlowChart.onNodeInfoHandler(node.data);
+		// let res = await this.props.store.iFlowchart.onNodeInfoHandler(node.data);
 		// this.props.store.loopInfoData = res[2].table;
 		// if (this.props.store.loopInfoData.data.length == 0) {
 		// 	return;

@@ -1,5 +1,5 @@
 {
-    "FCEntities": {
+	"FCEntities": {
 		"Condition": "判断条件",
 		"ExtractData": "提取数据",
 		"Complete": "结束流程",
@@ -17,8 +17,8 @@
 	"FCSettings": {
 		"DragDropProcessHere": "将要执行的流程拖放在此处"
 	},
-	"FlowChart": {
-		"FlowChart": "流程图",
+	"Flowchart": {
+		"Flowchart": "流程图",
 		"ModifyName": "修改名称",
 		"OpenSteps": "打开步骤",
 		"BackTop": "返回上一级",
@@ -27,7 +27,7 @@
 		"Delete": "删除",
 		"Cut": "剪切"
 	},
-	"FlowChartDiagram": {
+	"FlowchartDiagram": {
 		"SwitchingLoopTerm": "切换循环项",
 		"OpenStepSet": "打开步骤设置，也可以双击步骤打开",
 		"ForMoreMenus": "更多菜单，也可右键点击步骤"

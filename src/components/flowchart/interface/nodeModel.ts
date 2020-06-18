@@ -3,7 +3,6 @@ import { DiagramEnum } from '../enum';
  * 图形节点属性
  */
 export type NodeModel = {
-
 	/** 唯一标识ID */
 	key: string;
 
@@ -19,7 +18,8 @@ export type NodeModel = {
 	/** 是否是组 */
 	isGroup: boolean;
 
-
+	/** 是否选中 */
+	isSel?: boolean;
 
 	/***********************
 	 * 以下属性不用管
@@ -38,7 +38,7 @@ export type NodeModel = {
 	diagramType?: DiagramEnum;
 
 	/** 透明度 */
-	opacity?: number; /**  */
+	opacity?: number /**  */;
 
 	/** 排序 */
 	sortIndex?: number;

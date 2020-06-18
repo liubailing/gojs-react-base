@@ -16,7 +16,7 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowChartData(wfData: boolean = false): DiagramModel<NodeModel, LinkModel> {
+	static getFlowchartData(wfData: boolean = false): DiagramModel<NodeModel, LinkModel> {
 		let d: DiagramModel<NodeModel, LinkModel> = { nodeArray: [], linkArray: [] };
 
 		if (wfData) {
@@ -30,7 +30,7 @@ export class TestData {
 			});
 		} else {
 			let data = TestData.getWorkFlowData();
-			d = TestData.doFlowChartData(data, data.childs);
+			d = TestData.doFlowchartData(data, data.childs);
 		}
 
 		return d;
@@ -127,9 +127,9 @@ export class TestData {
 	/**
 	 * 工作流数据 -> 流程图数据
 	 */
-	private static doFlowChartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<NodeModel, LinkModel> {
+	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<NodeModel, LinkModel> {
 		let d: DiagramModel<NodeModel, LinkModel> = { nodeArray: [], linkArray: [] };
-
+		// debugger;
 		let links: LinkModel[] = [];
 		let nodes: NodeModel[] = [];
 
@@ -179,7 +179,7 @@ export class TestData {
 			n.label = x.label || n.label;
 
 			n.sortIndex = i;
-
+			n.isSel = true;
 			nodes.push(n);
 
 			switch (x.type) {
@@ -187,7 +187,7 @@ export class TestData {
 				case ActionNodeType.Loop:
 				case ActionNodeType.Branch:
 					//如果有子集
-					let c = TestData.doFlowChartData(x, x.childs);
+					let c = TestData.doFlowchartData(x, x.childs);
 					d = {
 						nodeArray: [...d.nodeArray, ...c.nodeArray],
 						linkArray: [...d.linkArray, ...c.linkArray]
@@ -246,6 +246,7 @@ export class TestData {
 			type: node.type,
 			group: '',
 			label: f.label,
+			isSel: true,
 			key: node.key,
 			diagramType: f.diagramType,
 			isGroup: f.isGroup

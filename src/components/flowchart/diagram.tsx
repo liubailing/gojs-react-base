@@ -2,18 +2,17 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import go, { Diagram, GraphObject, Margin } from 'gojs';
+import go, { Diagram, GraphObject } from 'gojs';
 import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
-import FCDiagramDragTool from './tools/draggingTool';
-import FCCommandHandler from './tools/commandHandler';
-import { DiagramSetting, BaseColors } from './config';
-import { DiagramEnum, NodeEventEnum, FCActEnum, CallbackFuncEnum, NodeEnum } from './enum';
+import { DraggingTool, ClickSelectingTool, CommandHandler } from './tools';
+import { DiagramSetting } from './config';
+import { DiagramEnum, NodeEnum } from './enum';
 import { NodeModel } from './interface';
 import { DrawLink, DrawSimple, DrawNode, DrawLoop, DrawBranch, DrawCondition, DrawAdornment } from './draw';
 import './diagram.css';
 
-interface FlowChartProps {
+interface FlowchartProps {
 	diagramId: string;
 	nodeDataArray: Array<go.ObjectData>;
 	linkDataArray: Array<go.ObjectData>;
@@ -23,7 +22,7 @@ interface FlowChartProps {
 	onModelChange: (e: go.IncrementalData) => void;
 }
 
-class FlowChartDiagram extends React.Component<FlowChartProps> {
+class FlowchartDiagram extends React.Component<FlowchartProps> {
 	private isCtrlCopy: boolean = false;
 	/**
 	 * Ref to keep a reference to the Diagram component, which provides access to the GoJS diagram via getDiagram().
@@ -31,7 +30,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 	private diagramRef: React.RefObject<ReactDiagram>;
 
 	/** @internal */
-	constructor(props: FlowChartProps) {
+	constructor(props: FlowchartProps) {
 		super(props);
 		this.diagramRef = React.createRef();
 	}
@@ -86,14 +85,15 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 	private initDiagram = (): go.Diagram => {
 		// const _this = this;
 		const $ = go.GraphObject.make;
-		const diagramId = this.props.diagramId;
 
 		let myDiagram: Diagram = $(go.Diagram, this.props.diagramId, {
 			'undoManager.isEnabled': true,
-			draggingTool: new FCDiagramDragTool(this.doDragEvent),
-			commandHandler: new FCCommandHandler(this.doEvent),
+			draggingTool: new DraggingTool(this.doDragEvent),
+			clickSelectingTool: new ClickSelectingTool(),
+			commandHandler: new CommandHandler(this.doEvent),
 			contentAlignment: go.Spot.TopCenter,
 			initialContentAlignment: go.Spot.RightCenter,
+			// hoverDelay: 100,
 			initialScale: 1.125,
 			layout: $(go.TreeLayout, {
 				angle: 90,
@@ -301,7 +301,7 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 	};
 
 	/**
-	 * 
+	 *
 	 */
 	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {
 		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`)
@@ -329,4 +329,4 @@ class FlowChartDiagram extends React.Component<FlowChartProps> {
 	};
 }
 
-export default FlowChartDiagram;
+export default FlowchartDiagram;

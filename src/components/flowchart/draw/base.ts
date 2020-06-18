@@ -1,21 +1,10 @@
 import go, { GraphObject } from 'gojs';
-import { DiagramSetting } from '../config';
 import { DiagramEnum } from '../enum';
 
 export default class Base {
-
-	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowChartDiagram.SwitchingLoopTerm
-	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowChartDiagram.OpenStepSet
-	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; //lang.FlowChartDiagram.ForMoreMenus
-
-	/**
-	 *
-	 */
-	showLabel(): string {
-		if (DiagramSetting.showKey) return 'key';
-		if (DiagramSetting.showLabel) return DiagramSetting.showLabel;
-		return 'label';
-	}
+	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowchartDiagram.SwitchingLoopTerm
+	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowchartDiagram.OpenStepSet
+	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; //lang.FlowchartDiagram.ForMoreMenus
 
 	/**
 	 * 单击
@@ -55,7 +44,7 @@ export default class Base {
 	 * 鼠标移入显示全名val
 	 */
 	onMouseEnterTitle = (_val: any, _obj: any): void => {
-		let node = (_obj as any).part;
+		// let node = (_obj as any).part;
 		// todo 12
 		// if (!this.props.store.contextMenuIsShow && !this.props.store.loopInfoListIsShow) {
 		// 	if (typeof _val != 'string') {
@@ -71,32 +60,6 @@ export default class Base {
 		// 		this.changeNodeInfoOpacity(0);
 		// 	}
 		// }
-	};
-
-	/**
-	 * 计算名称显示长度， 字母算1个长度，文字算2个长度
-	 */
-	gbLenght = function (str: string) {
-		let len = 0;
-		for (let i = 0; i < str.length; i++) {
-			if (str.charCodeAt(i) > 127 || str.charCodeAt(i) == 94) {
-				len += 2;
-			} else {
-				len++;
-			}
-		}
-		return { len };
-	};
-
-	/**
-	 * 返回名字
-	 */
-	covShowLabel = (_val: any, _targetObj: any): string => {
-		if (_val && typeof _val == 'string') {
-			let { len } = this.gbLenght(_val);
-			if (len > 20) return `${_val.slice(0, 9)}···`;
-		}
-		return _val;
 	};
 
 	/**
@@ -256,12 +219,12 @@ export default class Base {
 	 * @param obj
 	 */
 	mouseEnterHandler(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
+		// let node = (obj as any).part;
 		// debugger;
 		//todo 16
 		// if (node && node.diagram) {
 		// 	if (node.data.type == 'LoopAction') {
-		// 		let nodeData = this.props.store.iFlowChart.onNodeDataHandler(node.data);
+		// 		let nodeData = this.props.store.iFlowchart.onNodeDataHandler(node.data);
 		// 		if ((nodeData as any).LoopType == 'FixedItem') {
 		// 			this.props.store._setNodeCss(node, 'mouseEnter', false);
 		// 		} else {
@@ -274,12 +237,10 @@ export default class Base {
 		// if (node && node.diagram) {
 		// 	this.props.store.setLinkShowAdd2(node, 'hover');
 		// }
-
 		// this.props.store.contextNodeKey = (obj as any).part.data.key;
 		// if (node && node.data && node.data.diagramType == DiagramEnum.WFLink) {
 		// 	return;
 		// }
-
 		// this.hideContextMenu();
 		// this.hideAddNodeMenu();
 		// //结束循环，结束流程两种节点类型不显示节点信息提示
@@ -291,28 +252,34 @@ export default class Base {
 	 * 切换选中
 	 * @param node
 	 */
-	onselectionChangedHandler = (_node: any) => {
-		this.hideContextMenu();
-		this.hideAddNodeMenu();
-		// todo 14
-		// this.props.store.addNodeMenuLen = HalfNodeMenu;
-		if (_node && _node.data && _node.data.diagramType == DiagramEnum.WFLink) {
+	onselectionChangedHandler = (node: any) => {
+		/** 点击无效区域 */
+		if (!node || !node.data || node.data.isSel === undefined) {
 			return;
 		}
-		if (_node && _node.diagram) {
-			// todo 15
-			// if (_node.isSelected) {
-			// 	this.props.store.callbackFunc.add(CallbackFuncEnum.Select);
-			// 	this.props.store.callbackFunc.add(CallbackFuncEnum.Click);
-			// 	// this.props.store.preSelectedNodeKey = _node.key;
-			// 	this.props.store.currNodeKey = _node.key;
-			// 	// this.props.store._reSetSelected();
-			// } else {
-			// 	this.props.store.diagram.clearSelection();
-			// 	this.props.store.preSelectedNodeKey.add(_node.key);
-			// 	//this.props.store.setNodeCss(_node);
-			// }
-		}
+		node.data.isSel = node.isSelected;
+		// this.hideContextMenu();
+		// this.hideAddNodeMenu();
+		// todo 14
+		// this.props.store.addNodeMenuLen = HalfNodeMenu;
+
+		// if (_node && _node.data && _node.data.isSel !== undefined) {
+		// 	return;
+		// }
+		// if (_node && _node.diagram) {
+		// 	// todo 15
+		// 	if (_node.isSelected) {
+		// 		// this.props.store.callbackFunc.add(CallbackFuncEnum.Select);
+		// 		// this.props.store.callbackFunc.add(CallbackFuncEnum.Click);
+		// 		// // this.props.store.preSelectedNodeKey = _node.key;
+		// 		// this.props.store.currNodeKey = _node.key;
+		// 		// this.props.store._reSetSelected();
+		// 	} else {
+		// 		// this.props.store.diagram.clearSelection();
+		// 		// this.props.store.preSelectedNodeKey.add(_node.key);
+		// 		//this.props.store.setNodeCss(_node);
+		// 	}
+		// }
 	};
 
 	/**

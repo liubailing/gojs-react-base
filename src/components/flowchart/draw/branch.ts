@@ -60,7 +60,7 @@ export class DrawBranch extends Base {
 			}),
 			$(
 				go.Panel,
-				'RoundedRectangle',
+				'Auto',
 				{
 					name: '',
 					background: BaseColors.transparent,
@@ -68,6 +68,7 @@ export class DrawBranch extends Base {
 					padding: new go.Margin(0, 8, 0, 8),
 					cursor: 'pointer'
 				},
+
 				$(
 					go.Panel,
 					'Vertical',

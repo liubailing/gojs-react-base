@@ -1,7 +1,6 @@
 .div-flowchart {
 	height: 600px;
 	width: 800px;
-	overflow: hidden;
 	border: 1px solid black;
 }
 .div-flowchart-diagram {

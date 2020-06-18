@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 
-export default class DragTool extends go.DraggingTool {
+export default class DraggingTool extends go.DraggingTool {
 	private _imagePart: go.Part | null = null;
 	private _ghostDraggedParts: go.Map<go.Part, go.DraggingInfo> | null = null;
 	private _originalDraggedParts: go.Map<go.Part, go.DraggingInfo> | null = null;

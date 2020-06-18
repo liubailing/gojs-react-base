@@ -1,7 +1,5 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
-import Base from './base';
+import go, { Diagram } from 'gojs';
+import { BaseColors } from '../config';
 
 const $ = go.GraphObject.make;
 
@@ -14,7 +12,7 @@ export default class DrawAdornment {
 			$(go.Shape, {
 				fill: null,
 				stroke: null,
-				strokeWidth: 0,
+				strokeWidth: 1,
 				strokeDashArray: [1, 1]
 			}),
 			$(go.Placeholder)
@@ -26,10 +24,10 @@ export default class DrawAdornment {
 			'Auto',
 			$(go.Shape, {
 				fill: null,
-				stroke: BaseColors.highlight,
-				strokeWidth: 0,
-				strokeDashArray: [2, 2],
-				opacity: 1
+				stroke: null,
+				strokeWidth: 1,
+				// strokeDashArray: [2, 2],
+				opacity: 0
 			}),
 			$(go.Placeholder)
 		);
@@ -37,13 +35,13 @@ export default class DrawAdornment {
 		/** 修改点 */
 		diagram.nodeSelectionAdornmentTemplate = $(
 			go.Adornment,
-			'Auto',
+			'RoundedRectangle',
 			$(go.Shape, {
 				fill: null,
-				stroke: BaseColors.highlight,
+				stroke: null,
 				strokeWidth: 0,
-				strokeDashArray: [2, 2],
-				opacity: 1
+				// strokeDashArray: [2, 2],
+				opacity: 0
 			}),
 			$(go.Placeholder)
 		);

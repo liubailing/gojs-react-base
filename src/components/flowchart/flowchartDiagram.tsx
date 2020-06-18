@@ -3,11 +3,11 @@
  */
 
 import * as go from 'gojs';
-import { produce } from 'immer';
 import * as React from 'react';
-import FlowChartDiagram from './diagram';
-import { TestData } from './workflow';
+import { produce } from 'immer';
 
+import Diagram from './diagram';
+import { HanderFlowchart } from './handle';
 import './flowchartDiagram.css';
 
 /**
@@ -23,49 +23,22 @@ interface FlowchartState {
 	skipsDiagramUpdate: boolean;
 }
 
-export interface FlowChartProps {}
+export interface FlowchartProps {
+	flowchart: HanderFlowchart;
+}
 
-class FlowchartDiagram extends React.Component<FlowChartProps, FlowchartState> {
+class FlowchartDiagram extends React.Component<FlowchartProps, FlowchartState> {
 	// Maps to store key -> arr index for quick lookups
 	private mapNodeKeyIdx: Map<go.Key, number>;
 	private mapLinkKeyIdx: Map<go.Key, number>;
 
-	constructor(props: FlowChartProps) {
+	constructor(props: FlowchartProps) {
 		super(props);
-		let data = TestData.getFlowChartData();
-		console.log('>>>> data', data);
-		this.state = {
-			nodeDataArray: data.nodeArray,
-			linkDataArray: data.linkArray,
-			// nodeDataArray: [
-			// 	{
-			// 		key: 0,
-			// 		text: 'Alpha',
-			// 		label: '起始',
-			// 		category: 'FCNode',
-			// 		color: 'lightblue',
-			// 		loc: '0 0'
-			// 	},
-			// 	{ key: 1, text: 'Beta', label: 'Beta', category: 'FCNode', color: 'orange', loc: '150 0' },
-			// 	{ key: 2, text: 'Gamma', label: 'Beta', color: 'lightgreen', loc: '0 150' },
-			// 	{ key: 3, text: 'Delta', label: 'Beta', color: 'pink', loc: '150 150' }
-			// ],
-			// linkDataArray: [
-			// 	{ key: -1, from: 0, to: 1 },
-			// 	{ key: -2, from: 0, to: 2 },
-			// 	{ key: -3, from: 1, to: 1 },
-			// 	{ key: -4, from: 2, to: 3 },
-			// 	{ key: -5, from: 3, to: 0 }
-			// ],
-			modelData: {
-				canRelink: true
-			},
-			selectedData: null,
-			skipsDiagramUpdate: false
-		};
 		// init maps
 		this.mapNodeKeyIdx = new Map<go.Key, number>();
 		this.mapLinkKeyIdx = new Map<go.Key, number>();
+		this.init();
+		//
 		this.refreshNodeIndex(this.state.nodeDataArray);
 		this.refreshLinkIndex(this.state.linkDataArray);
 		// bind handler methods
@@ -73,6 +46,18 @@ class FlowchartDiagram extends React.Component<FlowChartProps, FlowchartState> {
 		this.handleModelChange = this.handleModelChange.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleRelinkChange = this.handleRelinkChange.bind(this);
+	}
+
+	init() {
+		this.state = {
+			nodeDataArray: this.props.flowchart.nodeDataArray,
+			linkDataArray: this.props.flowchart.linkDataArray,
+			modelData: {
+				canRelink: true
+			},
+			selectedData: this.props.flowchart.selectedData,
+			skipsDiagramUpdate: false
+		};
 	}
 
 	/**
@@ -274,11 +259,11 @@ class FlowchartDiagram extends React.Component<FlowChartProps, FlowchartState> {
 
 	public render() {
 		// const selectedData = this.state.selectedData;
-		let domId = 'divFlowChart';
+		let domId = 'divFlowchart';
 		return (
 			<div className={'div-flowchart'}>
 				<div id={domId} className={'div-flowchart-diagram'}></div>
-				<FlowChartDiagram
+				<Diagram
 					diagramId={domId}
 					nodeDataArray={this.state.nodeDataArray}
 					linkDataArray={this.state.linkDataArray}

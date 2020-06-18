@@ -1,5 +1,5 @@
 {
-    "FCEntities": {
+	"FCEntities": {
 		"Condition": "Branch Conditions",
 		"ExtractData": "Extract Data",
 		"Complete": "End Workflow",
@@ -17,8 +17,8 @@
 	"FCSettings": {
 		"DragDropProcessHere": "Drop an action here"
 	},
-	"FlowChart": {
-		"FlowChart": "Workflow",
+	"Flowchart": {
+		"Flowchart": "Workflow",
 		"ModifyName": "Rename",
 		"OpenSteps": "Open",
 		"BackTop": "Back",
@@ -27,7 +27,7 @@
 		"Delete": "Delete",
 		"Cut": "Cut"
 	},
-	"FlowChartDiagram": {
+	"FlowchartDiagram": {
 		"SwitchingLoopTerm": "Rotate loop items ",
 		"OpenStepSet": "Action Settings",
 		"ForMoreMenus": "More"

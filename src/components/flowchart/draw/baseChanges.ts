@@ -1,6 +1,5 @@
-import go, { Diagram, GraphObject, Margin } from 'gojs';
-import { DiagramSetting, BaseColors, HoverColors } from '../config';
-import { DiagramEnum } from '../enum';
+import go from 'gojs';
+import { BaseColors, HoverColors } from '../config';
 
 export default class baseChanges {
 	/**
