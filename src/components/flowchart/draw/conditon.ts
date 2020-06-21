@@ -7,8 +7,14 @@ import DrawTitle from './title';
 import DrawSpot from './spot';
 const $ = go.GraphObject.make;
 
-export class DrawCondition extends Base {
+export default class DrawCondition extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	getCondition(): go.Group {
+		let $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
@@ -29,18 +35,23 @@ export class DrawCondition extends Base {
 				movable: DiagramSetting.moveCond,
 				mouseEnter: this.onMouseEnter,
 				mouseLeave: this.onMouseLeave,
-				selectionChanged: this.onselectionChangedHandler,
-				click: this.onClick,
-				doubleClick: this.onSettingClick,
-				contextClick: this.onContextClick
+				// click: this.onClick
+				selectionChanged: this.doGroupCss_SelectionChanged
+				// doubleClick: this.onSettingClick,
+				// contextClick: this.onContextClick
 			},
-			$(go.Shape, 'RoundedRectangle', {
-				name: 'group_main',
-				parameter1: DiagramSetting.parameter1Group,
-				fill: BaseColors.transparent,
-				stroke: BaseColors.group_border,
-				strokeWidth: 1
-			}),
+			$(
+				go.Shape,
+				'RoundedRectangle',
+				{
+					name: 'group_main',
+					parameter1: DiagramSetting.parameter1Group,
+					fill: BaseColors.transparent,
+					stroke: BaseColors.group_border,
+					strokeWidth: 1
+				}
+				// new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject()
+			),
 			$(
 				go.Panel,
 				'Vertical',
@@ -68,31 +79,27 @@ export class DrawCondition extends Base {
 					minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
 				})
 			), // end Vertical Panel
-			DrawSpot.getSpot(DiagramEnum.LoopGroup)
+			$DrawSpot.getSpot(DiagramEnum.LoopGroup)
 		);
 	}
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
 		let node = (obj as any).part;
-		// console.log('node', node);
 
-		if (node && node.diagram) {
-			// this.setCss(node, false);
-			BaseChanges.setSpotCss(node, false);
+		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setGroupCss(node, false);
 		}
 	};
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
 		let node = (obj as any).part;
-		// console.log('node', node);
 
-		if (node && node.diagram) {
-			// this.setCss(node, true);
-			BaseChanges.setSpotCss(node, true);
+		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setGroupCss(node, true);
 		}
 	};
 }
 
-const drawCondition = new DrawCondition();
+// const drawCondition = new DrawCondition();
 
-export default drawCondition;
+// export default drawCondition;

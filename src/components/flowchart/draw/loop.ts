@@ -1,6 +1,6 @@
 import go, { GraphObject, Margin } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
+import { DiagramEnum, NodeEnum, HandleEnum } from '../enum';
 import IList from '../../../assets/flowchart/i-node-list.png';
 import IListHover from '../../../assets/flowchart/i-node-list-hover.png';
 import Base from './base';
@@ -10,7 +10,12 @@ import DrawSpot from './spot';
 
 const $ = go.GraphObject.make;
 
-export class DrawLoop extends Base {
+export default class DrawLoop extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	/**
 	 * 利用 节点 spot 实现靠右
 	 * @param DiagramEnum
@@ -48,8 +53,7 @@ export class DrawLoop extends Base {
 					...baseCss,
 					...{
 						name: 'node_Ilist',
-						click: this.handleLoopInfoClick,
-						mouseEnter: this.loopInfoMouseEnter
+						mouseEnter: this.onListMouseEnter
 					}
 				},
 				$(go.Picture, IList, {
@@ -64,8 +68,8 @@ export class DrawLoop extends Base {
 					...hoverCss,
 					...{
 						name: 'node_Ilist_Hover',
-						click: this.handleLoopInfoClick,
-						mouseLeave: this.loopInfoMouseLeave
+						click: this.onListClick,
+						mouseLeave: this.onListMouseLeave
 					}
 				},
 				$(go.Picture, IListHover, {
@@ -76,6 +80,7 @@ export class DrawLoop extends Base {
 	};
 
 	getLoop(): go.Group {
+		let $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
@@ -89,7 +94,7 @@ export class DrawLoop extends Base {
 				}),
 				mouseEnter: this.onMouseEnter,
 				mouseLeave: this.onMouseLeave,
-				doubleClick: this.onSettingClick,
+				// doubleClick: this.onSettingClick,
 				movable: DiagramSetting.moveLoop,
 				padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
 				isSubGraphExpanded: true,
@@ -100,9 +105,9 @@ export class DrawLoop extends Base {
 				handlesDragDropForMembers: false,
 				ungroupable: false,
 				graduatedMax: 1,
-				selectionChanged: this.onselectionChangedHandler,
-				click: this.onClick,
-				contextClick: this.onContextClick
+				selectionChanged: this.doGroupCss_SelectionChanged
+				// click: this.onClick
+				// contextClick: this.onContextClick
 			},
 			$(go.Shape, 'RoundedRectangle', {
 				name: 'group_main',
@@ -139,43 +144,23 @@ export class DrawLoop extends Base {
 				})
 			), // end Vertical Panel
 			this.loopSpotTitleHelper(),
-			DrawSpot.getSpot(DiagramEnum.LoopGroup)
+			$DrawSpot.getSpot(DiagramEnum.LoopGroup)
 		);
 	}
 
 	/**
 	 * 点击展示循环列表具体内容
 	 */
-	private handleLoopInfoClick = async (_e: go.InputEvent, _obj: GraphObject) => {
-		// todo 22
-		// this.props.store.contextNodeKey = (_obj as any).part.data.key;
-		// this.hideNodeInfo();
-		// this.hideTitle();
-		// this.hideContextMenu();
-		// let node = (_obj as any).part;
-		// let loopInfoEl: HTMLElement | null = document.getElementsByClassName(
-		// 	this.props.store.getLoopInfo
-		// )[0] as HTMLElement | null;
-		// let res = await this.props.store.iFlowchart.onNodeInfoHandler(node.data);
-		// this.props.store.loopInfoData = res[2].table;
-		// if (this.props.store.loopInfoData.data.length == 0) {
-		// 	return;
-		// }
-		// let mousePt = this.props.store.diagram.lastInput.viewPoint;
-		// //节点信息框的宽度
-		// let loopInfoElWidth = 260;
-		// //流程图区域的宽度
-		// this.props.store.loopInfoListIsShow = true;
+	private onListClick = async (_e: go.InputEvent, _obj: GraphObject) => {
+		this.doFlowchartEvent(_e, _obj, HandleEnum.ShowNodeInfo, this.callBack);
 	};
 
 	/**
 	 *
 	 */
-	private loopInfoMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onListMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
-			// this.changeNodeInfoOpacity(0);
 			if (_obj) {
-				// this.onMouseEnterTitle(this.SwitchingLoopTerm, _obj);
 				let node = (_obj as any).part;
 				if (node) {
 					let list = node.findObject('node_Ilist');
@@ -190,7 +175,7 @@ export class DrawLoop extends Base {
 	/**
 	 *
 	 */
-	private loopInfoMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onListMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			// this.changeNodeInfoOpacity(1);
 			if (_obj) {
@@ -210,8 +195,8 @@ export class DrawLoop extends Base {
 		let node = (obj as any).part;
 		// console.log('node', node);
 
-		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, false);
+		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setListCss(node, false);
 		}
 	};
@@ -220,13 +205,13 @@ export class DrawLoop extends Base {
 		let node = (obj as any).part;
 		// console.log('node', node);
 
-		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, true);
+		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setListCss(node, true);
 		}
 	};
 }
 
-const drawLoop = new DrawLoop();
+// const drawLoop = new DrawLoop();
 
-export default drawLoop;
+// export default drawLoop;

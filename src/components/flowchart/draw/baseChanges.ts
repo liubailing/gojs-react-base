@@ -7,14 +7,10 @@ export default class baseChanges {
 	 * @param node 节点
 	 * @param isShow 是否显示
 	 */
-	static setSpotCss(node: go.Part, isShow: boolean) {
+	static setGroupCss(node: go.Part, isShow: boolean) {
 		const group_main = node.findObject('group_main');
 		const group_Top = node.findObject('group_Top');
 		const group_Title = node.findObject('group_Title');
-		let node_Iset = node.findObject('node_Iset');
-		let node_Imenu = node.findObject('node_Imenu');
-		let node_Iset_Hover = node.findObject('node_Iset_Hover');
-		let node_Imenu_Hover = node.findObject('node_Imenu_Hover');
 
 		if (isShow) {
 			if (group_main) {
@@ -26,18 +22,6 @@ export default class baseChanges {
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = HoverColors.group_font;
-			}
-			if (node_Iset) {
-				node_Iset.visible = true;
-			}
-			if (node_Imenu) {
-				node_Imenu.visible = true;
-			}
-			if (node_Iset_Hover) {
-				node_Iset_Hover.visible = false;
-			}
-			if (node_Imenu_Hover) {
-				node_Imenu_Hover.visible = false;
 			}
 		} else {
 			if (group_main) {
@@ -51,7 +35,36 @@ export default class baseChanges {
 			if (group_Title) {
 				(group_Title as any).stroke = BaseColors.group_font;
 			}
+		}
 
+		this.setActionCss(node, isShow);
+	}
+
+	/**
+	 * 修改样式
+	 * @param node 节点
+	 * @param isShow 是否显示
+	 */
+	static setActionCss(node: go.Part, isShow: boolean) {
+		let node_Iset = node.findObject('node_Iset');
+		let node_Imenu = node.findObject('node_Imenu');
+		let node_Iset_Hover = node.findObject('node_Iset_Hover');
+		let node_Imenu_Hover = node.findObject('node_Imenu_Hover');
+
+		if (isShow) {
+			if (node_Iset) {
+				node_Iset.visible = true;
+			}
+			if (node_Imenu) {
+				node_Imenu.visible = true;
+			}
+			if (node_Iset_Hover) {
+				node_Iset_Hover.visible = false;
+			}
+			if (node_Imenu_Hover) {
+				node_Imenu_Hover.visible = false;
+			}
+		} else {
 			if (node_Iset) {
 				node_Iset.visible = false;
 			}
@@ -137,6 +150,33 @@ export default class baseChanges {
 			if (right_Spot) {
 				right_Spot.opacity = 0;
 			}
+		}
+	}
+
+	static setLinkCss(node: go.Part, isShow: boolean) {
+		if (!node) return;
+		const link_Body = node.findObject('link_Body') as any;
+		const link_Arr = node.findObject('link_Arr') as any;
+		const link_Hover = node.findObject('link_Hover');
+		const link_Add = node.findObject('link_Add');
+		if (isShow) {
+			if (link_Body) {
+				link_Body.stroke = HoverColors.link;
+			}
+			if (link_Arr) {
+				link_Arr.fill = HoverColors.link;
+			}
+			if (link_Hover) link_Hover.visible = true;
+			if (link_Add) link_Add.visible = true;
+		} else {
+			if (link_Body) {
+				link_Body.stroke = BaseColors.link;
+			}
+			if (link_Arr) {
+				link_Arr.fill = BaseColors.link;
+			}
+			if (link_Hover) link_Hover.visible = false;
+			if (link_Add) link_Add.visible = false;
 		}
 	}
 }

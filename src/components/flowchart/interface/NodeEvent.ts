@@ -1,20 +1,23 @@
-import { LinkModel } from './linkModel';
+import { LineModel } from './lineModel';
 import { NodeModel } from './nodeModel';
-import { NodeEventEnum } from '../enum';
+import { HandleEnum } from '../enum';
 
 /**
  * node 操作事件-相关参数
  */
 export interface NodeEvent {
-	eType: NodeEventEnum;
-	setSelected: boolean;
-	actType: 'cmd' | 'userDrag';
-	name?: string;
-	key?: string;
-	toKey?: string;
-	toLink?: LinkModel;
+	/** 监听的事件类型 */
+	eType: HandleEnum;
+	/** 当前点 */
+	node?: NodeModel;
+	/** 当前点 */
+	line?: LineModel;
+	/** 操作目标线 */
+	toLine?: LineModel;
+	/** 操作目标点 */
 	toNode?: NodeModel;
-	// newNodeToLink?: false;
-	newLinks?: LinkModel[];
-	// modelChanged?: DiagramModel<NodeModel, LinkModel>
+	// /** 当前 X 坐标 */
+	// posX?: number;
+	// /** 当前 Y 坐标 */
+	// posY?: number;
 }

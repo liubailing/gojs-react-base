@@ -1,0 +1,82 @@
+#div-Main {
+	display: flex;
+}
+
+#div-Main .div-flowchart {
+	flex: 3;
+	display: flex;
+	min-height: 600px;
+	border: 1px solid #eee;
+	flex-direction: column;
+}
+
+#div-Main .div-logs {
+	font-size: 12px;
+	border-top: 2px solid #eee;
+	border-bottom: 2px solid #eee;
+	padding-left: 3px;
+	flex: 1;
+	max-height: 602px;
+}
+
+#div-Main .div-logs ul {
+	margin: 0px;
+	padding: 0px;
+}
+
+#div-Main .div-logs li {
+	margin-bottom: 1px;
+	list-style: none;
+	padding: 2px 3px;
+}
+
+#div-Main .div-logs li:nth-of-type(even) {
+	background-color: #ddd;
+}
+
+#div-Main .div-logs li:nth-of-type(odd) {
+	background-color: #fefefe;
+}
+
+.div-flowchart-contextMenu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+	border: 1px solid red;
+	z-index: 999;
+	transform: translate(-50%, 0);
+}
+
+/* 样式 */
+
+.divActions {
+	background-color: #fff;
+}
+
+.divActions .divActionItem {
+	margin: 2px 0;
+	font-size: 12px;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+	clear: both;
+}
+.divActions .divActionItem > div:last-child::after {
+	clear: both;
+}
+.divActions .divActionItem > div > label {
+	padding: 6px 0 2px 0;
+	display: inline-block;
+	background-color: rgb(85, 105, 105);
+	width: 80px;
+	color: #feffee;
+	text-align: right;
+}
+
+.divActions .divActionItem > div {
+	float: left;
+}
+.divActions .divActionItem > div > button {
+	margin: 3px 3px 0;
+	font-size: 12px;
+}

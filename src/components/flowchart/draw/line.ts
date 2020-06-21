@@ -1,9 +1,16 @@
 import go, { GraphObject } from 'gojs';
 import { DiagramSetting, BaseColors, HoverColors } from '../config';
 import Base from './base';
+import BaseChangese from './baseChanges';
+import { HandleEnum } from '../enum';
 const $ = go.GraphObject.make;
 
-export class DrawLink extends Base {
+export default class DrawLink extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	/**
 	 * 画线
 	 */
@@ -11,11 +18,11 @@ export class DrawLink extends Base {
 		return $(
 			go.Link,
 			{
-				mouseLeave: this.mouseLeaveHandler,
-				mouseEnter: this.mouseEnterHandler,
-				mouseDragEnter: this.mouseDragEnterHandler,
-				mouseDragLeave: this.mouseDragLeaveHandler,
-				selectionChanged: this.onselectionChangedHandler,
+				mouseLeave: this.onMouseLeave,
+				mouseEnter: this.onMouseEnter,
+				mouseDragEnter: this.onMouseDragEnter,
+				mouseDragLeave: this.onMouseDragLeave,
+				// selectionChanged: this.onselectionChangedHandler,
 				movable: false,
 				resizable: false,
 				deletable: false
@@ -46,7 +53,7 @@ export class DrawLink extends Base {
 				{
 					name: 'link_Add',
 					padding: new go.Margin(5, 0, 5, 0),
-					click: this.onAddNodeClick,
+					click: this.onClick,
 					alignment: go.Spot.Top,
 					visible: false
 				},
@@ -68,44 +75,36 @@ export class DrawLink extends Base {
 		);
 	};
 
-	mouseEnterHandler = (_e: go.InputEvent, obj: GraphObject) => {
+	onMouseEnter = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
 		if (!node) return;
-		const link_Body = node.findObject('link_Body');
-		const link_Arr = node.findObject('link_Arr');
-		const link_Hover = node.findObject('link_Hover');
-		const link_Add = node.findObject('link_Add');
-		if (link_Body) {
-			link_Body.stroke = HoverColors.link;
-		}
-		if (link_Arr) {
-			link_Arr.fill = HoverColors.link;
-		}
-		if (link_Hover) link_Hover.visible = true;
-		if (link_Add) link_Add.visible = true;
-		super.mouseEnterHandler(_e, obj);
-		// debugger;
+		BaseChangese.setLinkCss(node, true);
 	};
 
-	mouseLeaveHandler = (_e: go.InputEvent, obj: GraphObject) => {
+	onMouseLeave = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
 		if (!node) return;
-		const link_Body = node.findObject('link_Body');
-		const link_Arr = node.findObject('link_Arr');
-		const link_Hover = node.findObject('link_Hover');
-		const link_Add = node.findObject('link_Add');
-		if (link_Body) {
-			link_Body.stroke = BaseColors.link;
-		}
-		if (link_Arr) {
-			link_Arr.fill = BaseColors.link;
-		}
-		if (link_Hover) link_Hover.visible = false;
-		if (link_Add) link_Add.visible = false;
-		super.mouseLeaveHandler(_e, obj);
+		BaseChangese.setLinkCss(node, false);
+	};
+
+	onClick = (e: go.InputEvent, obj: GraphObject) => {
+		console.log('#@!@#!@');
+		this.doFlowchartEvent(e, obj, HandleEnum.ShowLineMenu, this.callBack);
+	};
+
+	onMouseDragEnter = (_e: go.InputEvent, obj: GraphObject) => {
+		const node = (obj as any).part;
+		if (!node) return;
+		BaseChangese.setLinkCss(node, true);
+	};
+
+	onMouseDragLeave = (_e: go.InputEvent, obj: GraphObject) => {
+		const node = (obj as any).part;
+		if (!node) return;
+		BaseChangese.setLinkCss(node, false);
 	};
 }
 
-const drawLink = new DrawLink();
+// const drawLink = new DrawLink();
 
-export default drawLink;
+// export default drawLink;

@@ -1,10 +1,13 @@
 import go, { GraphObject, Margin } from 'gojs';
 import { DiagramEnum } from '../enum';
+import { NodeEvent } from '../interface';
+import { HandleEnum } from '../enum';
 
 import ISet from '../../../assets/flowchart/i-node-set.png';
 import ISetHover from '../../../assets/flowchart/i-node-set-hover.png';
 import IMenu from '../../../assets/flowchart/i-node-menu.png';
 import IMenuHover from '../../../assets/flowchart/i-node-menu-hover.png';
+import Base from './base';
 
 const $ = go.GraphObject.make;
 
@@ -28,12 +31,17 @@ let hoverCss = {
 	background: '#ffffff'
 };
 
-export default class DrawSpot {
+export default class DrawSpot extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	/**
 	 *
 	 * @param diagramEnum
 	 */
-	static getSpot(diagramEnum: DiagramEnum): go.Panel {
+	getSpot(diagramEnum: DiagramEnum): go.Panel {
 		switch (diagramEnum) {
 			case DiagramEnum.ConditionSwitch:
 				spotCss = {
@@ -54,15 +62,7 @@ export default class DrawSpot {
 				...spotCss,
 				...{ name: 'action_Spot' }
 			},
-			$(
-				go.Panel,
-				'Horizontal',
-				{},
-				DrawSpot.getSet(),
-				DrawSpot.getSetHover(),
-				DrawSpot.getMenu(),
-				DrawSpot.getMenuHover()
-			)
+			$(go.Panel, 'Horizontal', {}, this.getSet(), this.getSetHover(), this.getMenu(), this.getMenuHover())
 		); // end output port
 	}
 
@@ -70,7 +70,7 @@ export default class DrawSpot {
 	 *
 	 * @param diagramEnum
 	 */
-	static getSpotMenu(diagramEnum: DiagramEnum): go.Panel {
+	getSpotMenu(diagramEnum: DiagramEnum): go.Panel {
 		return $(
 			go.Panel,
 			'Auto',
@@ -78,11 +78,11 @@ export default class DrawSpot {
 				...spotCss,
 				...{ name: 'action_Spot', width: 25 }
 			},
-			$(go.Panel, 'Horizontal', {}, DrawSpot.getMenu(), DrawSpot.getMenuHover())
+			$(go.Panel, 'Horizontal', {}, this.getMenu(), this.getMenuHover())
 		);
 	}
 
-	private static getSet(): go.Panel {
+	private getSet(): go.Panel {
 		return $(
 			go.Panel,
 			'Horizontal',
@@ -90,7 +90,6 @@ export default class DrawSpot {
 				...baseCss,
 				...{
 					name: 'node_Iset',
-					// click: this.onSettingClick,
 					mouseEnter: this.onSetMouseEnter
 				}
 			},
@@ -101,7 +100,7 @@ export default class DrawSpot {
 		);
 	}
 
-	private static getSetHover(): go.Panel {
+	private getSetHover(): go.Panel {
 		return $(
 			go.Panel,
 			'Horizontal',
@@ -110,7 +109,7 @@ export default class DrawSpot {
 				...hoverCss,
 				...{
 					name: 'node_Iset_Hover',
-					// click: this.onSettingClick,
+					click: this.onSettingClick,
 					mouseLeave: this.onSetMouseLeave
 				}
 			},
@@ -121,7 +120,7 @@ export default class DrawSpot {
 		);
 	}
 
-	private static getMenu(): go.Panel {
+	private getMenu(): go.Panel {
 		return $(
 			go.Panel,
 			'Horizontal',
@@ -129,7 +128,6 @@ export default class DrawSpot {
 				...baseCss,
 				...{
 					name: 'node_Imenu',
-					// click: this.onContextClick,
 					mouseEnter: this.onMenuMouseEnter
 				}
 			},
@@ -140,7 +138,7 @@ export default class DrawSpot {
 		);
 	}
 
-	private static getMenuHover(): go.Panel {
+	private getMenuHover(): go.Panel {
 		return $(
 			go.Panel,
 			'Horizontal',
@@ -149,7 +147,10 @@ export default class DrawSpot {
 				...hoverCss,
 				...{
 					name: 'node_Imenu_Hover',
-					// click: this.onContextClick,
+					click: this.onMenuClick,
+					// click: function (e, shape) {
+					// 	e.diagram.commandHandler.showContextMenu();
+					// },
 					mouseLeave: this.onMenuMouseLeave
 				}
 			},
@@ -160,7 +161,7 @@ export default class DrawSpot {
 		);
 	}
 
-	private static onSetMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onSetMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
 				let node = (_obj as any).part;
@@ -174,7 +175,7 @@ export default class DrawSpot {
 		} catch (e) {}
 	};
 
-	private static onSetMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onSetMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
 				let node = (_obj as any).part;
@@ -188,7 +189,7 @@ export default class DrawSpot {
 		} catch (e) {}
 	};
 
-	private static onMenuMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onMenuMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
 				let node = (_obj as any).part;
@@ -202,7 +203,7 @@ export default class DrawSpot {
 		} catch (e) {}
 	};
 
-	private static onMenuMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	private onMenuMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
 				let node = (_obj as any).part;
@@ -214,5 +215,13 @@ export default class DrawSpot {
 				}
 			}
 		} catch (e) {}
+	};
+
+	private onMenuClick = (e: go.InputEvent, _obj: GraphObject) => {
+		this.doFlowchartEvent(e, _obj, HandleEnum.ShowNodeMenu, this.callBack);
+	};
+
+	private onSettingClick = (e: go.InputEvent, _obj: GraphObject) => {
+		this.doFlowchartEvent(e, _obj, HandleEnum.ShowNodeSetting, this.callBack);
 	};
 }

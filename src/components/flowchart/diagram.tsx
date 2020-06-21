@@ -5,14 +5,24 @@
 import go, { Diagram, GraphObject } from 'gojs';
 import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
-import { DraggingTool, ClickSelectingTool, CommandHandler } from './tools';
+import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
-import { DiagramEnum, NodeEnum } from './enum';
-import { NodeModel } from './interface';
-import { DrawLink, DrawSimple, DrawNode, DrawLoop, DrawBranch, DrawCondition, DrawAdornment } from './draw';
+import { DiagramEnum, NodeEnum, HandleEnum } from './enum';
+import { NodeModel, NodeEvent } from './interface';
+import {
+	DrawLink,
+	DrawSimple,
+	DrawNode,
+	DrawLoop,
+	DrawBranch,
+	DrawCondition,
+	DrawAdornment,
+	DrawContextMenu
+} from './draw';
 import './diagram.css';
 
 interface FlowchartProps {
+	getDiagram: (d: go.Diagram) => void;
 	diagramId: string;
 	nodeDataArray: Array<go.ObjectData>;
 	linkDataArray: Array<go.ObjectData>;
@@ -20,6 +30,7 @@ interface FlowchartProps {
 	skipsDiagramUpdate: boolean;
 	onDiagramEvent: (e: go.DiagramEvent) => void;
 	onModelChange: (e: go.IncrementalData) => void;
+	onFlowchartEvent: (e: NodeEvent) => void;
 }
 
 class FlowchartDiagram extends React.Component<FlowchartProps> {
@@ -27,7 +38,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	/**
 	 * Ref to keep a reference to the Diagram component, which provides access to the GoJS diagram via getDiagram().
 	 */
-	private diagramRef: React.RefObject<ReactDiagram>;
+	diagramRef: React.RefObject<ReactDiagram>;
 
 	/** @internal */
 	constructor(props: FlowchartProps) {
@@ -45,6 +56,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		if (diagram instanceof go.Diagram) {
 			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
 		}
+		if (diagram) this.props.getDiagram(diagram);
 	}
 
 	/**
@@ -58,24 +70,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		}
 	}
 
-	// componentDidUpdate() {}
-
-	// componentDidMount() {
-	// 	let tabPane = document.querySelector('#flow-chart-edit-content'); //流程图区域
-	// 	//鼠标移出流程图区域后，隐藏所有的小菜单、小弹窗提示
-	// 	tabPane &&
-	// 		tabPane.addEventListener(
-	// 			'mouseleave',
-	// 			() => {
-	// 				this.hideNodeInfo();
-	// 				this.hideTitle();
-	// 				this.hideLoopInfo();
-	// 				this.hideContextMenu();
-	// 			},
-	// 			false
-	// 		);
-	// }
-
 	/**
 	 * Diagram initialization method, which is passed to the ReactDiagram component.
 	 * This method is responsible for making the diagram and initializing the model, any templates,
@@ -85,12 +79,14 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	private initDiagram = (): go.Diagram => {
 		// const _this = this;
 		const $ = go.GraphObject.make;
+		const $DrawNode = new DrawNode(this.props.onFlowchartEvent);
 
 		let myDiagram: Diagram = $(go.Diagram, this.props.diagramId, {
 			'undoManager.isEnabled': true,
-			draggingTool: new DraggingTool(this.doDragEvent),
+			draggingTool: new DraggingTool(this.props.onFlowchartEvent),
 			clickSelectingTool: new ClickSelectingTool(),
-			commandHandler: new CommandHandler(this.doEvent),
+			commandHandler: new CommandHandler(this.props.onFlowchartEvent),
+			contextMenuTool: new ContextMenuTool(this.props.onFlowchartEvent),
 			contentAlignment: go.Spot.TopCenter,
 			initialContentAlignment: go.Spot.RightCenter,
 			// hoverDelay: 100,
@@ -101,7 +97,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 				layerSpacing: DiagramSetting.layerSpacing,
 				comparer: go.LayoutVertex.smartComparer
 			}),
-			click: this.onClick,
+			// click: this.onClick,
 			SelectionMoved: () => {
 				myDiagram.layoutDiagram(true);
 			},
@@ -133,17 +129,31 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		/**
 		 * 画线
 		 */
-		myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, DrawLink.getLink());
+		myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, new DrawLink(this.props.onFlowchartEvent).getLink());
 
 		/**
 		 * 画节点
 		 */
-		myDiagram.nodeTemplateMap.add(DiagramEnum.FCNode, DrawNode.getNode());
-
+		myDiagram.nodeTemplateMap.add(DiagramEnum.FCNode, $DrawNode.getNode());
+		// myDiagram.nodeTemplate = DrawNode.getNode();
+		// myDiagram.nodeTemplate.contextMenu = $(
+		// 	go.ContextMenuTool,
+		// 	$('ContextMenuButton', $(go.TextBlock, 'Vacate Position'), {
+		// 		click: function (e, obj) {}
+		// 	}),
+		// 	$('ContextMenuButton', $(go.TextBlock, 'Remove Role'), {
+		// 		click: function (e, obj) {
+		// 			// reparent the subtree to this node's boss, then remove the node
+		// 		}
+		// 	}),
+		// 	$('ContextMenuButton', $(go.TextBlock, 'Remove Department'), {
+		// 		click: function (e, obj) {}
+		// 	})
+		// );
 		/**
 		 * 结束流程图、循环
 		 */
-		myDiagram.nodeTemplateMap.add(DiagramEnum.StopLoopOrFlow, DrawNode.getNode());
+		myDiagram.nodeTemplateMap.add(DiagramEnum.StopLoopOrFlow, $DrawNode.getNode());
 
 		/**
 		 * 画辅助节点
@@ -153,17 +163,23 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		/**
 		 * 划循环分组
 		 */
-		myDiagram.groupTemplateMap.add(DiagramEnum.LoopGroup, DrawLoop.getLoop()); // end Group
+		myDiagram.groupTemplateMap.add(DiagramEnum.LoopGroup, new DrawLoop(this.props.onFlowchartEvent).getLoop()); // end Group
 
 		/**
 		 * 条件分组
 		 */
-		myDiagram.groupTemplateMap.add(DiagramEnum.ConditionGroup, DrawCondition.getCondition()); // end Group
+		myDiagram.groupTemplateMap.add(
+			DiagramEnum.ConditionGroup,
+			new DrawCondition(this.props.onFlowchartEvent).getCondition()
+		); // end Group
 
 		/**
 		 * 条件分支
 		 */
-		myDiagram.groupTemplateMap.add(DiagramEnum.ConditionSwitch, DrawBranch.getBranch());
+		myDiagram.groupTemplateMap.add(
+			DiagramEnum.ConditionSwitch,
+			new DrawBranch(this.props.onFlowchartEvent).getBranch()
+		);
 
 		/**
 		 * 起始点
@@ -190,6 +206,11 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		 */
 		myDiagram = DrawAdornment.setAdornment(myDiagram);
 
+		// Since we have only one main element, we don't have to declare a hide method,
+		// we can set mainElement and GoJS will hide it automatically
+		// var myContextMenu = $(go.HTMLInfo, );
+		myDiagram.contextMenu = new DrawContextMenu(myDiagram, this.props.onFlowchartEvent).getContextMenu();
+
 		return myDiagram;
 	};
 
@@ -208,97 +229,68 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		);
 	}
 
-	/**
-	 *
-	 */
-	doEvent = {
-		canDelete: (node: NodeModel): boolean => {
-			// console.log(`~test flowchart~ delete; type:${node.type}, key:${node.key}, currkey:${this.props.store.currNodeKey}`)
+	// /**
+	//  *
+	//  */
+	// doEvent = {
+	// 	canDelete: (node: NodeModel): boolean => {
+	// 		// console.log(`~test flowchart~ delete; type:${node.type}, key:${node.key}, currkey:${this.props.store.currNodeKey}`)
 
-			if (node && node.type === NodeEnum.Branch) {
-				// let brother = this.props.store.getSiblingKeys(node.key);
-				// if (brother) {
-				// 	return brother.length > 1;
-				// }
-			}
-			// console.log(`~test flowchart~ delete`, node.key, this.props.store.currNodeKey)
-			// if (node && node.key && node.key !== this.props.store.currNodeKey) return false;
+	// 		if (node && node.type === NodeEnum.Branch) {
+	// 			// let brother = this.props.store.getSiblingKeys(node.key);
+	// 			// if (brother) {
+	// 			// 	return brother.length > 1;
+	// 			// }
+	// 		}
+	// 		// console.log(`~test flowchart~ delete`, node.key, this.props.store.currNodeKey)
+	// 		// if (node && node.key && node.key !== this.props.store.currNodeKey) return false;
 
-			return true;
-			//return this.props.store.cacheNodeBrotherKeys(node.key).Size;
-		},
-		delete: (node: NodeModel) => {
-			// this.props.store.onDeleteNode(node.key);
-		},
-		copy: (node: NodeModel) => {
-			// this.props.store.executeCMD(FCActType.Copy, node.key);
-		},
-		paste: (node: go.Part | null) => {
-			this.isCtrlCopy = true;
-			// console.log(`~test flowchart~`, this.props.store.copyNodeKey, node.key)
-			if (node && node.part && node.part.data) {
-				// this.props.store.executeCMD(FCActType.Paste, node.part.data!.key);
-			} else {
-				// this.props.store.executeCMD(FCActType.Paste, this.props.store.currNodeKey);
-			}
-		}
-	};
+	// 		return true;
+	// 		//return this.props.store.cacheNodeBrotherKeys(node.key).Size;
+	// 	},
+	// 	delete: (node: NodeModel) => {
+	// 		// this.props.store.onDeleteNode(node.key);
+	// 	},
+	// 	copy: (node: NodeModel) => {
+	// 		// this.props.store.executeCMD(FCActType.Copy, node.key);
+	// 	},
+	// 	paste: (node: go.Part | null) => {
+	// 		this.isCtrlCopy = true;
+	// 		// console.log(`~test flowchart~`, this.props.store.copyNodeKey, node.key)
+	// 		if (node && node.part && node.part.data) {
+	// 			// this.props.store.executeCMD(FCActType.Paste, node.part.data!.key);
+	// 		} else {
+	// 			// this.props.store.executeCMD(FCActType.Paste, this.props.store.currNodeKey);
+	// 		}
+	// 	}
+	// };
 
-	/**
-	 * 拖拽事件
-	 */
-	doDragEvent = {
-		init: () => {
-			// this.props.store.onDragStartNodeHandler();
-		},
-		dragStart: (from: any) => {
-			if (!!!from || !!!from.key) return;
-		},
-		dragEnd: (from: any, to: any) => {
-			if (!!!from || !!!to) return;
-			// if (this.props.store.currNodeKey !== from.key) {
-			// 	this.props.store.currNodeKey = from.key;
-			// }
-			// if (!!to.from && !!to.to) {
-			// 	let ev: NodeEvent = {
-			// 		eType: NodeEventType.DragNode2Link,
-			// 		setSelected: true,
-			// 		actType: 'userDrag',
-			// 		toLink: to as FCLinkModel
-			// 	};
-			// 	this.props.store.addNodeBy_DragNode2Link_Handler(ev);
-			// }
-		},
-		destroy: () => {
-			// this.props.store.onDragEndNodeHandler();
-		}
-	};
-
-	/**
-	 * 单击
-	 */
-	private onClick = (_e: go.InputEvent, _obj?: GraphObject): void => {
-		try {
-			// if (_obj) {
-			// 	//点击在已知节点上
-			// 	let node = (_obj as any).part;
-			// 	if (node && node.part && node.part.data && node.part.data.key) {
-			// 		if (node.part.data.key !== this.props.store.currNodeKey) {
-			// 			this.props.store.callbackFunc.add(CallbackFuncType.Select);
-			// 			this.props.store.callbackFunc.add(CallbackFuncType.Click);
-			// 			this.props.store.currNodeKey = node.part.data.key;
-			// 		}
-			// 	}
-			// } else {
-			// 	//点击在未知节点上
-			// 	if (this.props.store.currNodeKey == '') return; //重复点击在未知节点上 直接返回
-			// 	this.props.store.diagram.clearSelection();
-			// 	this.props.store.callbackFunc.add(CallbackFuncType.Select);
-			// 	this.props.store.callbackFunc.add(CallbackFuncType.Click);
-			// 	this.props.store.currNodeKey = '';
-			// }
-		} catch (e) {}
-	};
+	// /**
+	//  * 单击
+	//  */
+	// private onClick = (_e: go.InputEvent, _obj?: GraphObject): void => {
+	// 	console.log(1);
+	// 	try {
+	// 		// if (_obj) {
+	// 		// 	//点击在已知节点上
+	// 		// 	let node = (_obj as any).part;
+	// 		// 	if (node && node.part && node.part.data && node.part.data.key) {
+	// 		// 		if (node.part.data.key !== this.props.store.currNodeKey) {
+	// 		// 			this.props.store.callbackFunc.add(CallbackFuncType.Select);
+	// 		// 			this.props.store.callbackFunc.add(CallbackFuncType.Click);
+	// 		// 			this.props.store.currNodeKey = node.part.data.key;
+	// 		// 		}
+	// 		// 	}
+	// 		// } else {
+	// 		// 	//点击在未知节点上
+	// 		// 	if (this.props.store.currNodeKey == '') return; //重复点击在未知节点上 直接返回
+	// 		// 	this.props.store.diagram.clearSelection();
+	// 		// 	this.props.store.callbackFunc.add(CallbackFuncType.Select);
+	// 		// 	this.props.store.callbackFunc.add(CallbackFuncType.Click);
+	// 		// 	this.props.store.currNodeKey = '';
+	// 		// }
+	// 	} catch (e) {}
+	// };
 
 	/**
 	 *

@@ -6,19 +6,25 @@ import DrawTitle from './title';
 import DrawSpot from './spot';
 const $ = go.GraphObject.make;
 
-export class DrawBreak extends Base {
+export default class DrawBreak extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	getBreak(): go.Part {
+		let $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Node,
 			'Auto',
 			{
-				mouseEnter: this.mouseEnterHandler,
-				mouseLeave: this.mouseLeaveHandler,
+				// mouseEnter: this.mouseEnterHandler,
+				// mouseLeave: this.mouseLeaveHandler,
 				movable: DiagramSetting.moveNode,
-				click: this.onClick,
-				contextClick: this.onContextClick,
-				doubleClick: this.onSettingClick,
-				selectionChanged: this.onselectionChangedHandler,
+				// click: this.onClick,
+				// contextClick: this.onContextClick,
+				// doubleClick: this.onSettingClick,
+				// selectionChanged: this.onselectionChangedHandler,
 				padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
 				minSize: new go.Size(DiagramSetting.nodeWith, DiagramSetting.nodeHeight),
 				cursor: 'pointer'
@@ -44,11 +50,11 @@ export class DrawBreak extends Base {
 				},
 				DrawTitle.getTitle(DiagramEnum.FCNode)
 			),
-			DrawSpot.getSpotMenu(DiagramEnum.FCNode)
+			$DrawSpot.getSpotMenu(DiagramEnum.FCNode)
 		);
 	}
 }
 
-const drawBreak = new DrawBreak();
+// const drawBreak = new DrawBreak();
 
-export default drawBreak;
+// export default drawBreak;

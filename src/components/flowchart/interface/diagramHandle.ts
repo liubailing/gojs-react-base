@@ -1,15 +1,7 @@
 import go from 'gojs';
 
 export interface IDiagramHander {
-	/**
-	 * Update map of node keys to their index in the array.
-	 */
-	refreshNodeIndex(nodeArr: Array<go.ObjectData>): void;
 
-	/**
-	 * Update map of link keys to their index in the array.
-	 */
-	refreshLinkIndex(linkArr: Array<go.ObjectData>): void;
 
 	/**
 	 * Handle any relevant DiagramEvents, in this case just selection changes.

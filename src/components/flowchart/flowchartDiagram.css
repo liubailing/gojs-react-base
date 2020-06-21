@@ -1,10 +1,14 @@
 .div-flowchart {
-	height: 600px;
-	width: 800px;
-	border: 1px solid black;
+	height: 100%;
+	width: 100%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 .div-flowchart-diagram {
-	/* height: 100%;
-	width: 100%; */
-	display: block;
+	flex: 0;
+}
+
+.diagram-component {
+	flex: 1;
 }

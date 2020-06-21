@@ -1,4 +1,4 @@
-import { DiagramModel, NodeModel, LinkModel } from '../interface';
+import { DiagramModel, NodeModel, LineModel } from '../interface';
 import { FCNode, FCLink } from '../controller';
 import { NodeEnum } from '../enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
@@ -16,8 +16,8 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowchartData(wfData: boolean = false): DiagramModel<NodeModel, LinkModel> {
-		let d: DiagramModel<NodeModel, LinkModel> = { nodeArray: [], linkArray: [] };
+	static getFlowchartData(wfData: boolean = false): DiagramModel<NodeModel, LineModel> {
+		let d: DiagramModel<NodeModel, LineModel> = { nodeArray: [], linkArray: [] };
 
 		if (wfData) {
 			let start = FCNode.getNode(NodeEnum.Start);
@@ -127,10 +127,10 @@ export class TestData {
 	/**
 	 * 工作流数据 -> 流程图数据
 	 */
-	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<NodeModel, LinkModel> {
-		let d: DiagramModel<NodeModel, LinkModel> = { nodeArray: [], linkArray: [] };
+	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<NodeModel, LineModel> {
+		let d: DiagramModel<NodeModel, LineModel> = { nodeArray: [], linkArray: [] };
 		// debugger;
-		let links: LinkModel[] = [];
+		let links: LineModel[] = [];
 		let nodes: NodeModel[] = [];
 
 		//最简单得初始化数据

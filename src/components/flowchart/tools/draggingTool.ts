@@ -1,12 +1,15 @@
 import * as go from 'gojs';
+import { HandleEnum, DiagramEnum } from '../enum';
+import { NodeEvent } from '../interface';
+// import baseChanges from '../draw/baseChanges';
 
 export default class DraggingTool extends go.DraggingTool {
 	private _imagePart: go.Part | null = null;
 	private _ghostDraggedParts: go.Map<go.Part, go.DraggingInfo> | null = null;
 	private _originalDraggedParts: go.Map<go.Part, go.DraggingInfo> | null = null;
-	private _doDragEvent: any = null;
+	private _doDragEvent: Function;
 
-	constructor(_doDragEvent: any = null) {
+	constructor(_doDragEvent: Function) {
 		super();
 		this._doDragEvent = _doDragEvent;
 	}
@@ -54,14 +57,14 @@ export default class DraggingTool extends go.DraggingTool {
 			);
 			this.draggedParts = this._ghostDraggedParts;
 		}
-		if (this._doDragEvent && this._doDragEvent.init) this._doDragEvent.init();
+		// if (this._doDragEvent) this._doDragEvent();
 	}
 
 	/**
 	 * When deactivated, make sure any image is removed from the Diagram and all references are cleared out.
 	 */
 	public doDeactivate(): void {
-		// console.log(`~test flowchart~  doDeactivate`)
+		// console.log(`~test flowchart~  doDeactivate`);
 		if (this._imagePart !== null) {
 			this.diagram.remove(this._imagePart);
 		}
@@ -70,27 +73,33 @@ export default class DraggingTool extends go.DraggingTool {
 		this._ghostDraggedParts = null;
 		this._originalDraggedParts = null;
 
-		if (this._doDragEvent && this._doDragEvent.dragEnd) {
-			let dragNode = null,
-				dragToNode = null,
-				candrag = true;
-			if (this.currentPart && this.currentPart.part && this.currentPart.part.data)
-				dragNode = this.currentPart.part.data;
-			let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-			if (node && node.part && node.part.data) dragToNode = node.part.data;
-			if (dragNode.type === 'BranchAction') candrag = false;
+		let dragNode = null,
+			dragToNode = null,
+			candrag = true;
+		if (this.currentPart && this.currentPart.part && this.currentPart.part.data)
+			dragNode = this.currentPart.part.data;
+		let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+		if (node && node.part && node.part.data) dragToNode = node.part.data;
+		if (dragNode.category === DiagramEnum.ConditionSwitch) candrag = false;
 
-			if (candrag && this.currentPart instanceof go.Group) {
-				let objs = this.currentPart.findSubGraphParts();
-				if (objs && objs.size > 0 && node && objs.has(node)) candrag = false;
-			}
-
-			if (dragNode && dragToNode && candrag) {
-				this._doDragEvent.dragEnd(dragNode, dragToNode);
-			}
+		if (candrag && this.currentPart instanceof go.Group) {
+			let objs = this.currentPart.findSubGraphParts();
+			if (objs && objs.size > 0 && node && objs.has(node)) candrag = false;
+			// if (node) baseChanges.setLinkCss(node, false);
 		}
 
-		if (this._doDragEvent && this._doDragEvent.destroy) this._doDragEvent.destroy();
+		if (dragNode && dragToNode && candrag) {
+			let e: NodeEvent = {
+				eType: HandleEnum.DragNode2Link,
+				node: dragNode,
+				toLink: dragToNode
+			} as NodeEvent;
+			this._doDragEvent(e);
+		}
+
+		// debugger;
+
+		// if (this._doDragEvent && this._doDragEvent.destroy) this._doDragEvent.destroy();
 
 		super.doDeactivate();
 	}
@@ -141,7 +150,7 @@ export default class DraggingTool extends go.DraggingTool {
 	 * show the image again and go back to dragging the ghost dragged parts.
 	 */
 	public doMouseMove(): void {
-		//console.log(`~test flowchart:doMouseMove~****${vp}*****${p}******${scrollH}*****${scrollW}****`)
+		// console.log(`~test flowchart:doMouseMove~****`);
 		if (this.diagram.div) {
 			if (this.diagram.div.clientHeight < this.diagram.lastInput.viewPoint.y + 100) {
 				this.diagram.scroll('pixel', 'down', 10);
@@ -163,7 +172,7 @@ export default class DraggingTool extends go.DraggingTool {
 	}
 
 	doDragOver(pt: go.Point, obj: go.GraphObject | null) {
-		//console.log(`~test flowchart~  doDragOver`)
+		// console.log(`~test flowchart~  1`);
 		super.doDragOver(pt, obj);
 	}
 }

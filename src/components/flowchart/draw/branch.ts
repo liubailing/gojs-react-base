@@ -1,6 +1,6 @@
 import go, { GraphObject } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
+import { DiagramEnum, HandleEnum } from '../enum';
 import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
@@ -8,8 +8,14 @@ import DrawSpot from './spot';
 
 const $ = go.GraphObject.make;
 
-export class DrawBranch extends Base {
+export default class DrawBranch extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
 	getBranch(): go.Group {
+		let $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
@@ -27,10 +33,10 @@ export class DrawBranch extends Base {
 				mouseLeave: this.onMouseLeave,
 				mouseEnter: this.onMouseEnter,
 				resizable: false,
-				selectionChanged: this.onselectionChangedHandler,
-				click: this.onClick,
-				doubleClick: this.onSettingClick,
-				contextClick: this.onContextClick,
+				selectionChanged: this.doGroupCss_SelectionChanged,
+				// click: this.onClick,
+				// doubleClick: this.onSettingClick,
+				// contextClick: this.onContextClick,
 				isSubGraphExpanded: true,
 				subGraphExpandedChanged: function (_group: any) {
 					if (_group instanceof go.Adornment) _group = _group.adornedPart;
@@ -109,15 +115,7 @@ export class DrawBranch extends Base {
 					height: DiagramSetting.iconWidth + 2,
 					cursor: 'pointer',
 					opacity: DiagramSetting.spotOpacity,
-					click: (_e: go.InputEvent, thisObj: GraphObject) => {
-						// todo 2
-						// this.props.store.addNodeBy_AddCondtionBranch_Handler({
-						// 	eType: NodeEventEnum.AddNodeToBefore,
-						// 	setSelected: true,
-						// 	actType: 'userDrag',
-						// 	toNode: thisObj.part!.data as NodeModel
-						// });
-					}
+					click: this.onLeftClick
 				},
 				$(go.Shape, 'Circle', {
 					width: DiagramSetting.iconWidth,
@@ -145,15 +143,7 @@ export class DrawBranch extends Base {
 					height: DiagramSetting.iconWidth + 2,
 					cursor: 'pointer',
 					opacity: DiagramSetting.spotOpacity,
-					click: (_e: go.InputEvent, thisObj: GraphObject) => {
-						// todo 3
-						// this.props.store.addNodeBy_AddCondtionBranch_Handler({
-						// 	eType: NodeEventEnum.AddNodeToAfter,
-						// 	setSelected: true,
-						// 	actType: 'userDrag',
-						// 	toNode: thisObj.part!.data as NodeModel
-						// });
-					}
+					click: this.onRightClick
 				},
 				$(go.Shape, 'Circle', {
 					width: DiagramSetting.iconWidth,
@@ -170,7 +160,7 @@ export class DrawBranch extends Base {
 					strokeWidth: 1
 				})
 			), // end output port
-			DrawSpot.getSpot(DiagramEnum.ConditionSwitch)
+			$DrawSpot.getSpot(DiagramEnum.ConditionSwitch)
 		);
 	}
 
@@ -178,8 +168,8 @@ export class DrawBranch extends Base {
 		let node = (obj as any).part;
 		// console.log('node', node);
 
-		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, false);
+		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setBranchCss(node, false);
 		}
 	}
@@ -189,12 +179,46 @@ export class DrawBranch extends Base {
 		// console.log('node', node);
 
 		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, true);
+			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
 		}
 	}
+
+	onLeftClick = (e: go.InputEvent, obj: GraphObject): void => {
+		super.doFlowchartEvent(e, obj, HandleEnum.AddBranchToLeft, this.callBack);
+		// let node = (obj as any).part;
+		// // console.log('node', node);
+		// if (node && node.diagram) {
+		// 	BaseChanges.setSpotCss(node, true);
+		// 	BaseChanges.setBranchCss(node, true);
+		// }
+	};
+
+	onRightClick = (e: go.InputEvent, obj: GraphObject): void => {
+		super.doFlowchartEvent(e, obj, HandleEnum.AddBranchToRight, this.callBack);
+
+		// let node = (obj as any).part;
+		// console.log('node', node);
+		// if (node && node.diagram) {
+		// 	BaseChanges.setSpotCss(node, true);
+		// 	BaseChanges.setBranchCss(node, true);
+		// }
+	};
+
+	doGroupCss_SelectionChanged = (_targetObj: any) => {
+		/** 点击无效区域 */
+		const node = (_targetObj as any).part;
+		if (node && node.isSelected) {
+			BaseChanges.setGroupCss(node, true);
+			BaseChanges.setBranchCss(node, true);
+		} else {
+			BaseChanges.setGroupCss(node, false);
+			BaseChanges.setBranchCss(node, false);
+		}
+		// }
+	};
 }
 
-const drawBranch = new DrawBranch();
+// const drawBranch = new DrawBranch();
 
-export default drawBranch;
+// export default drawBranch;

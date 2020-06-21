@@ -1,5 +1,5 @@
 import { DiagramEnum } from '../enum';
-import { LinkModel } from '../interface';
+import { LineModel } from '../interface';
 
 /**
  * 得到节点展示的类型
@@ -13,10 +13,11 @@ export class FCLink {
 	 * @param group
 	 * @param isCondition
 	 */
-	static getLink(from: string, to: string, group: string, isCondition: boolean = false): LinkModel {
-		if (!from || from === to) return { from: '', to: '', group: '' };
+	static getLink(from: string, to: string, group: string, isCondition: boolean = false): LineModel {
+		if (!from || from === to) return { key: '', from: '', to: '', group: '' };
 		if (!group) group = 'root';
-		let link: LinkModel = {
+		let link: LineModel = {
+			key: '',
 			from: from,
 			to: to,
 			group: group

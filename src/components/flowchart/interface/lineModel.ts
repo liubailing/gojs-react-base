@@ -3,9 +3,9 @@ import { DiagramEnum } from '../enum';
 /**
  * 连线对应的属性
  */
-export interface LinkModel {
+export interface LineModel {
 	/** 所在分组 */
-	key?: string;
+	key: string;
 
 	/** 连线起始点 */
 	from: string;

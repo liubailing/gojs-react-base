@@ -6,5 +6,16 @@ import DrawBranch from './branch';
 import DrawCondition from './conditon';
 import DrawAdornment from './adornment';
 import DrawBreak from './break';
+import DrawContextMenu from './contextMenu';
 
-export { DrawLink, DrawSimple, DrawNode, DrawLoop, DrawBranch, DrawCondition, DrawAdornment, DrawBreak };
+export {
+	DrawLink,
+	DrawSimple,
+	DrawNode,
+	DrawLoop,
+	DrawBranch,
+	DrawCondition,
+	DrawAdornment,
+	DrawBreak,
+	DrawContextMenu
+};

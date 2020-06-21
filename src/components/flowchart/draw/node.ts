@@ -5,15 +5,25 @@ import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
+import { NodeEvent } from '../interface';
 
 const $ = go.GraphObject.make;
 
-export class DrawNode extends Base {
+export default class DrawNode extends Base {
+	callBack: Function;
+	constructor(e: Function) {
+		super();
+		this.callBack = e;
+	}
+
 	getNode(): go.Part {
+		let $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Node,
 			'Auto',
 			{ name: 'node_Title', toolTip: this.tooltiptemplate },
+			new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
+			new go.Binding('desiredSize', 'size', go.Size.parse).makeTwoWay(go.Size.stringify),
 			{
 				mouseEnter: this.onMouseEnter,
 				mouseLeave: this.onMouseLeave,
@@ -21,7 +31,7 @@ export class DrawNode extends Base {
 				// click: this.onClick,
 				// contextClick: this.onContextClick,
 				// doubleClick: this.onSettingClick,
-				selectionChanged: this.onselectionChangedHandler,
+				// selectionChanged: this.onselectionChangedHandler,
 				padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
 				minSize: new go.Size(DiagramSetting.nodeWith, DiagramSetting.nodeHeight),
 				cursor: 'pointer'
@@ -36,8 +46,7 @@ export class DrawNode extends Base {
 					stroke: BaseColors.transparent
 					// fill: BaseColors.backgroud
 				},
-				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject(),
-				new go.Binding('width', 'isSelected', this.getNodeWidth).ofObject()
+				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject()
 			),
 			$(
 				go.Panel,
@@ -47,12 +56,12 @@ export class DrawNode extends Base {
 				},
 				DrawTitle.getTitle(DiagramEnum.FCNode)
 			),
-			DrawSpot.getSpot(DiagramEnum.FCNode)
+			$DrawSpot.getSpot(DiagramEnum.FCNode)
 		);
 	}
 
 	/**
-	 * 返回名字
+	 * 返回背景颜色
 	 */
 	private getNodeFill = (_val: any, _targetObj: any): string => {
 		// const node = (_targetObj as any).part;
@@ -73,16 +82,15 @@ export class DrawNode extends Base {
 		let node = (obj as any).part;
 		// console.log('node', node);
 		if (node && node.diagram && !node.isSelected) {
-			BaseChanges.setSpotCss(node, false);
+			BaseChanges.setActionCss(node, false);
 			BaseChanges.setNodeCss(node, false);
 		}
 	}
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
 		let node = (obj as any).part;
-		console.log('node', node.isSelected);
 		if (node && node.diagram) {
-			BaseChanges.setSpotCss(node, true);
+			BaseChanges.setActionCss(node, true);
 			BaseChanges.setNodeCss(node, true);
 		}
 	}
@@ -103,6 +111,6 @@ export class DrawNode extends Base {
 	);
 }
 
-const drawNode = new DrawNode();
+// const drawNode = new DrawNode();
 
-export default drawNode;
+// export default drawNode;

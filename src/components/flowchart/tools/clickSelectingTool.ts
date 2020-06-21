@@ -4,6 +4,8 @@ export default class ClickSelectingTool extends go.ClickSelectingTool {
 	constructor(_doDragEvent: any = null) {
 		super();
 	}
+
+	
 	/**
 	 * This tool can run whenever a click occurs.
 	 *
@@ -22,8 +24,12 @@ export default class ClickSelectingTool extends go.ClickSelectingTool {
 	 */
 	doMouseUp(): void {
 		const { diagram } = this;
-		let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-		if (node && node.part && node.part.data) console.log(`>>>>>>>>>`, node);
+		// let node1 = this.diagram.findPartAt(this.diagram.firstInput.documentPoint);
+		// if (node1 && node1.part && node1.part.data) console.log(`>>>>>>>>>1111`, node1);
+		// alert(node1);
+		// let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+		// if (node && node.part && node.part.data) console.log(`>>>>>>>>>`, node);
+
 		super.doMouseUp();
 	}
 }
