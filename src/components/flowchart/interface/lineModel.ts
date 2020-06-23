@@ -14,7 +14,7 @@ export interface LineModel {
 	to: string;
 
 	/** 所在分组 */
-	group: string;
+	// group: string;
 
 	/**************************
 	 * 以下属性不用管
@@ -29,10 +29,10 @@ export interface LineModel {
 	/**
 	 * 分类
 	 * */
-	category?: string;
+	category: string;
 
-	/**
-	 * 分类
-	 * */
-	opacity?: 0 | 1;
+	// /**
+	//  * 分类
+	//  * */
+	// opacity?: 0 | 1;
 }

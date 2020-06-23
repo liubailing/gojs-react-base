@@ -189,136 +189,158 @@ export default class HanderFlowchart {
 	 * @param toline
 	 */
 	dragNode2link(nodekey: string, toline?: LineModel): boolean {
-		let node = this.mapNode.get(nodekey);
-		// 主要是改变线
-		if (node && toline) {
-			// 如果是前后线上，则无效操作
+		// let node = this.mapNode.get(nodekey);
+		// // 主要是改变线
+		// if (node && toline) {
+		// 	// 如果是前后线上，则无效操作
 
-			if (toline.from === nodekey || toline.to === nodekey) {
-				return false;
-			}
+		// 	if (toline.from === nodekey || toline.to === nodekey) {
+		// 		return false;
+		// 	}
 
-			// 是否需要增加辅助接点
-			let addGuid2OldGroup = '';
-			// 是否需要移除辅助接点
-			let removeTolieGroupGuideNodeId = '';
+		// 	// 是否需要增加辅助接点
+		// 	let addGuid2OldGroup = '';
+		// 	// 是否需要移除辅助接点
+		// 	let removeTolieGroupGuideNodeId = '';
 
-			// 2、判断 拖放后的组内是否要移除向导辅助点
-			let formP = this.mapNode.get(node.group);
-			if (formP && nodeEnum2HasChild.includes(formP.type as NodeEnum)) {
-				let formChilds = this.mapNodeChildKeys.get(formP.key);
-				if (formChilds && formChilds.length === 3) {
-					addGuid2OldGroup = formChilds[1];
-				}
-			}
+		// 	// 2、判断 拖放后的组内是否要移除向导辅助点
+		// 	let formP = this.mapNode.get(node.group);
+		// 	if (formP && nodeEnum2HasChild.includes(formP.type as NodeEnum)) {
+		// 		let formChilds = this.mapNodeChildKeys.get(formP.key);
+		// 		if (formChilds && formChilds.length === 3) {
+		// 			addGuid2OldGroup = formChilds[1];
+		// 		}
+		// 	}
 
-			// 2.1、判断 拖放后原来的组内是否要移除辅助点
-			let toP = this.mapNode.get(toline.group);
-			if (toP && nodeEnum2HasChild.includes(toP.type as NodeEnum)) {
-				let toChilds = this.mapNodeChildKeys.get(toP.key);
-				if (toChilds && toChilds.length === 3) {
-					let node = this.mapNode.get(toChilds[1]);
-					if (node && (node.type as NodeEnum) === NodeEnum.WFGuideNode) {
-						removeTolieGroupGuideNodeId = toChilds[1];
-					}
-				}
-			}
+		// 	// 2.1、判断 拖放后原来的组内是否要移除辅助点
+		// 	let toP = this.mapNode.get(toline.group);
+		// 	if (toP && nodeEnum2HasChild.includes(toP.type as NodeEnum)) {
+		// 		let toChilds = this.mapNodeChildKeys.get(toP.key);
+		// 		if (toChilds && toChilds.length === 3) {
+		// 			let node = this.mapNode.get(toChilds[1]);
+		// 			if (node && (node.type as NodeEnum) === NodeEnum.WFGuideNode) {
+		// 				removeTolieGroupGuideNodeId = toChilds[1];
+		// 			}
+		// 		}
+		// 	}
 
-			// 3、如果需要补回辅助点
-			if (addGuid2OldGroup) {
-				let newGuid = NodeStore.getNode(NodeEnum.WFGuideNode, node.group);
-				let hasStart = false,
-					haseEnd = false;
-				for (const it of this._lines) {
-					if (it.from === nodekey) {
-						it.from = newGuid.key;
-						hasStart = true;
-					}
-					if (it.to === nodekey) {
-						it.to = newGuid.key;
-						haseEnd = true;
-					}
+		// 	// 3、如果需要补回辅助点
+		// 	if (addGuid2OldGroup) {
+		// 		let newGuid = NodeStore.getNode(NodeEnum.WFGuideNode, node.group);
+		// 		let hasStart = false,
+		// 			haseEnd = false;
+		// 		for (const it of this._lines) {
+		// 			if (it.from === nodekey) {
+		// 				it.from = newGuid.key;
+		// 				hasStart = true;
+		// 			}
+		// 			if (it.to === nodekey) {
+		// 				it.to = newGuid.key;
+		// 				haseEnd = true;
+		// 			}
 
-					if (hasStart && haseEnd) {
-						break;
-					}
-				}
-				this._nodes.push(newGuid);
-			} else {
-				let removeLineIdx = 0;
-				// 1、找出以前的in线
-				let oldForm = '';
-				for (const [index, it] of this._lines.entries()) {
-					if (it.to === nodekey) {
-						oldForm = it.from;
-						removeLineIdx = index;
-						break;
-					}
-				}
+		// 			if (hasStart && haseEnd) {
+		// 				break;
+		// 			}
+		// 		}
+		// 		this._nodes.push(newGuid);
+		// 	} else {
+		// 		let removeLineIdx = 0;
+		// 		// 1、找出以前的in线
+		// 		let oldForm = '',
+		// 			oldTo = '';
+		// 		for (const [index, it] of this._lines.entries()) {
+		// 			if (it.to === nodekey) {
+		// 				console.log(`-1------`, index, it);
+		// 				oldForm = it.from;
+		// 				removeLineIdx = index;
+		// 				break;
+		// 			}
+		// 		}
 
-				// 2、改掉以前的 out 线
-				for (const [index, it] of this._lines.entries()) {
-					if (it.from === nodekey) {
-						it.from = oldForm;
-						this._lines[index].from = oldForm;
-						// debugger;
-						break;
-					}
-				}
+		// 		// 2、改掉以前的 out 线
+		// 		for (const [index, it] of this._lines.entries()) {
+		// 			if (it.from === nodekey) {
+		// 				it.from = oldForm;
+		// 				oldTo = it.to;
 
-				// 移除线
-				this._lines = [...this._lines.slice(0, removeLineIdx), ...this._lines.slice(removeLineIdx + 1)];
-			}
+		// 				console.log(`--2-----`, index, it);
+		// 				break;
+		// 			}
+		// 		}
+		// 		// 移除线
+		// 		this._lines = [...this._lines.slice(0, removeLineIdx), ...this._lines.slice(removeLineIdx + 1)];
 
-			// 如果需要移除之前的辅助点
-			if (removeTolieGroupGuideNodeId) {
-				let hasStart = false,
-					haseEnd = false;
-				for (const it of this._lines) {
-					if (it.to === removeTolieGroupGuideNodeId) {
-						it.to = nodekey;
-						hasStart = true;
-					}
-					if (it.from === removeTolieGroupGuideNodeId) {
-						it.from = nodekey;
-						haseEnd = true;
-					}
+		// 		// 这一步表示不明白 1
+		// 		for (const [index, it] of this._lines.entries()) {
+		// 			if (it.from === nodekey && it.to == oldTo) {
+		// 				console.log(`--3-----`, index, it);
+		// 				// 移除线
+		// 				this._lines = [...this._lines.slice(0, index), ...this._lines.slice(index + 1)];
+		// 				break;
+		// 			}
+		// 		}
 
-					if (hasStart && haseEnd) {
-						break;
-					}
-				}
-				// 移除点
-				let nodeIdx = this.mapNodeKeyIdx.get(removeTolieGroupGuideNodeId);
-				if (nodeIdx) {
-					this._nodes = [...this._nodes.slice(0, nodeIdx), ...this._nodes.slice(nodeIdx + 1)];
-				}
-			} else {
-				let newLine = LineStore.getLink(toline.from, nodekey, toline.group);
-				for (const it of this._lines) {
-					if (it.from === toline.from) {
-						it.from = nodekey;
-						break;
-					}
-				}
-				this._lines.push(newLine);
-			}
+		// 		// 这一步表示不明白 2
+		// 		for (const [index, it] of this._lines.entries()) {
+		// 			if (it.to === nodekey && it.from == oldForm) {
+		// 				console.log(`--3-----`, index, it);
+		// 				// 移除线
+		// 				this._lines = [...this._lines.slice(0, index), ...this._lines.slice(index + 1)];
+		// 				break;
+		// 			}
+		// 		}
+		// 	}
 
-			// 	1 修改组
-			let nodeIdx = this.mapNodeKeyIdx.get(nodekey);
-			if (nodeIdx == undefined) return false;
-			this._nodes[nodeIdx].group = toline.group;
+		// 	// 如果需要移除之前的辅助点
+		// 	if (removeTolieGroupGuideNodeId) {
+		// 		let hasStart = false,
+		// 			haseEnd = false;
+		// 		for (const it of this._lines) {
+		// 			if (it.to === removeTolieGroupGuideNodeId) {
+		// 				it.to = nodekey;
+		// 				hasStart = true;
+		// 			}
+		// 			if (it.from === removeTolieGroupGuideNodeId) {
+		// 				it.from = nodekey;
+		// 				haseEnd = true;
+		// 			}
 
-			// 刷新数据
-			this.refresData(this._nodes, this._lines);
-			return true;
-			//
+		// 			if (hasStart && haseEnd) {
+		// 				break;
+		// 			}
+		// 		}
+		// 		// 移除点
+		// 		let nodeIdx = this.mapNodeKeyIdx.get(removeTolieGroupGuideNodeId);
+		// 		if (nodeIdx) {
+		// 			this._nodes = [...this._nodes.slice(0, nodeIdx), ...this._nodes.slice(nodeIdx + 1)];
+		// 		}
+		// 	} else {
+		// 		let newLine = LineStore.getLink(toline.from, nodekey, toline.group);
+		// 		for (const it of this._lines) {
+		// 			if (it.from === toline.from) {
+		// 				it.from = nodekey;
+		// 				break;
+		// 			}
+		// 		}
+		// 		this._lines.push(newLine);
+		// 	}
 
-			// 1.1可能要移除向导点
+		// 	// 	1 修改组
+		// 	let nodeIdx = this.mapNodeKeyIdx.get(nodekey);
+		// 	if (nodeIdx == undefined) return false;
+		// 	this._nodes[nodeIdx].group = toline.group;
 
-			// 2可能要新增向导点 改变之前的线
-			// 2.1直接改变之前的线
-		}
+		// 	// 刷新数据
+		// 	this.refresData(this._nodes, this._lines);
+		// 	return true;
+		// 	//
+
+		// 	// 1.1可能要移除向导点
+
+		// 	// 2可能要新增向导点 改变之前的线
+		// 	// 2.1直接改变之前的线
+		// }
 		return false;
 	}
 
