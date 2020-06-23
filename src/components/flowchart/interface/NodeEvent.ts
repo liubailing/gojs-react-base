@@ -16,6 +16,9 @@ export interface NodeEvent {
 	toLine?: LineModel;
 	/** 操作目标点 */
 	toNode?: NodeModel;
+
+	/** 操作目标点 */
+	// toObj?: LineModel | NodeModel;
 	// /** 当前 X 坐标 */
 	// posX?: number;
 	// /** 当前 Y 坐标 */

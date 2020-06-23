@@ -2,9 +2,8 @@ import go from 'gojs';
 import { observable, computed, action } from 'mobx';
 import FlowchartData from './flowchartData';
 import { IDiagramHander, IFlowchartHander, DiagramModel, NodeModel, LineModel, NodeEvent } from '../interface';
-import { TestData } from '../workflow';
-import { HandleEnum } from '../enum';
-import { FCNode, FCLink } from '../controller';
+import { HandleEnum, NodeEnum } from '../enum';
+import { NodeStore, LineStore } from '../controller';
 
 export default class HanderFlowchart extends FlowchartData implements IDiagramHander {
 	/**调用 对外的暴露的接口方法 */
@@ -15,8 +14,6 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		this.handleDiagramEvent = this.handleDiagramEvent.bind(this);
 		this.handleModelChange = this.handleModelChange.bind(this);
 		this.handFlowchartEvent = this.handFlowchartEvent.bind(this);
-
-		this.initFlochart();
 		this.flowchartHander = handles;
 	}
 
@@ -41,12 +38,12 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 				const sel = e.subject.first();
 				if (sel) {
 					if (sel instanceof go.Node) {
-						const idx = this.mapNodeKeyIdx.get(sel.key);
+						const idx = this.mapNodeKeyIdx.get(sel.key as string);
 						if (idx !== undefined && idx >= 0) {
 							this.flowchartHander.handlerClickNode(this.nodeDataArray[idx]);
 						}
 					} else if (sel instanceof go.Group) {
-						const idx = this.mapLinkKeyIdx.get(sel.key);
+						const idx = this.mapLineKeyIdx.get(sel.key as string);
 						if (idx !== undefined && idx >= 0) {
 							this.flowchartHander.handlerClickNode(this.nodeDataArray[idx]);
 						}
@@ -78,7 +75,7 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		// maintain maps of modified data so insertions don't need slow lookups
 		const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
 		const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
-		// debugger;
+		//
 	}
 
 	/**
@@ -100,38 +97,21 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		// this.setState({ modelData: { canRelink: value }, skipsDiagramUpdate: false });
 	}
 
-	istrue: boolean = true;
-	test(action: string) {
-		switch (action) {
-			case 'init':
-				this.istrue = !this.istrue;
-				this.initFlochart(this.istrue);
-				break;
-			case 'hide_contextMenu':
-				this.istrue = !this.istrue;
-				this._hideContextMenu();
-				break;
-
-			default:
-				break;
-		}
-	}
-
 	@action
-	initFlochart(istrue?: boolean) {
-		const data = TestData.getFlowchartData(istrue);
-		this.nodeDataArray = data.nodeArray;
-		this.linkDataArray = data.linkArray;
+	initFlochart(nodeDataArray: Array<NodeModel>, linkDataArray: Array<LineModel>) {
+		// const data = TestData.getFlowchartData(istrue);
+		this.nodeDataArray = nodeDataArray;
+		this.linkDataArray = linkDataArray;
 		this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
-		super.initData();
+		super.refresData(this.nodeDataArray, this.linkDataArray);
 	}
 
 	/**
 	 * 监听到流程图操作
 	 */
 	handFlowchartEvent(e: NodeEvent) {
-		let node: NodeModel = e.node ? e.node : FCNode.baseModel;
-		let line: LineModel = e.line ? e.line : FCLink.getLink('', '', '');
+		let node: NodeModel = e.node ? e.node : NodeStore.baseModel;
+		let line: LineModel = e.line ? e.line : LineStore.getLink('', '', '');
 		let pos;
 		switch (e.eType) {
 			/** 打开点菜单 */
@@ -155,9 +135,18 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 				this._hideContextMenu();
 				break;
 			case HandleEnum.AddBranchToLeft:
-				debugger;
+				let res = this.addBranch2Pre(node.key);
+				this._refresDiagram();
+
 				break;
 			case HandleEnum.AddBranchToRight:
+				this.addBranch2Next(node.key);
+				this._refresDiagram();
+				break;
+			case HandleEnum.DragNode2Link:
+				this.dragNode2link(node.key, e.toLine);
+				this._refresDiagram();
+
 				break;
 			default:
 				break;
@@ -165,13 +154,34 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		// console.log(`---------,`, e);
 	}
 
-	getDiagram = (d: go.Diagram) => {
+	handleGetDiagram = (d: go.Diagram) => {
 		if (d) {
 			this.flowchartDiagram = d;
 		}
 	};
-	onAppendNodeToNode() {}
-	onDeleteNodeToNode() {}
+	/**
+	 * 往后新增节点，依据nodeId
+	 * @param nodekey  要添加的节点Id。
+	 * @param type 添加的节点类型
+	 */
+	onAdd2After8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2After8NodeId(nodeId, type);
+		this._refresDiagram();
+		return res;
+	}
+
+	/**
+	 * 往内部 新增节点，依据nodeid
+	 * @param nodekey  要添加的节点Id。
+	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
+	 */
+	onAdd2Inner8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2Inner8NodeId(nodeId, type);
+		this._refresDiagram();
+		return res;
+	}
+
+	onDeleteNode(nodekey: string) {}
 
 	private get _getPostion(): { x: number; y: number } {
 		if (this.flowchartDiagram) {
@@ -187,12 +197,30 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		};
 	}
 
-	private _hideContextMenu() {
+	_hideContextMenu() {
 		if (this.flowchartDiagram) {
 			// this.flowchartDiagram.commandHandler.showContextMenu();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 			this.flowchartHander.handlerHideContextMenu();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 		}
+	}
+
+	@action
+	_refresDiagram() {
+		// this.nodeDataArray = [];
+		// this.linkDataArray = [];
+		this.nodeDataArray = [...this.getNodes(), ...[]];
+		this.linkDataArray = [...this.getLines(), ...[]];
+		console.log(`数据：nodes-${this.nodeDataArray.length},lines:${this.linkDataArray.length}`);
+	}
+
+	getAll() {
+		this.nodeDataArray = [...this.getNodes(), ...[]];
+		this.linkDataArray = [...this.getLines(), ...[]];
+		return {
+			nodes: this.nodeDataArray,
+			lines: this.linkDataArray
+		};
 	}
 }

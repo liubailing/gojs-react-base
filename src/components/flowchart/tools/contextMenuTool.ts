@@ -8,33 +8,9 @@ export default class ContextMenuTool extends go.ContextMenuTool {
 		this._doDragEvent = _doDragEvent;
 	}
 
-	doMouseDown(): void {
-		console.log(`-------showContextMenu doMouseDown `);
-	}
+	doMouseDown(): void {}
 
 	showContextMenu(contextmenu: go.Adornment | go.HTMLInfo, obj: go.GraphObject | null) {
-		// 如果没ID
-		// if (!this._show) {
-		// 	// return;
-		// }
-		// // console.log(`-------showContextMenu`);
-		// let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-		// if (node && node.part && node.part.data && node.data._handleEnum) {
-		// 	this._show = true;
-		// } else {
-		// 	this._show = false;
-		// }
-		// // 	// this._show = true;
-		// // 	super.showContextMenu(contextmenu, null);
-		// // 	return;
-		// // }
-		// // debugger;
-		// if (this._show) {
-		// 	super.showContextMenu(contextmenu, null);
-		// } else {
-		// 	this.hideContextMenu();
-		// }
-		// // delete node?.data?._handleEnum;
 		super.showContextMenu(contextmenu, null);
 	}
 
@@ -46,7 +22,6 @@ export default class ContextMenuTool extends go.ContextMenuTool {
 		// super.positionContextMenu(node.getDocumentPoint(go.Spot.Center), null);
 	}
 	hideContextMenu(): void {
-		console.log(`-------hideContextMenu`);
 		super.hideContextMenu();
 	}
 }

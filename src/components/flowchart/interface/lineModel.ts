@@ -24,7 +24,7 @@ export interface LineModel {
 	 * 图形分类
 	 * 对应 DiagramEnum  WFLink | WFGuideLink
 	 * */
-	diagramType?: DiagramEnum;
+	// diagramType?: DiagramEnum;
 
 	/**
 	 * 分类

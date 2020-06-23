@@ -75,7 +75,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 					onDiagramEvent={this.props.flowchart.handleDiagramEvent}
 					onModelChange={this.props.flowchart.handleModelChange}
 					onFlowchartEvent={this.props.flowchart.handFlowchartEvent}
-					getDiagram={this.props.flowchart.getDiagram}
+					getDiagram={this.props.flowchart.handleGetDiagram}
 				/>
 			</div>
 		);

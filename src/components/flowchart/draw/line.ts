@@ -88,7 +88,6 @@ export default class DrawLink extends Base {
 	};
 
 	onClick = (e: go.InputEvent, obj: GraphObject) => {
-		console.log('#@!@#!@');
 		this.doFlowchartEvent(e, obj, HandleEnum.ShowLineMenu, this.callBack);
 	};
 

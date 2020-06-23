@@ -6,7 +6,7 @@ import { DiagramSetting } from '../config';
  * 得到节点展示的类型
  * @param fcType
  */
-export class FCNode {
+export class NodeStore {
 	static strCondition = '判断条件'; //lang.FCEntities.Condition;
 	static strExtractData = '提取数据'; //lang.FCEntities.ExtractData;
 	static strComplete = '结束流程'; //lang.FCEntities.Complete;
@@ -39,74 +39,76 @@ export class FCNode {
 			group: '',
 			label: '',
 			isSel: false,
-			key: FCNode.getRandomKey(),
+			key: NodeStore.getRandomKey(),
 			isGroup: false,
 			// hasChild: false,
-			opacity: 0
+			opacity: 0,
+			category: '',
+			diagramType: ''
 		};
 		n.category = n.diagramType;
 		return n;
 	}
 
 	static getNode = (fcType: string, group: string = ''): NodeModel => {
-		let node: NodeModel = FCNode.baseModel;
+		let node: NodeModel = NodeStore.baseModel;
 		// this.fcType = type;
 		let title = '';
 		// let src = '';
 		let isGroup = false;
 		switch (fcType as string) {
 			case NodeEnum.Condition:
-				title = FCNode.strCondition; // lang.FCEntities.Condition;
+				title = NodeStore.strCondition; // lang.FCEntities.Condition;
 				// src = 'condition';
 				isGroup = true;
 				break;
 			case NodeEnum.ExtractData:
-				title = FCNode.strExtractData; //lang.FCEntities.ExtractData;
+				title = NodeStore.strExtractData; //lang.FCEntities.ExtractData;
 				// src = 'data';
 				break;
 			case NodeEnum.Complete:
-				title = FCNode.strComplete; //lang.FCEntities.Complete;
+				title = NodeStore.strComplete; //lang.FCEntities.Complete;
 				// src = 'subend';
 				break;
 			case NodeEnum.EnterText:
-				title = FCNode.strEnterText; //lang.FCEntities.EnterText;
+				title = NodeStore.strEnterText; //lang.FCEntities.EnterText;
 				// src = 'input';
 				break;
 			case NodeEnum.Loop:
-				title = FCNode.strLoop; //lang.FCEntities.Loop;
+				title = NodeStore.strLoop; //lang.FCEntities.Loop;
 				// src = 'loop';
 				isGroup = true;
 				break;
 			case NodeEnum.BreakActivity:
-				title = FCNode.strBreakActivity; //lang.FCEntities.BreakActivity;
+				title = NodeStore.strBreakActivity; //lang.FCEntities.BreakActivity;
 				// src = 'loopbreak';
 				break;
 			case NodeEnum.Click:
-				title = FCNode.strClick; //lang.FCEntities.Click;
+				title = NodeStore.strClick; //lang.FCEntities.Click;
 				// src = 'mouseclick';
 				break;
 			case NodeEnum.MouseOver:
-				title = FCNode.strMouseOver; //lang.FCEntities.MouseOver;
+				title = NodeStore.strMouseOver; //lang.FCEntities.MouseOver;
 				// src = 'mousehover';
 				break;
 			case NodeEnum.Navigate:
-				title = FCNode.strNavigate; //lang.FCEntities.Navigate;
+				title = NodeStore.strNavigate; //lang.FCEntities.Navigate;
 				// src = 'openweb';
 				break;
 			case NodeEnum.SwitchCombo:
-				title = FCNode.strSwitchCombo; // lang.FCEntities.SwitchCombo;
+				title = NodeStore.strSwitchCombo; // lang.FCEntities.SwitchCombo;
 				// src = 'switch';
 				break;
 			case NodeEnum.EnterCapacha:
-				title = FCNode.strEnterCapacha; //lang.FCEntities.EnterCapacha;
+				title = NodeStore.strEnterCapacha; //lang.FCEntities.EnterCapacha;
 				// src = 'verify';
 				break;
 			case NodeEnum.Branch:
-				title = FCNode.strBranch; //lang.FCEntities.Branch;
+				title = NodeStore.strBranch; //lang.FCEntities.Branch;
 				isGroup = true;
 				break;
 			case NodeEnum.WFGuideNode:
-				title = FCNode.strWFGuideNode; //lang.FCEntities.WFGuideNode;
+				title = NodeStore.strWFGuideNode; //lang.FCEntities.WFGuideNode;
 				break;
 			default:
 				break;
@@ -115,14 +117,17 @@ export class FCNode {
 		node.label = title;
 		// node.src = src;
 		node.isGroup = isGroup;
+		node.sortIndex = 0;
+
 		if (!group) {
 			group = 'root';
 		}
 		node.group = group;
-		node.category = node.diagramType = FCNode.getDiagramEnum(fcType);
-
+		node.category = node.diagramType = NodeStore.getDiagramEnum(fcType);
+		node.type = fcType as NodeEnum;
+		//
 		// 特殊点处理
-		switch (node.type) {
+		switch (fcType) {
 			case NodeEnum.Start:
 				node.key = 'start';
 				break;
@@ -195,4 +200,4 @@ export class FCNode {
 	};
 }
 
-export default FCNode;
+export default NodeStore;

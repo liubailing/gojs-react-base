@@ -1,4 +1,4 @@
-import { DiagramEnum } from '../enum';
+import { DiagramEnum, NodeEnum } from '../enum';
 /**
  * 图形节点属性
  */
@@ -13,7 +13,7 @@ export type NodeModel = {
 	group: string;
 
 	/** 节点  类型  FCNodeEnmu */
-	type: string;
+	type: string | NodeEnum;
 
 	/** 是否是组 */
 	isGroup: boolean;
@@ -35,7 +35,7 @@ export type NodeModel = {
 	 * 对应 FCDiagramType
 	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
 	 * */
-	diagramType?: DiagramEnum;
+	diagramType?: string | DiagramEnum;
 
 	/** 透明度 */
 	opacity?: number /**  */;
@@ -44,5 +44,5 @@ export type NodeModel = {
 	sortIndex?: number;
 
 	/** 节点  类型  FCNodeEnum */
-	category?: string;
+	category?: string | DiagramEnum;
 };

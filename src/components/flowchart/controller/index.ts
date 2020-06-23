@@ -1,2 +1,2 @@
-export { FCNode } from './fcNode';
-export { FCLink } from './fcLink';
+export { NodeStore } from './fcNode';
+export { LineStore } from './fcLink';

@@ -28,6 +28,7 @@
 	margin-bottom: 1px;
 	list-style: none;
 	padding: 2px 3px;
+	word-break: break-all;
 }
 
 #div-Main .div-logs li:nth-of-type(even) {

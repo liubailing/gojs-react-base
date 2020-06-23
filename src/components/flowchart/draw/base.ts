@@ -21,12 +21,11 @@ export default class Base {
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.Center));
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopLeft));
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
-
 			if (node && node.data) {
 				let e: NodeEvent = {
 					eType: eType
 				} as NodeEvent;
-				// debugger;
+				//
 				switch (eType) {
 					/** 打开点菜单 */
 					case HandleEnum.ShowNodeMenu:
@@ -51,7 +50,7 @@ export default class Base {
 							node.data._handleEnum = eType;
 							node.diagram?.commandHandler.showContextMenu(node.diagram);
 						}
-						flowchartcallBack(e);
+						// flowchartcallBack(e);
 						break;
 					default:
 						e.node = node.data;

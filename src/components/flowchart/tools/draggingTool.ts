@@ -82,24 +82,26 @@ export default class DraggingTool extends go.DraggingTool {
 		if (node && node.part && node.part.data) dragToNode = node.part.data;
 		if (dragNode.category === DiagramEnum.ConditionSwitch) candrag = false;
 
+		/**
+		 * 不能往子集里面拖动
+		 */
 		if (candrag && this.currentPart instanceof go.Group) {
 			let objs = this.currentPart.findSubGraphParts();
 			if (objs && objs.size > 0 && node && objs.has(node)) candrag = false;
 			// if (node) baseChanges.setLinkCss(node, false);
 		}
 
-		if (dragNode && dragToNode && candrag) {
-			let e: NodeEvent = {
-				eType: HandleEnum.DragNode2Link,
-				node: dragNode,
-				toLink: dragToNode
-			} as NodeEvent;
-			this._doDragEvent(e);
+		// 判断为线
+		if (dragToNode && dragToNode.from !== undefined && dragToNode.from) {
+			if (dragToNode.from === dragNode.key || dragToNode.to === dragNode.key) candrag = false;
+			/**
+			 * 触发拖拽
+			 */
+			if (dragNode && dragToNode && candrag) {
+				let e: NodeEvent = { eType: HandleEnum.DragNode2Link, node: dragNode, toLine: dragToNode } as NodeEvent;
+				this._doDragEvent(e);
+			}
 		}
-
-		// debugger;
-
-		// if (this._doDragEvent && this._doDragEvent.destroy) this._doDragEvent.destroy();
 
 		super.doDeactivate();
 	}

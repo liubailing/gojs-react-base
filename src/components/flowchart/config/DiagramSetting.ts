@@ -36,6 +36,5 @@ export const DiagramSetting = {
 	groupHeight: 0,
 	linkOpacity: 1,
 	spotOpacity: 0,
-	openWidth: 2,
-	branchLayerGroup: true
+	openWidth: 2
 };

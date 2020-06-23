@@ -1,6 +1,8 @@
 import { IFlowchartHander, NodeModel, LineModel } from '../interface';
 import { HanderFlowchart } from '../handle';
 import { observable, computed, action } from 'mobx';
+import { NodeEnum } from '../enum';
+import { TestData } from '.';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -136,6 +138,50 @@ export class WorkflowHandle implements IFlowchartHander {
 			contextMenuDIV.innerHTML = '';
 		}
 	}
+
+	isSimpleData: boolean = true;
+	test = (action: string) => {
+		switch (action) {
+			case 'init':
+				this.isSimpleData = !this.isSimpleData;
+				const data = TestData.getFlowchartData(this.isSimpleData);
+				this.flowchart.initFlochart(data.nodeArray, data.linkArray);
+				break;
+			case 'getall':
+				const dataAll = this.flowchart.getAll();
+				this.flowchart.initFlochart(dataAll.nodes, dataAll.lines);
+				break;
+			case 'hide_contextMenu':
+				this.flowchart._hideContextMenu();
+				break;
+			case 'add_smiple':
+				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.ExtractData);
+				// this();
+				break;
+			case 'add_loop':
+				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.Loop);
+				// this();
+				break;
+			case 'add_condition':
+				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.Condition);
+
+				break;
+			case 'add_branch':
+				this.flowchart.onAdd2Inner8NodeId('cond', NodeEnum.Branch);
+				// this();
+				break;
+			case 'add_inner_branch':
+				this.flowchart.onAdd2Inner8NodeId('branch1-1', NodeEnum.Loop);
+				// this();
+				break;
+			case 'add_inner_loop':
+				this.flowchart.onAdd2Inner8NodeId('loop', NodeEnum.Condition);
+				// this();
+				break;
+			default:
+				break;
+		}
+	};
 }
 
 const w = new WorkflowHandle();

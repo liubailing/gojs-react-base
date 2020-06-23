@@ -88,7 +88,7 @@ export default class DrawContextMenu extends Base {
 		// document.body.appendChild(this.contextMenuDIV);
 		// this.callBack(HandleEnum.ShowLineMenu)
 		// }
-		// debugger;
+		//
 	};
 
 	hideContextMenu = () => {

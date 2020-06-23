@@ -14,6 +14,10 @@ import './base.css';
  */
 @observer
 class WorkflowTest extends React.Component<{}> {
+	componentDidMount() {
+		Workflow.test('init');
+	}
+
 	render() {
 		return (
 			<>
@@ -42,7 +46,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('init');
+									Workflow.test('init');
 								}}
 							>
 								初始化
@@ -51,7 +55,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('getall');
 								}}
 							>
 								得到全部
@@ -60,7 +64,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								重新渲染
@@ -69,7 +73,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								复杂模型
@@ -78,7 +82,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('hide_contextMenu');
+									Workflow.test('hide_contextMenu');
 								}}
 							>
 								清除contextMenu
@@ -93,7 +97,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('add_smiple');
 								}}
 							>
 								新增节点
@@ -102,17 +106,17 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('add_loop');
 								}}
 							>
-								新增循环并选中
+								新增循环
 							</button>
 						</div>
 
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								为循环追加打开网页
@@ -121,7 +125,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								当前值追加条件节点
@@ -131,10 +135,37 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('add_condition');
 								}}
 							>
-								新增一个条件节点
+								新增条件判断
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('add_branch');
+								}}
+							>
+								新增一个条件分支
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('add_inner_loop');
+								}}
+							>
+								循环追加一个节点
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('add_inner_branch');
+								}}
+							>
+								分支追加一个节点
 							</button>
 						</div>
 					</div>
@@ -146,7 +177,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								第一个节点存储Data
@@ -155,7 +186,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								取出Data
@@ -170,7 +201,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								加载 测试流程图
@@ -187,7 +218,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								选中第一个节点
@@ -196,7 +227,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								选中 循环
@@ -205,7 +236,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								选中 条件分支2,并触发onClick
@@ -214,7 +245,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								选中 条件
@@ -228,7 +259,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								重命名当前选中节点
@@ -243,7 +274,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										第一个节点
@@ -252,7 +283,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										分支2的第一个节点
@@ -261,7 +292,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										获取打开网页
@@ -278,7 +309,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								取出node1的Data
@@ -287,7 +318,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								取出node1的Data
@@ -296,7 +327,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								改变 loop
@@ -305,7 +336,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								再取出node1的Data
@@ -319,7 +350,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								条件分支1增加条件分支(没实现)
@@ -328,7 +359,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								追加到分支1
@@ -337,7 +368,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								追加到分支2
@@ -346,7 +377,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								追加到循环
@@ -361,7 +392,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										追加到循环(内部最前面)
@@ -370,7 +401,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										追加到循环(内部最后面)
@@ -379,7 +410,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										追加在循环(前面) 并选中
@@ -388,7 +419,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										追加在循环(后面)
@@ -397,7 +428,7 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.flowchart.test('');
+											Workflow.test('');
 										}}
 									>
 										追加到循环(里面) 并选中
@@ -414,7 +445,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								删除节点
@@ -423,7 +454,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								删除节点 循环
@@ -432,7 +463,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								删除节点 条件分支2
@@ -441,7 +472,7 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.flowchart.test('');
+									Workflow.test('');
 								}}
 							>
 								删除节点 条件
