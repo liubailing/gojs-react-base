@@ -1,4 +1,4 @@
-import { DiagramModel, NodeModel, LineModel } from '../interface';
+import { DiagramModel, INodeModel, ILineModel } from '../interface';
 import { NodeStore, LineStore } from '../store';
 import { NodeEnum } from '../enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
@@ -16,8 +16,8 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowchartData(wfData: boolean = false): DiagramModel<NodeModel, LineModel> {
-		let d: DiagramModel<NodeModel, LineModel> = { nodeArray: [], linkArray: [] };
+	static getFlowchartData(wfData: boolean = false): DiagramModel<INodeModel, ILineModel> {
+		let d: DiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
 
 		let start = NodeStore.getNode(NodeEnum.Start);
 		let end = NodeStore.getNode(NodeEnum.End);
@@ -42,10 +42,10 @@ export class TestData {
 	/**
 	 * 工作流数据 -> 流程图数据
 	 */
-	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<NodeModel, LineModel> {
-		let d: DiagramModel<NodeModel, LineModel> = { nodeArray: [], linkArray: [] };
-		let nodes: NodeModel[] = [];
-		let links: LineModel[] = [];
+	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): DiagramModel<INodeModel, ILineModel> {
+		let d: DiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
+		let nodes: INodeModel[] = [];
+		let links: ILineModel[] = [];
 		switch (parent.type) {
 			case ActionNodeType.Condition:
 				if (childs) {
@@ -140,9 +140,9 @@ export class TestData {
 	}
 
 	//
-	private static getNodeModel(node: ActionNode, parentkey: string): NodeModel {
+	private static getNodeModel(node: ActionNode, parentkey: string): INodeModel {
 		let f = NodeStore.getNode(node.type);
-		let n: NodeModel = {
+		let n: INodeModel = {
 			type: node.type,
 			group: '',
 			label: f.label,

@@ -3,7 +3,7 @@ import { DiagramEnum } from '../enum';
 /**
  * 连线对应的属性
  */
-export interface LineModel {
+export interface ILineModel {
 	/** 所在分组 */
 	key: string;
 

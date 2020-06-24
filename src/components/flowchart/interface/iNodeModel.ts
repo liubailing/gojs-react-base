@@ -3,7 +3,7 @@ import { DobuleLinked } from '../../../structure';
 /**
  * 图形节点属性
  */
-export interface NodeModel {
+export interface INodeModel {
 	/** 唯一标识ID */
 	key: string;
 
@@ -39,5 +39,5 @@ export interface NodeModel {
 	category?: string | DiagramEnum;
 
 	/** 自身 */
-	nodeLinked?: DobuleLinked<NodeModel>;
+	nodeLinked?: DobuleLinked<INodeModel>;
 }

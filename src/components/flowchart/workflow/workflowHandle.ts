@@ -1,4 +1,4 @@
-import { IFlowchartHander, NodeModel, LineModel } from '../interface';
+import { IFlowchartHander, INodeModel, ILineModel } from '../interface';
 import { HanderFlowchart } from '../handle';
 import { observable, computed, action } from 'mobx';
 import { NodeEnum } from '../enum';
@@ -24,14 +24,14 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * 点击信息
 	 * @param node 节点数据
 	 */
-	handlerClickNode(node: NodeModel): void {
+	handlerClickNode(node: INodeModel): void {
 		this.log(`-click ${node.key}`);
 	}
 
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNodeCallBack(node: NodeModel): void {}
+	handlerAddNodeCallBack(node: INodeModel): void {}
 
 	/**
 	 * 流程改变后 触发事件
@@ -44,7 +44,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeSetting(node: NodeModel, posX: number, posY: number): void {
+	handlerShowNodeSetting(node: INodeModel, posX: number, posY: number): void {
 		this.log(`Show NodeSetting,${posX},${posY},${node.label}`);
 	}
 
@@ -54,7 +54,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeMenu(node: NodeModel, posX: number, posY: number): void {
+	handlerShowNodeMenu(node: INodeModel, posX: number, posY: number): void {
 		this.showContent('div-actions', posX, posY);
 		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
 	}
@@ -70,7 +70,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeInfo(node: NodeModel, posX: number, posY: number): void {
+	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void {
 		this.showContent('div-actions', posX, posY);
 		this.log(`Show NodeInfo,${posX},${posY},${node.label}`);
 	}
@@ -87,7 +87,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowLineMenu(line: LineModel, posX: number, posY: number): void {
+	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void {
 		this.showContent('div-actions', posX, posY);
 		this.log(`Show LineMenu,${posX},${posY},${line.from}`);
 	}

@@ -1,6 +1,6 @@
 import go from 'gojs';
-import { NodeModel } from './iNodeModel';
-import { LineModel } from './iLineModel';
+import { INodeModel } from './iNodeModel';
+import { ILineModel } from './iLineModel';
 
 export interface IFlowchartHander {
 	/******************************
@@ -13,12 +13,12 @@ export interface IFlowchartHander {
 	 * 点击信息
 	 * @param node 节点数据
 	 */
-	handlerClickNode(node: NodeModel): void;
+	handlerClickNode(node: INodeModel): void;
 
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNodeCallBack(node: NodeModel): void;
+	handlerAddNodeCallBack(node: INodeModel): void;
 
 	/**
 	 * 流程改变后 触发事件
@@ -31,7 +31,7 @@ export interface IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeSetting(node: NodeModel, posX: number, posY: number): void;
+	handlerShowNodeSetting(node: INodeModel, posX: number, posY: number): void;
 
 	/**
 	 * 显示点-菜单面板
@@ -39,7 +39,7 @@ export interface IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeMenu(node: NodeModel, posX: number, posY: number): void;
+	handlerShowNodeMenu(node: INodeModel, posX: number, posY: number): void;
 
 	/** 隐藏菜单面板 */
 	handlerHideNodeMenu(): void;
@@ -50,7 +50,7 @@ export interface IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowNodeInfo(node: NodeModel, posX: number, posY: number): void;
+	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void;
 
 	/** 隐藏信息面板 */
 	handlerHideNodeInfo(): void;
@@ -61,7 +61,7 @@ export interface IFlowchartHander {
 	 * @param posX x 坐标
 	 * @param posY y 坐标
 	 */
-	handlerShowLineMenu(line: LineModel, posX: number, posY: number): void;
+	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void;
 
 	/** 隐藏线面板 */
 	handlerHideLineMenu(): void;

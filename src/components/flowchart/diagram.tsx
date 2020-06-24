@@ -238,7 +238,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	//  *
 	//  */
 	// doEvent = {
-	// 	canDelete: (node: NodeModel): boolean => {
+	// 	canDelete: (node: INodeModel): boolean => {
 	// 		// console.log(`~test flowchart~ delete; type:${node.type}, key:${node.key}, currkey:${this.props.store.currNodeKey}`)
 
 	// 		if (node && node.type === NodeEnum.Branch) {
@@ -253,10 +253,10 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	// 		return true;
 	// 		//return this.props.store.cacheNodeBrotherKeys(node.key).Size;
 	// 	},
-	// 	delete: (node: NodeModel) => {
+	// 	delete: (node: INodeModel) => {
 	// 		// this.props.store.onDeleteNode(node.key);
 	// 	},
-	// 	copy: (node: NodeModel) => {
+	// 	copy: (node: INodeModel) => {
 	// 		// this.props.store.executeCMD(FCActType.Copy, node.key);
 	// 	},
 	// 	paste: (node: go.Part | null) => {

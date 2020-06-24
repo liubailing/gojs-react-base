@@ -1,5 +1,5 @@
 import { NodeEnum, DiagramEnum } from '../enum';
-import { LineModel, NodeModel } from '../interface';
+import { ILineModel, INodeModel } from '../interface';
 import { NodeStore, LineStore } from '../store';
 import { DobuleLinked } from '../../../structure';
 
@@ -7,8 +7,8 @@ import { DobuleLinked } from '../../../structure';
  * 各种操作的中间数据
  */
 type FCModel = {
-	nodes: NodeModel[];
-	lines: LineModel[];
+	nodes: INodeModel[];
+	lines: ILineModel[];
 };
 
 /**
@@ -43,18 +43,18 @@ const nodeEnum2HasChild: NodeEnum[] = [NodeEnum.Loop, NodeEnum.Condition, NodeEn
  * 处理数据
  */
 export default class FlowchartStore {
-	diagramData: DobuleLinked<NodeModel> = new DobuleLinked<NodeModel>();
+	diagramData: DobuleLinked<INodeModel> = new DobuleLinked<INodeModel>();
 	//以下是 线 相关的缓存数据
 	mapLineKeyIdx: Map<string, number>;
 	mapLineFromTo = new Map<string, string>();
-	private _nodes: Array<NodeModel> = [];
-	private _lines: Array<LineModel> = [];
+	private _nodes: Array<INodeModel> = [];
+	private _lines: Array<ILineModel> = [];
 
 	//以下是 点 相关的缓存数据
 	mapNodeKeyIdx: Map<string, number>;
 	mapNodeParent: Map<string, string>;
 	mapNodeType: Map<string, NodeEnum>;
-	mapNode: Map<string, NodeModel>;
+	mapNode: Map<string, INodeModel>;
 
 	// 复杂的对应关系
 	mapNodeBrotherKeys: Map<string, Array<string>>;
@@ -88,7 +88,7 @@ export default class FlowchartStore {
 	 * @param nodeDataArray
 	 * @param linkDataArray
 	 */
-	refresData(nodeDataArray: Array<NodeModel>, linkDataArray: Array<LineModel>) {
+	refresData(nodeDataArray: Array<INodeModel>, linkDataArray: Array<ILineModel>) {
 		this._lines = [...linkDataArray];
 		this._nodes = [...nodeDataArray];
 		// 1.刷星线的关系数据
@@ -106,7 +106,7 @@ export default class FlowchartStore {
 		let m = this.mapNode.get(nodekey);
 		if (m) {
 			let t = this.getAddData8NodeEnum(type, m.group);
-			let newLine: LineModel[] = [];
+			let newLine: ILineModel[] = [];
 			if (t && t.nodes.length > 0) {
 				let newNode = t.nodes[0];
 
@@ -189,7 +189,7 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param toline
 	 */
-	dragNode2link(nodekey: string, toline?: LineModel): boolean {
+	dragNode2link(nodekey: string, toline?: ILineModel): boolean {
 		let node = this.mapNode.get(nodekey);
 		// 主要是改变线
 		if (node && toline) {
@@ -430,10 +430,10 @@ export default class FlowchartStore {
 	/**
 	 * Update map of link keys to their index in the array.
 	 */
-	private refreshLinkIndex(linkArr: Array<LineModel>) {
+	private refreshLinkIndex(linkArr: Array<ILineModel>) {
 		this.mapLineKeyIdx.clear();
 		this.mapLineFromTo.clear();
-		linkArr.forEach((l: LineModel, idx: number) => {
+		linkArr.forEach((l: ILineModel, idx: number) => {
 			this.mapLineKeyIdx.set(l.key, idx);
 			this.mapLineFromTo.set(l.from, l.to);
 		});
@@ -442,14 +442,14 @@ export default class FlowchartStore {
 	/**
 	 * Update map of node keys to their index in the array.
 	 */
-	private refreshNodeIndex(nodeArr: Array<NodeModel>) {
+	private refreshNodeIndex(nodeArr: Array<INodeModel>) {
 		this.mapNodeKeyIdx.clear();
 		this.mapNodeParent.clear();
 		this.mapNodeType.clear();
 		this.mapNode.clear();
 		// 第一次得到简单数据
 		let types: Set<NodeEnum> = new Set();
-		nodeArr.forEach((n: NodeModel, idx: number) => {
+		nodeArr.forEach((n: INodeModel, idx: number) => {
 			this.mapNodeKeyIdx.set(n.key, idx);
 			this.mapNodeParent.set(n.key, n.group);
 			this.mapNodeType.set(n.key, n.type as NodeEnum);
@@ -466,13 +466,13 @@ export default class FlowchartStore {
 	 * @param nodeArr
 	 * @param types
 	 */
-	private refreshFlowchartData(nodeArr: Array<NodeModel>, types: Set<NodeEnum>) {
+	private refreshFlowchartData(nodeArr: Array<INodeModel>, types: Set<NodeEnum>) {
 		this.mapNodeBrotherKeys.clear();
 		this.mapNodeChildKeys.clear();
 		this.mapNodeType2Keys.clear();
 		// 1、第一次得到简单数据
 
-		nodeArr.forEach((n: NodeModel, idx: number) => {
+		nodeArr.forEach((n: INodeModel, idx: number) => {
 			if (nodeEnum2HasChild.includes(n.type as NodeEnum)) {
 				let ids = this.getChilds8Node(nodeArr, n);
 
@@ -502,7 +502,7 @@ export default class FlowchartStore {
 	 * @param nodeArr
 	 * @param node
 	 */
-	private getChilds8Node(nodeArr: Array<NodeModel>, node: NodeModel): string[] {
+	private getChilds8Node(nodeArr: Array<INodeModel>, node: INodeModel): string[] {
 		if (nodeArr.length < 1) return [];
 		let childs: string[] = [];
 
@@ -573,12 +573,12 @@ export default class FlowchartStore {
 	 *  @param node
 	 *  @param group
 	 */
-	private getAddData8NodeEnum = (nodeEnmu: NodeEnum, groupKey: string, node?: NodeModel): FCModel => {
+	private getAddData8NodeEnum = (nodeEnmu: NodeEnum, groupKey: string, node?: INodeModel): FCModel => {
 		let d: FCModel = {
 			nodes: [],
 			lines: []
 		};
-		let actNode: NodeModel | undefined = undefined;
+		let actNode: INodeModel | undefined = undefined;
 
 		if (node && node.key) {
 			actNode = node;

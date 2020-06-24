@@ -1,5 +1,5 @@
-import { LineModel } from './iLineModel';
-import { NodeModel } from './iNodeModel';
+import { ILineModel } from './iLineModel';
+import { INodeModel } from './iNodeModel';
 import { HandleEnum } from '../enum';
 
 /**
@@ -9,16 +9,16 @@ export interface NodeEvent {
 	/** 监听的事件类型 */
 	eType: HandleEnum;
 	/** 当前点 */
-	node?: NodeModel;
+	node?: INodeModel;
 	/** 当前点 */
-	line?: LineModel;
+	line?: ILineModel;
 	/** 操作目标线 */
-	toLine?: LineModel;
+	toLine?: ILineModel;
 	/** 操作目标点 */
-	toNode?: NodeModel;
+	toNode?: INodeModel;
 
 	/** 操作目标点 */
-	// toObj?: LineModel | NodeModel;
+	// toObj?: ILineModel | INodeModel;
 	// /** 当前 X 坐标 */
 	// posX?: number;
 	// /** 当前 Y 坐标 */

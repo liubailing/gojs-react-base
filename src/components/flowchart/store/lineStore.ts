@@ -1,4 +1,4 @@
-import { LineModel } from '../interface';
+import { ILineModel } from '../interface';
 
 /**
  * 得到节点展示的类型
@@ -12,10 +12,10 @@ export class LineStore {
 	 * @param group
 	 * @param isCondition
 	 */
-	static getLink(from: string, to: string, group: string): LineModel {
+	static getLink(from: string, to: string, group: string): ILineModel {
 		if (!from || from === to) return { key: '', from: '', to: '' };
 		if (!group) group = 'root';
-		let link: LineModel = {
+		let link: ILineModel = {
 			key: `${from}-${to}`,
 			from: from,
 			to: to

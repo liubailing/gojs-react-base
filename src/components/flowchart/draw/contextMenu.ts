@@ -1,7 +1,7 @@
 import go, { Diagram } from 'gojs';
 import { HandleEnum } from '../enum';
 import Base from './base';
-import { NodeEvent, LineModel, NodeModel } from '../interface';
+import { NodeEvent, ILineModel, INodeModel } from '../interface';
 const $ = go.GraphObject.make;
 const domId = 'div-flowchart-contextMenu';
 
@@ -34,9 +34,9 @@ export default class DrawContextMenu extends Base {
 			} as NodeEvent;
 
 			if (eType === HandleEnum.ShowLineMenu) {
-				e.line = node.data as LineModel;
+				e.line = node.data as ILineModel;
 			} else {
-				e.node = node.data as NodeModel;
+				e.node = node.data as INodeModel;
 			}
 
 			let offset = this.diagram.lastInput.viewPoint;

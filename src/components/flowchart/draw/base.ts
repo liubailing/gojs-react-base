@@ -32,9 +32,9 @@ export default class Base {
 					case HandleEnum.ShowNodeMenu:
 					case HandleEnum.ShowLineMenu:
 						// if (eType === HandleEnum.ShowLineMenu) {
-						// 	e.line = node.data as LineModel;
+						// 	e.line = node.data as ILineModel;
 						// } else {
-						// 	e.node = node.data as NodeModel;
+						// 	e.node = node.data as INodeModel;
 						// }
 
 						// let offset = node.diagram?.lastInput.viewPoint;

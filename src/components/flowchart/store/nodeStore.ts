@@ -1,5 +1,5 @@
 import { NodeEnum, DiagramEnum } from '../enum';
-import { NodeModel } from '../interface';
+import { INodeModel } from '../interface';
 import { DiagramSetting } from '../config';
 
 /**
@@ -33,8 +33,8 @@ export class NodeStore {
 		return pwd;
 	};
 
-	static get baseModel(): NodeModel {
-		let n: NodeModel = {
+	static get baseModel(): INodeModel {
+		let n: INodeModel = {
 			type: '',
 			group: '',
 			label: '',
@@ -46,8 +46,8 @@ export class NodeStore {
 		return n;
 	}
 
-	static getNode = (fcType: string, group: string = ''): NodeModel => {
-		let node: NodeModel = NodeStore.baseModel;
+	static getNode = (fcType: string, group: string = ''): INodeModel => {
+		let node: INodeModel = NodeStore.baseModel;
 		// this.fcType = type;
 		let title = '';
 		// let src = '';
