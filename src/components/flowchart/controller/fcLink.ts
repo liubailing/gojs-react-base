@@ -14,13 +14,12 @@ export class LineStore {
 	 * @param isCondition
 	 */
 	static getLink(from: string, to: string, group: string): LineModel {
-		if (!from || from === to) return { key: '', from: '', to: '', category: '' };
+		if (!from || from === to) return { key: '', from: '', to: '' };
 		if (!group) group = 'root';
 		let link: LineModel = {
 			key: `${from}-${to}`,
 			from: from,
-			to: to,
-			category: DiagramEnum.WFLink
+			to: to
 		};
 		return link;
 	}

@@ -129,7 +129,12 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		/**
 		 * 画线
 		 */
-		myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, new DrawLink(this.props.onFlowchartEvent).getLink());
+		//myDiagram.linkTemplateMap.add(DiagramEnum.WFLink, new DrawLink(this.props.onFlowchartEvent).getLink());
+
+		/**
+		 * 画线
+		 */
+		myDiagram.linkTemplate = new DrawLink(this.props.onFlowchartEvent).getLink();
 
 		/**
 		 * 画节点

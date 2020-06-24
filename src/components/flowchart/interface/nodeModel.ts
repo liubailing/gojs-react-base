@@ -1,4 +1,5 @@
 import { DiagramEnum, NodeEnum } from '../enum';
+import { DobuleLinked } from '../../../structure';
 /**
  * 图形节点属性
  */
@@ -31,18 +32,15 @@ export type NodeModel = {
 	/** 对应的配置属性  交互使用的数据 */
 	data?: any;
 
-	/** 图形分类
-	 * 对应 FCDiagramType
-	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
-	 * */
-	diagramType?: string | DiagramEnum;
-
-	/** 透明度 */
-	opacity?: number /**  */;
-
 	/** 排序 */
 	sortIndex?: number;
 
-	/** 节点  类型  FCNodeEnum */
+	/** 图形分类
+	 * 对应 FCcategory
+	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
+	 * */
 	category?: string | DiagramEnum;
+
+	/** 自身 */
+	nodeLinked?: DobuleLinked<NodeModel>;
 };

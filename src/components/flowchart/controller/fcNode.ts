@@ -42,11 +42,8 @@ export class NodeStore {
 			key: NodeStore.getRandomKey(),
 			isGroup: false,
 			// hasChild: false,
-			opacity: 0,
-			category: '',
-			diagramType: ''
+			category: ''
 		};
-		n.category = n.diagramType;
 		return n;
 	}
 
@@ -123,7 +120,7 @@ export class NodeStore {
 			group = 'root';
 		}
 		node.group = group;
-		node.category = node.diagramType = NodeStore.getDiagramEnum(fcType);
+		node.category = NodeStore.getDiagramEnum(fcType);
 		node.type = fcType as NodeEnum;
 		//
 		// 特殊点处理

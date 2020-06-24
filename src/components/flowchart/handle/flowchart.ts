@@ -1,5 +1,5 @@
 import go from 'gojs';
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, toJS } from 'mobx';
 import FlowchartData from './flowchartData';
 import { IDiagramHander, IFlowchartHander, DiagramModel, NodeModel, LineModel, NodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';
@@ -103,7 +103,7 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		this.nodeDataArray = nodeDataArray;
 		this.linkDataArray = linkDataArray;
 		this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
-		super.refresData(this.nodeDataArray, this.linkDataArray);
+		super.refresData(toJS(this.nodeDataArray), toJS(this.linkDataArray));
 	}
 
 	/**

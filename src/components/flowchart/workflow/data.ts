@@ -28,7 +28,7 @@ export class TestData {
 			d.nodeArray = [start, end];
 			d.linkArray = [LineStore.getLink(start.key, end.key, end.group)];
 			d.nodeArray.map((x) => {
-				x.diagramType = NodeStore.getDiagramEnum(x.type as NodeEnum);
+				x.category = NodeStore.getDiagramEnum(x.type as NodeEnum);
 			});
 		} else {
 			d.linkArray.push(LineStore.getLink(start.key, d.nodeArray[0].key, start.group));
@@ -149,10 +149,10 @@ export class TestData {
 			label: f.label,
 			isSel: true,
 			key: node.key,
-			diagramType: f.diagramType,
+			category: f.category,
 			isGroup: f.isGroup
 		};
-		n.category = n.diagramType;
+		n.category = n.category;
 		return { ...n, ...{ group: parentkey } };
 	}
 }

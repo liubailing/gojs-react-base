@@ -1,6 +1,7 @@
 import { NodeEnum, DiagramEnum } from '../enum';
 import { LineModel, NodeModel } from '../interface';
 import { NodeStore, LineStore } from '../controller';
+import { DobuleLinked } from '../../../structure';
 
 /**
  * 各种操作的中间数据
@@ -41,7 +42,8 @@ const nodeEnum2HasChild: NodeEnum[] = [NodeEnum.Loop, NodeEnum.Condition, NodeEn
 /**
  * 处理数据
  */
-export default class HanderFlowchart {
+export default class FlowchartStore {
+	diagramData: DobuleLinked<NodeModel> = new DobuleLinked<NodeModel>();
 	//以下是 线 相关的缓存数据
 	mapLineKeyIdx: Map<string, number>;
 	mapLineFromTo = new Map<string, string>();

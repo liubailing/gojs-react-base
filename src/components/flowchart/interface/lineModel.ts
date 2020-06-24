@@ -24,12 +24,12 @@ export interface LineModel {
 	 * 图形分类
 	 * 对应 DiagramEnum  WFLink | WFGuideLink
 	 * */
-	// diagramType?: DiagramEnum;
+	// category?: DiagramEnum;
 
 	/**
 	 * 分类
 	 * */
-	category: string;
+	// category: string;
 
 	// /**
 	//  * 分类
