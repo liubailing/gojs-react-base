@@ -1,5 +1,5 @@
 import go from 'gojs';
-import { observable, computed, action, toJS } from 'mobx';
+import { observable, action, toJS } from 'mobx';
 import FlowchartData from './flowchartData';
 import { IDiagramHander, IFlowchartHander, DiagramModel, NodeModel, LineModel, NodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';

@@ -2,12 +2,10 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import * as go from 'gojs';
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Diagram from './diagram';
 import { HanderFlowchart } from './handle';
-import { NodeEvent } from './interface';
 import './flowchartDiagram.css';
 
 /**

@@ -2,13 +2,13 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import go, { Diagram, GraphObject } from 'gojs';
+import go, { Diagram } from 'gojs';
 import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
 import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
-import { DiagramEnum, NodeEnum, HandleEnum } from './enum';
-import { NodeModel, NodeEvent } from './interface';
+import { DiagramEnum } from './enum';
+import { NodeEvent } from './interface';
 import {
 	DrawLink,
 	DrawSimple,

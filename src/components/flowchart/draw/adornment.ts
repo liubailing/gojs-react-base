@@ -1,5 +1,5 @@
 import go, { Diagram } from 'gojs';
-import { BaseColors } from '../config';
+// import { BaseColors } from '../config';
 
 const $ = go.GraphObject.make;
 

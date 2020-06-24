@@ -150,9 +150,7 @@ export class NodeStore {
 		let cate = DiagramEnum.FCNode;
 		switch (fcType) {
 			case NodeEnum.ExtractData:
-			// case NodeEnum.Complete:
 			case NodeEnum.EnterText:
-			// case NodeEnum.BreakActivity:
 			case NodeEnum.MouseOver:
 			case NodeEnum.Click:
 			case NodeEnum.Navigate:

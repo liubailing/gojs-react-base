@@ -1,4 +1,3 @@
-import { DiagramEnum } from '../enum';
 import { LineModel } from '../interface';
 
 /**

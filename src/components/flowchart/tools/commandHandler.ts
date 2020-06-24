@@ -201,7 +201,7 @@ export default class CommandHandler extends go.CommandHandler {
 			distance = 0;
 		} // for aligning edge to edge
 		distance = parseFloat(distance.toString());
-		const selectedParts = new Array();
+		const selectedParts = new Array<go.Part>();
 		diagram.selection.each((current) => {
 			if (current instanceof go.Link) {
 				return;
@@ -229,7 +229,7 @@ export default class CommandHandler extends go.CommandHandler {
 		distance = parseFloat(distance.toString());
 		const { diagram } = this;
 		diagram.startTransaction('align Row');
-		const selectedParts = new Array();
+		const selectedParts = new Array<go.Part>();
 		diagram.selection.each((current) => {
 			if (current instanceof go.Link) {
 				return;

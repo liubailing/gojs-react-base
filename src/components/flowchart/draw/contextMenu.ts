@@ -1,6 +1,5 @@
-import go, { GraphObject, Adornment, HTMLInfo, Diagram } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum, HandleEnum } from '../enum';
+import go, { Diagram } from 'gojs';
+import { HandleEnum } from '../enum';
 import Base from './base';
 import { NodeEvent, LineModel, NodeModel } from '../interface';
 const $ = go.GraphObject.make;

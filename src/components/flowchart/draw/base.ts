@@ -1,9 +1,7 @@
 import go, { GraphObject } from 'gojs';
-import { DiagramEnum, HandleEnum } from '../enum';
-import { NodeEvent, LineModel, NodeModel } from '../interface';
+import { HandleEnum } from '../enum';
+import { NodeEvent } from '../interface';
 import BaseChanges from './baseChanges';
-import { BaseColors } from '../config';
-import { debug } from 'console';
 
 export default class Base {
 	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowchartDiagram.SwitchingLoopTerm

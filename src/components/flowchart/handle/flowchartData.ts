@@ -272,7 +272,7 @@ export default class HanderFlowchart {
 
 				// 这一步表示不明白 1
 				for (const [index, it] of this._lines.entries()) {
-					if (it.from === nodekey && it.to == oldTo) {
+					if (it.from === nodekey && it.to === oldTo) {
 						console.log(`--3-----`, index, it);
 						// 移除线
 						this._lines = [...this._lines.slice(0, index), ...this._lines.slice(index + 1)];
@@ -282,7 +282,7 @@ export default class HanderFlowchart {
 
 				// 这一步表示不明白 2
 				for (const [index, it] of this._lines.entries()) {
-					if (it.to === nodekey && it.from == oldForm) {
+					if (it.to === nodekey && it.from === oldForm) {
 						console.log(`--3-----`, index, it);
 						// 移除线
 						this._lines = [...this._lines.slice(0, index), ...this._lines.slice(index + 1)];
@@ -327,7 +327,7 @@ export default class HanderFlowchart {
 
 			// 	1 修改组
 			let nodeIdx = this.mapNodeKeyIdx.get(nodekey);
-			if (nodeIdx == undefined) return false;
+			if (nodeIdx === undefined) return false;
 			this._nodes[nodeIdx].group = tolineGroup;
 
 			// 刷新数据
@@ -529,11 +529,11 @@ export default class HanderFlowchart {
 			for (const it of nodeArr) {
 				if (it.group === node.key && it.category) {
 					// 从起点开始找起
-					if (it.category == (DiagramEnum.WFGuideSubOpen as string)) {
+					if (it.category === (DiagramEnum.WFGuideSubOpen as string)) {
 						start = it.key;
 					}
 					// 找到终点
-					if (it.category == (DiagramEnum.WFGuideSubClose as string)) {
+					if (it.category === (DiagramEnum.WFGuideSubClose as string)) {
 						end = it.key;
 					}
 				}

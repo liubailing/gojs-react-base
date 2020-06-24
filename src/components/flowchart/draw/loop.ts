@@ -1,6 +1,6 @@
 import go, { GraphObject, Margin } from 'gojs';
 import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum, NodeEnum, HandleEnum } from '../enum';
+import { DiagramEnum, HandleEnum } from '../enum';
 import IList from '../../../assets/flowchart/i-node-list.png';
 import IListHover from '../../../assets/flowchart/i-node-list-hover.png';
 import Base from './base';
