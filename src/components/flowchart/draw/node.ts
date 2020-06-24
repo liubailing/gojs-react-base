@@ -65,7 +65,6 @@ export default class DrawNode extends Base {
 	 */
 	private getNodeFill = (_val: any, _targetObj: any): string => {
 		// const node = (_targetObj as any).part;
-		// if (node && node.data && node.data.isSel) return BaseColors.highlight;
 		return _val ? BaseColors.highlight : BaseColors.backgroud;
 	};
 
@@ -74,7 +73,6 @@ export default class DrawNode extends Base {
 	 */
 	private getNodeWidth = (_val: any, _targetObj: any): number => {
 		const node = (_targetObj as any).part;
-		// if (node && node.data && node.data.isSel) return BaseColors.highlight;
 		return _val ? node.width() + 10 : node.width();
 	};
 

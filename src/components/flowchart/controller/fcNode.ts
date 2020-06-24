@@ -38,7 +38,6 @@ export class NodeStore {
 			type: '',
 			group: '',
 			label: '',
-			isSel: false,
 			key: NodeStore.getRandomKey(),
 			isGroup: false,
 			// hasChild: false,

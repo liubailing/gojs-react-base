@@ -19,9 +19,6 @@ export type NodeModel = {
 	/** 是否是组 */
 	isGroup: boolean;
 
-	/** 是否选中 */
-	isSel?: boolean;
-
 	/***********************
 	 * 以下属性不用管
 	 **********************/

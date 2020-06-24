@@ -146,7 +146,6 @@ export class TestData {
 			type: node.type,
 			group: '',
 			label: f.label,
-			isSel: true,
 			key: node.key,
 			category: f.category,
 			isGroup: f.isGroup
