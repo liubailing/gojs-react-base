@@ -3,7 +3,7 @@ import { observable, action, toJS } from 'mobx';
 import FlowchartData from './flowchartData';
 import { IDiagramHander, IFlowchartHander, DiagramModel, NodeModel, LineModel, NodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';
-import { NodeStore, LineStore } from '../controller';
+import { NodeStore, LineStore } from '../store';
 
 export default class HanderFlowchart extends FlowchartData implements IDiagramHander {
 	/**调用 对外的暴露的接口方法 */

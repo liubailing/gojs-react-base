@@ -1,6 +1,6 @@
 import { NodeEnum, DiagramEnum } from '../enum';
 import { LineModel, NodeModel } from '../interface';
-import { NodeStore, LineStore } from '../controller';
+import { NodeStore, LineStore } from '../store';
 
 /**
  * 各种操作的中间数据

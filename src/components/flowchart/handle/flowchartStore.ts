@@ -1,6 +1,6 @@
 import { NodeEnum, DiagramEnum } from '../enum';
 import { LineModel, NodeModel } from '../interface';
-import { NodeStore, LineStore } from '../controller';
+import { NodeStore, LineStore } from '../store';
 import { DobuleLinked } from '../../../structure';
 
 /**

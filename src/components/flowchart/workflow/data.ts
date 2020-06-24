@@ -1,5 +1,5 @@
 import { DiagramModel, NodeModel, LineModel } from '../interface';
-import { NodeStore, LineStore } from '../controller';
+import { NodeStore, LineStore } from '../store';
 import { NodeEnum } from '../enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
 import TestDataJson from './testData';
