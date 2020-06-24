@@ -8,7 +8,7 @@ import * as React from 'react';
 import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
 import { DiagramEnum } from './enum';
-import { NodeEvent } from './interface';
+import { INodeEvent } from './interface';
 import {
 	DrawLink,
 	DrawSimple,
@@ -30,7 +30,7 @@ interface FlowchartProps {
 	skipsDiagramUpdate: boolean;
 	onDiagramEvent: (e: go.DiagramEvent) => void;
 	onModelChange: (e: go.IncrementalData) => void;
-	onFlowchartEvent: (e: NodeEvent) => void;
+	onFlowchartEvent: (e: INodeEvent) => void;
 }
 
 class FlowchartDiagram extends React.Component<FlowchartProps> {

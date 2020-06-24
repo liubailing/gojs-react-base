@@ -5,7 +5,7 @@ import { HandleEnum } from '../enum';
 /**
  * node 操作事件-相关参数
  */
-export interface NodeEvent {
+export interface INodeEvent {
 	/** 监听的事件类型 */
 	eType: HandleEnum;
 	/** 当前点 */

@@ -1,7 +1,7 @@
 import go from 'gojs';
 import { observable, action, toJS } from 'mobx';
 import FlowchartData from './flowchartData';
-import { IDiagramHander, IFlowchartHander, DiagramModel, INodeModel, ILineModel, NodeEvent } from '../interface';
+import { IDiagramHander, IFlowchartHander, IDiagramModel, INodeModel, ILineModel, INodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';
 import { NodeStore, LineStore } from '../store';
 
@@ -17,7 +17,7 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		this.flowchartHander = handles;
 	}
 
-	data: DiagramModel<INodeModel, ILineModel> | null = null;
+	data: IDiagramModel<INodeModel, ILineModel> | null = null;
 
 	@observable nodeDataArray: Array<INodeModel> = [];
 	@observable linkDataArray: Array<ILineModel> = [];
@@ -109,7 +109,7 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	/**
 	 * 监听到流程图操作
 	 */
-	handFlowchartEvent(e: NodeEvent) {
+	handFlowchartEvent(e: INodeEvent) {
 		let node: INodeModel = e.node ? e.node : NodeStore.baseModel;
 		let line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
 		let pos;

@@ -5,7 +5,7 @@ import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
-import { NodeEvent } from '../interface';
+import { INodeEvent } from '../interface';
 
 const $ = go.GraphObject.make;
 

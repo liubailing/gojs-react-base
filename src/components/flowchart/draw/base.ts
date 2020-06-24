@@ -1,13 +1,13 @@
 import go, { GraphObject } from 'gojs';
 import { HandleEnum } from '../enum';
-import { NodeEvent } from '../interface';
+import { INodeEvent } from '../interface';
 import BaseChanges from './baseChanges';
 
 export default class Base {
 	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowchartDiagram.SwitchingLoopTerm
 	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowchartDiagram.OpenStepSet
 	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; //lang.FlowchartDiagram.ForMoreMenus
-	static nodeEvent: NodeEvent;
+	static nodeEvent: INodeEvent;
 	// onClick() {}
 
 	doFlowchartEvent(e: go.InputEvent, _obj: GraphObject, eType: HandleEnum, flowchartcallBack: Function) {
@@ -20,9 +20,9 @@ export default class Base {
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopLeft));
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
 			if (node && node.data) {
-				let e: NodeEvent = {
+				let e: INodeEvent = {
 					eType: eType
-				} as NodeEvent;
+				} as INodeEvent;
 				//
 				switch (eType) {
 					/** 打开点菜单 */

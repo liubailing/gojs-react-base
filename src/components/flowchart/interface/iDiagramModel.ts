@@ -1,4 +1,4 @@
-export interface DiagramModel<N, L> {
+export interface IDiagramModel<N, L> {
 	nodeArray: N[];
 	linkArray: L[];
 }

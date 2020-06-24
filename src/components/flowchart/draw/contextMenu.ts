@@ -1,7 +1,7 @@
 import go, { Diagram } from 'gojs';
 import { HandleEnum } from '../enum';
 import Base from './base';
-import { NodeEvent, ILineModel, INodeModel } from '../interface';
+import { INodeEvent, ILineModel, INodeModel } from '../interface';
 const $ = go.GraphObject.make;
 const domId = 'div-flowchart-contextMenu';
 
@@ -29,9 +29,9 @@ export default class DrawContextMenu extends Base {
 		if (node) {
 			// console.log(`%%%%%%%%%%`, node.data);
 			let eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
-			let e: NodeEvent = {
+			let e: INodeEvent = {
 				eType: eType
-			} as NodeEvent;
+			} as INodeEvent;
 
 			if (eType === HandleEnum.ShowLineMenu) {
 				e.line = node.data as ILineModel;
@@ -98,9 +98,9 @@ export default class DrawContextMenu extends Base {
 		// 	document.body.removeChild(this.contextMenuDIV);
 		// }
 
-		let handle: NodeEvent = {
+		let handle: INodeEvent = {
 			eType: HandleEnum.HideContextMenu
-		} as NodeEvent;
+		} as INodeEvent;
 		this.callBack(handle);
 	};
 }

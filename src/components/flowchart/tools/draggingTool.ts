@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 import { HandleEnum, DiagramEnum } from '../enum';
-import { NodeEvent } from '../interface';
+import { INodeEvent } from '../interface';
 // import baseChanges from '../draw/baseChanges';
 
 export default class DraggingTool extends go.DraggingTool {
@@ -98,7 +98,11 @@ export default class DraggingTool extends go.DraggingTool {
 			 * 触发拖拽
 			 */
 			if (dragNode && dragToNode && candrag) {
-				let e: NodeEvent = { eType: HandleEnum.DragNode2Link, node: dragNode, toLine: dragToNode } as NodeEvent;
+				let e: INodeEvent = {
+					eType: HandleEnum.DragNode2Link,
+					node: dragNode,
+					toLine: dragToNode
+				} as INodeEvent;
 				this._doDragEvent(e);
 			}
 		}
