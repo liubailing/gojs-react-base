@@ -3,7 +3,7 @@ import { DobuleLinked } from '../../../structure';
 /**
  * 图形节点属性
  */
-export type NodeModel = {
+export interface NodeModel {
 	/** 唯一标识ID */
 	key: string;
 
@@ -40,4 +40,4 @@ export type NodeModel = {
 
 	/** 自身 */
 	nodeLinked?: DobuleLinked<NodeModel>;
-};
+}

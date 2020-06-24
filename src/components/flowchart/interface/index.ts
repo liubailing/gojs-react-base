@@ -1,6 +1,6 @@
-export type { DiagramModel } from './diagramModel';
-export type { LineModel } from './lineModel';
-export type { NodeModel } from './nodeModel';
-export type { NodeEvent } from './nodeEvent';
-export type { IDiagramHander } from './diagramHandle';
-export type { IFlowchartHander } from './flowchartHandle';
+export type { DiagramModel } from './iDiagramModel';
+export type { NodeModel } from './iNodeModel';
+export type { LineModel } from './iLineModel';
+export type { NodeEvent } from './iNodeEvent';
+export type { IDiagramHander } from './iDiagramHandle';
+export type { IFlowchartHander } from './iFlowchartHandle';

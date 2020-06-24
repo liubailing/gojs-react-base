@@ -1,5 +1,5 @@
-import { LineModel } from './lineModel';
-import { NodeModel } from './nodeModel';
+import { LineModel } from './iLineModel';
+import { NodeModel } from './iNodeModel';
 import { HandleEnum } from '../enum';
 
 /**

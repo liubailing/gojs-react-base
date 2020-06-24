@@ -1,12 +1,12 @@
 import go from 'gojs';
-import { NodeModel } from './nodeModel';
-import { LineModel } from './lineModel';
+import { NodeModel } from './iNodeModel';
+import { LineModel } from './iLineModel';
 
 export interface IFlowchartHander {
 	/******************************
 	 *
 	 ******************************/
-	
+
 	/** 点击节点 */
 	showLineEnmu_Context?: boolean;
 	/**
