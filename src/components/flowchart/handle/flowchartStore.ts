@@ -1,6 +1,5 @@
-import { NodeEnum, DiagramEnum } from '../enum';
+import { NodeEnum } from '../enum';
 import { ILineModel, INodeModel } from '../interface';
-import { NodeStore, LineStore } from '../store';
 import { FlowchartModel } from '../model';
 
 /**
@@ -78,8 +77,21 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2After8NodeId(nodeId: string, type: NodeEnum): boolean {
-		let res = this._data.add2After8NodeId(nodeId, type);
+	add2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this._data.add2Next8NodeId(nodeId, type);
+		if (res) {
+			return true;
+		}
+		return res;
+	}
+
+	/**
+	 * 往后追加 一个节点
+	 * @param nodekey
+	 * @param type
+	 */
+	add2Pre8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this._data.add2Pre8NodeId(nodeId, type);
 		if (res) {
 			return true;
 		}
@@ -107,7 +119,7 @@ export default class FlowchartStore {
 	add2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
 		let childs = this.mapNodeChildKeys.get(nodeId);
 		if (childs && childs.length > 0) {
-			let res = this._data.add2After8NodeId(childs[0], type);
+			let res = this._data.add2Next8NodeId(childs[0], type);
 			if (res) {
 				return true;
 			}

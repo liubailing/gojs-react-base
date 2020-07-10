@@ -83,6 +83,27 @@ class DobuleList<T> implements IList<T> {
 		return false;
 	}
 
+	insertPre(item: T, a: T): boolean {
+		if (this.empty()) {
+			return false;
+		}
+		let indexItem = this._header.next;
+		let preItem = this._header;
+		while (indexItem !== this._tail) {
+			if (indexItem.value == item) {
+				let valueItem = new Item<T>(a);
+				valueItem.next = indexItem;
+				preItem.next = valueItem;
+				this._count++;
+				return true;
+			}
+			preItem = indexItem;
+			indexItem = indexItem.next;
+		}
+
+		return false;
+	}
+
 	replace(item: T, newItem: T): boolean {
 		if (this.empty()) {
 			return false;

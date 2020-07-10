@@ -16,11 +16,4 @@ export interface INodeEvent {
 	toLine?: ILineModel;
 	/** 操作目标点 */
 	toNode?: INodeModel;
-
-	/** 操作目标点 */
-	// toObj?: ILineModel | INodeModel;
-	// /** 当前 X 坐标 */
-	// posX?: number;
-	// /** 当前 Y 坐标 */
-	// posY?: number;
 }

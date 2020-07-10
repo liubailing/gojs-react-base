@@ -2,6 +2,7 @@ import Linked from './linked';
 import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
+
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 以下是 点 相关的缓存数据
@@ -25,6 +26,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		NodeEnum.WFGuideNode,
 		NodeEnum.SubClose
 	];
+
+	hasChildsNodeType: Array<NodeEnum> = [NodeEnum.Condition, NodeEnum.Branch, NodeEnum.Loop];
+
 	constructor() {
 		super();
 
@@ -60,6 +64,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 			// 完善缓存
 			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
+			if (!this.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
+				item.value.childs = null;
+			}
 			this.mapNode.set(item.value.key, item.value);
 
 			// 处理子节点
@@ -101,38 +108,51 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		});
 	}
 
-	add2After8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Next8NodeId(nodekey: string, type: NodeEnum): boolean {
 		let newNode = this.getNodeModel8Type(type, '');
 		return this.insert8NodeId(nodekey, newNode);
 	}
 
-	add2Before8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Pre8NodeId(nodekey: string, type: NodeEnum): boolean {
 		let item = this._header.next;
+		let preItem = this._header;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
+				// debugger;
 				let newNode = this.getNodeModel8Type(type, item.value.group);
-				if (item.value.type === NodeEnum.SubOpen) {
+				if (item.value.type === NodeEnum.SubClose) {
 					// 去判断下一次节点是不是 wfguide;
-					let nextNode = item.next;
+					// let nextNode = item.next;
 
 					// 替换
-					if (nextNode.value.type === NodeEnum.WFGuideNode) {
-						return this.replace(nextNode.value, newNode);
+					if (preItem.value.type === NodeEnum.WFGuideNode) {
+						return this.replace(preItem.value, newNode);
 					}
 				} else if (item.value.type === NodeEnum.WFGuideNode) {
 					// 如果自身就是 wfguide
 					return this.replace(item.value, newNode);
+				} else if (item.value.type === NodeEnum.SubOpen) {
+					return false;
 				}
-				return this.insert(item.value, newNode);
+
+				return this.insertPre(item.value, newNode);
 			}
 
 			if (item.value.childs) {
-				let res = item.value.childs.add2After8NodeId(nodekey, type);
+				let res = item.value.childs.add2Pre8NodeId(nodekey, type);
 				if (res) {
+					if (item.value.type === NodeEnum.Condition) {
+						let cItem = item.value.childs._header.next;
+						let idx = 0;
+						while (cItem !== item.value.childs._tail) {
+							cItem.value.sortIndex = idx++;
+							cItem = cItem.next;
+						}
+					}
 					return res;
 				}
 			}
-
+			preItem = item;
 			item = item.next;
 		}
 
@@ -225,6 +245,11 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return false;
 	}
 
+	/**
+	 * 插入
+	 * @param nodekey
+	 * @param newNode
+	 */
 	private getNodeModel8Type(type: NodeEnum, group: string): INodeModel {
 		let newNode = NodeStore.getNode(type, group);
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
@@ -261,6 +286,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let item = this._header.next;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
+				debugger;
 				newNode.group = item.value.group;
 				if (item.value.type === NodeEnum.SubOpen) {
 					// 去判断下一次节点是不是 wfguide;
@@ -273,13 +299,25 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				} else if (item.value.type === NodeEnum.WFGuideNode) {
 					// 如果自身就是 wfguide
 					return this.replace(item.value, newNode);
+				} else if (item.value.type === NodeEnum.SubClose) {
+					// 结束点后面插入
+					return false;
 				}
+
 				return this.insert(item.value, newNode);
 			}
 
 			if (item.value.childs) {
 				let res = item.value.childs.insert8NodeId(nodekey, newNode);
 				if (res) {
+					if (item.value.type === NodeEnum.Condition) {
+						let cItem = item.value.childs._header.next;
+						let idx = 0;
+						while (cItem !== item.value.childs._tail) {
+							cItem.value.sortIndex = idx++;
+							cItem = cItem.next;
+						}
+					}
 					return res;
 				}
 			}

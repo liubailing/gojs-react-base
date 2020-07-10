@@ -12,27 +12,4 @@ export interface ILineModel {
 
 	/** 连线结束点 */
 	to: string;
-
-	/** 所在分组 */
-	// group: string;
-
-	/**************************
-	 * 以下属性不用管
-	 **************************/
-
-	/**
-	 * 图形分类
-	 * 对应 DiagramEnum  WFLink | WFGuideLink
-	 * */
-	// category?: DiagramEnum;
-
-	/**
-	 * 分类
-	 * */
-	// category: string;
-
-	// /**
-	//  * 分类
-	//  * */
-	// opacity?: 0 | 1;
 }

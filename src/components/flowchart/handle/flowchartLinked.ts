@@ -10,8 +10,19 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	/**调用 对外的暴露的接口方法 */
 	flowchartHander: IFlowchartHander;
 	private flowchartDiagram: go.Diagram | null = null;
+
+	/**
+	 * 缓存 nodeKey - 缓存的数据
+	 */
+	private mapNodeData: Map<string, object>;
+
+	/**设置选中节点后并触发 click,
+	 * 为false的时候不触发click
+	 *  */
+	private setNodeSelected_OnClick = true;
 	constructor(handles: IFlowchartHander) {
 		super();
+		this.mapNodeData = new Map<string, object>();
 		this.handleDiagramEvent = this.handleDiagramEvent.bind(this);
 		this.handleModelChange = this.handleModelChange.bind(this);
 		this.handFlowchartEvent = this.handFlowchartEvent.bind(this);
@@ -38,20 +49,23 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case 'ChangedSelection': {
 				const sel = e.subject.first();
 				if (sel) {
+					debugger;
 					if (sel instanceof go.Node) {
 						const node = this.mapNode.get(sel.key as string);
-						if (node) {
+						if (node && this.setNodeSelected_OnClick) {
 							this.flowchartHander.handlerClickNode(node);
 						}
 					} else if (sel instanceof go.Group) {
 						const node = this.mapNode.get(sel.key as string);
-						if (node) {
+						if (node && this.setNodeSelected_OnClick) {
 							this.flowchartHander.handlerClickNode(node);
 						}
 					}
 				} else {
 					// draft.selectedData = null;
 				}
+				// 恢复默认值
+				this.setNodeSelected_OnClick = true;
 				break;
 			}
 			default:
@@ -65,17 +79,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param obj a JSON-formatted string
 	 */
 	public handleModelChange(obj: go.IncrementalData) {
-		// const insertedNodeKeys = obj.insertedNodeKeys;
-		// const modifiedNodeData = obj.modifiedNodeData;
-		// const removedNodeKeys = obj.removedNodeKeys;
-		// const insertedLinkKeys = obj.insertedLinkKeys;
-		// const modifiedLinkData = obj.modifiedLinkData;
-		// const removedLinkKeys = obj.removedLinkKeys;
-		// const modifiedModelData = obj.modelData;
-		// // maintain maps of modified data so insertions don't need slow lookups
-		// const modifiedNodeMap = new Map<go.Key, go.ObjectData>();
-		// const modifiedLinkMap = new Map<go.Key, go.ObjectData>();
-		//
+		// console.log(`chenged model`);
 	}
 
 	/**
@@ -133,11 +137,10 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this._hideContextMenu();
 				break;
 			case HandleEnum.AddBranchToLeft:
-				this._refresDiagram();
-
+				this.onAdd2Pre8NodeId(node.key, NodeEnum.Branch);
 				break;
 			case HandleEnum.AddBranchToRight:
-				this._refresDiagram();
+				this.onAdd2Next8NodeId(node.key, NodeEnum.Branch);
 				break;
 			case HandleEnum.DragNode2Link:
 				if (e.toLine) {
@@ -155,13 +158,27 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this.flowchartDiagram = d;
 		}
 	};
+
 	/**
 	 * 往后新增节点，依据nodeId
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型
 	 */
-	onAdd2After8NodeId(nodeId: string, type: NodeEnum): boolean {
-		let res = this.add2After8NodeId(nodeId, type);
+	onAdd2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2Next8NodeId(nodeId, type);
+		if (res) {
+			this._refresDiagram();
+		}
+		return res;
+	}
+
+	/**
+	 * 往后新增节点，依据nodeId
+	 * @param nodekey  要添加的节点Id。
+	 * @param type 添加的节点类型
+	 */
+	onAdd2Pre8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2Pre8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
 		}
@@ -200,10 +217,17 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		let res = this.remove8NodeId(nodekey);
 		if (res) {
 			this._refresDiagram();
+			// 删除节点缓存数据
+			this.mapNodeData.delete(nodekey);
 		}
 		return res;
 	}
 
+	/**
+	 * 拖拽
+	 * @param nodekey
+	 * @param toNodekey
+	 */
 	onDragNode2Node(nodekey: string, toNodekey: string) {
 		let res = this.removeNode2Node(nodekey, toNodekey);
 		if (res) {
@@ -212,6 +236,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return res;
 	}
 
+	/**
+	 * 复制
+	 * @param nodekey
+	 * @param toNodekey
+	 */
 	onCopyNode2Node(nodekey: string, toNodekey: string) {
 		let res = this.copyNode2Node(nodekey, toNodekey);
 		if (res) {
@@ -241,6 +270,81 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this.flowchartHander.handlerHideContextMenu();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 		}
+	}
+
+	/**
+	 * 缓存节点配置数据
+	 * @param nodekey
+	 * @param data
+	 */
+	onSetNodeData(nodekey: string, data: object) {
+		if (data && Object.keys(data).length > 0) {
+			this.mapNodeData.set(nodekey, data);
+		}
+	}
+
+	/**
+	 * 取得节点配置数据
+	 * @param nodekey
+	 * @param data
+	 */
+	onGetNodeData(nodekey: string): object | null {
+		if (nodekey) {
+			let data = this.mapNodeData.get(nodekey);
+			if (data && Object.keys(data).length > 0) {
+				return data;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * 选中节点
+	 * @param nodekey id
+	 * @param clikckNode 是否要触发click
+	 */
+	onSetNodeSelected(nodekey: string, clikckNode: boolean = true) {
+		if (this.flowchartDiagram) {
+			// 1、首先赋值
+			this.setNodeSelected_OnClick = clikckNode;
+			// 2、设置选中
+			this.flowchartDiagram.clearSelection();
+			let obj = this.flowchartDiagram.findNodeForKey(nodekey);
+			this.flowchartDiagram.select(obj);
+		}
+	}
+
+	/**
+	 * 重新命名
+	 * @param nodekey
+	 * @param newName
+	 */
+	@action
+	onRename(nodekey: string, newName: string) {
+		let node = this.mapNode.get(nodekey);
+		if (node && this.flowchartDiagram) {
+			// 2、设置选中
+			node.label = newName;
+			// let obj = this.flowchartDiagram.findNodeForKey(nodekey);
+			// this.flowchartDiagram.(obj);
+			this._refresDiagram();
+		}
+	}
+
+	/**
+	 * 重新命名
+	 * @param nodekey
+	 * @param newName
+	 */
+	@action
+	onGetNode(nodekey: string): INodeModel | undefined {
+		let data = this.mapNode.get(nodekey);
+		debugger;
+		if (data) {
+			return data;
+		}
+		return undefined;
 	}
 
 	@action

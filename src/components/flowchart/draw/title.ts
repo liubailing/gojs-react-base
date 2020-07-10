@@ -66,7 +66,7 @@ export class DrawTitle {
 	 * 返回字段
 	 */
 	private get showLabel(): string {
-		// return 'group';
+		// return 'sortIndex';
 		if (DiagramSetting.showKey) {
 			return 'key';
 		}

@@ -25,12 +25,6 @@ export interface INodeModel {
 
 	childs: FlowchartModel | null;
 
-	/** 是否有子步骤    当 isGroup == true ,必须给 hasChild赋值 */
-	hasChild?: boolean;
-
-	/** 对应的配置属性  交互使用的数据 */
-	data?: any;
-
 	/** 排序 */
 	sortIndex?: number;
 

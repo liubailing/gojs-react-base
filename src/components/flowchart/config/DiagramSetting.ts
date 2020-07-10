@@ -14,7 +14,7 @@ export const DiagramSetting = {
 	moveCond: true,
 	moveCondBranch: false,
 	renameable: false,
-	showKey: true,
+	showKey: false,
 	showGuid: false,
 	showLabel: '',
 	parameter1: 4,

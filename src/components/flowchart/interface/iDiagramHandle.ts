@@ -1,8 +1,6 @@
 import go from 'gojs';
 
 export interface IDiagramHander {
-
-
 	/**
 	 * Handle any relevant DiagramEvents, in this case just selection changes.
 	 * On ChangedSelection, find the corresponding data and set the selectedData state.

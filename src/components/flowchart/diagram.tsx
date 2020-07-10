@@ -234,68 +234,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		);
 	}
 
-	// /**
-	//  *
-	//  */
-	// doEvent = {
-	// 	canDelete: (node: INodeModel): boolean => {
-	// 		// console.log(`~test flowchart~ delete; type:${node.type}, key:${node.key}, currkey:${this.props.store.currNodeKey}`)
-
-	// 		if (node && node.type === NodeEnum.Branch) {
-	// 			// let brother = this.props.store.getSiblingKeys(node.key);
-	// 			// if (brother) {
-	// 			// 	return brother.length > 1;
-	// 			// }
-	// 		}
-	// 		// console.log(`~test flowchart~ delete`, node.key, this.props.store.currNodeKey)
-	// 		// if (node && node.key && node.key !== this.props.store.currNodeKey) return false;
-
-	// 		return true;
-	// 		//return this.props.store.cacheNodeBrotherKeys(node.key).Size;
-	// 	},
-	// 	delete: (node: INodeModel) => {
-	// 		// this.props.store.onDeleteNode(node.key);
-	// 	},
-	// 	copy: (node: INodeModel) => {
-	// 		// this.props.store.executeCMD(FCActType.Copy, node.key);
-	// 	},
-	// 	paste: (node: go.Part | null) => {
-	// 		this.isCtrlCopy = true;
-	// 		// console.log(`~test flowchart~`, this.props.store.copyNodeKey, node.key)
-	// 		if (node && node.part && node.part.data) {
-	// 			// this.props.store.executeCMD(FCActType.Paste, node.part.data!.key);
-	// 		} else {
-	// 			// this.props.store.executeCMD(FCActType.Paste, this.props.store.currNodeKey);
-	// 		}
-	// 	}
-	// };
-
-	// /**
-	//  * 单击
-	//  */
-	// private onClick = (_e: go.InputEvent, _obj?: GraphObject): void => {
-	// 	console.log(1);
-	// 	try {
-	// 		// if (_obj) {
-	// 		// 	//点击在已知节点上
-	// 		// 	let node = (_obj as any).part;
-	// 		// 	if (node && node.part && node.part.data && node.part.data.key) {
-	// 		// 		if (node.part.data.key !== this.props.store.currNodeKey) {
-	// 		// 			this.props.store.callbackFunc.add(CallbackFuncType.Select);
-	// 		// 			this.props.store.callbackFunc.add(CallbackFuncType.Click);
-	// 		// 			this.props.store.currNodeKey = node.part.data.key;
-	// 		// 		}
-	// 		// 	}
-	// 		// } else {
-	// 		// 	//点击在未知节点上
-	// 		// 	if (this.props.store.currNodeKey == '') return; //重复点击在未知节点上 直接返回
-	// 		// 	this.props.store.diagram.clearSelection();
-	// 		// 	this.props.store.callbackFunc.add(CallbackFuncType.Select);
-	// 		// 	this.props.store.callbackFunc.add(CallbackFuncType.Click);
-	// 		// 	this.props.store.currNodeKey = '';
-	// 		// }
-	// 	} catch (e) {}
-	// };
 
 	/**
 	 *

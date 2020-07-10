@@ -116,20 +116,19 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								当前值追加条件节点
-							</button>
-						</div>
-
-						<div>
-							<button
-								onClick={() => {
 									Workflow.test('add_condition');
 								}}
 							>
 								新增条件判断
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('add_pre');
+								}}
+							>
+								往前追加
 							</button>
 						</div>
 
@@ -246,16 +245,14 @@ class WorkflowTest extends React.Component<{}> {
 								删除节点 条件
 							</button>
 						</div>
-					</div>
 
-					<div className="divActionItem">
 						<div>
 							<label>存取数据：</label>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('set_data');
 								}}
 							>
 								第一个节点存储Data
@@ -264,72 +261,29 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('get_data');
 								}}
 							>
 								取出Data
 							</button>
 						</div>
 						<div>
-							{' '}
-							<div className="divActionItem">
-								<div>
-									<label>“值”操作：</label>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										取出node1的Data
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										取出node1的Data
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										改变 loop
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										再取出node1的Data
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="divActionItem" style={{ marginTop: '10px' }}>
-						<div>
-							<label>流程图测试：</label>
+							<button
+								onClick={() => {
+									Workflow.test('set_data_1');
+								}}
+							>
+								修改Data
+							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('get_data');
 								}}
 							>
-								加载 测试流程图
+								再取出Data
 							</button>
-						</div>
-						<div>
-							<span>以下操作请在 “加载 测试流程图 ”之后进行操作 </span>
 						</div>
 					</div>
 					<div className="divActionItem">
@@ -339,16 +293,16 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('sel_node');
 								}}
 							>
-								选中第一个节点
+								选中openJD
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('sel_loop');
 								}}
 							>
 								选中 循环
@@ -357,19 +311,28 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('sel_branch2');
 								}}
 							>
-								选中 条件分支2,并触发onClick
+								选中 条件分支2
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('sel_cond');
 								}}
 							>
 								选中 条件
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('sel_node_only');
+								}}
+							>
+								选中openJD ,但不触发click
 							</button>
 						</div>
 					</div>
@@ -380,10 +343,10 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('rename');
 								}}
 							>
-								重命名当前选中节点
+								重命名openJD
 							</button>
 						</div>
 						<div>
@@ -395,28 +358,19 @@ class WorkflowTest extends React.Component<{}> {
 								<div>
 									<button
 										onClick={() => {
-											Workflow.test('');
+											Workflow.test('get_node');
 										}}
 									>
-										第一个节点
+										获取openJD
 									</button>
 								</div>
 								<div>
 									<button
 										onClick={() => {
-											Workflow.test('');
+											Workflow.test('get_cond');
 										}}
 									>
-										分支2的第一个节点
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										获取打开网页
+										获取条件
 									</button>
 								</div>
 							</div>

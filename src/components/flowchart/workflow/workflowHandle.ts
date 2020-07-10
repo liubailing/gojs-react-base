@@ -155,13 +155,17 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.flowchart._hideContextMenu();
 				break;
 			case 'add_smiple':
-				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.ExtractData);
+				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);
 				break;
 			case 'add_loop':
-				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.Loop);
+				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Loop);
 				break;
 			case 'add_condition':
-				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.Condition);
+				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Condition);
+				break;
+
+			case 'add_pre':
+				this.flowchart.onAdd2Pre8NodeId('openJD', NodeEnum.EnterText);
 				break;
 			case 'add_inner_cond':
 				this.flowchart.onAdd2InnerTail8NodeId('cond', NodeEnum.Branch);
@@ -192,6 +196,57 @@ export class WorkflowHandle implements IFlowchartHander {
 				break;
 			case 'delete_data':
 				this.flowchart.onRemoveNode('data11-1');
+				break;
+			case 'set_data':
+				this.flowchart.onSetNodeData('openJD', { title: '这是一个测试数据' });
+				this.logs.push(`openJD 存数据`);
+				break;
+			case 'get_data':
+				let data1: any = this.flowchart.onGetNodeData('openJD');
+				if (data1) {
+					this.logs.push(`获取 openJD :` + data1.title);
+				}
+				break;
+			case 'set_data_1':
+				this.flowchart.onSetNodeData('openJD', { title: '修改了测试数据' });
+				this.logs.push(`openJD 再存数据`);
+				break;
+			case 'sel_node':
+				this.flowchart.onSetNodeSelected('openJD');
+				this.logs.push(`选中 openJD`);
+				break;
+			case 'sel_loop':
+				this.flowchart.onSetNodeSelected('loop');
+				this.logs.push(`选中 循环`);
+				break;
+			case 'sel_branch2':
+				this.flowchart.onSetNodeSelected('branch1-2');
+				this.logs.push(`选中 分支2`);
+				break;
+			case 'sel_cond':
+				this.flowchart.onSetNodeSelected('cond');
+				this.logs.push(`选中 条件`);
+				break;
+			case 'sel_node_only':
+				this.flowchart.onSetNodeSelected('openJD', false);
+				this.logs.push(`只选中 不触发click`);
+				break;
+			case 'rename':
+				this.flowchart.onRename('openJD', '重新命名');
+				this.logs.push(`重新命名 openJD`);
+				break;
+			case 'get_node':
+				let node = this.flowchart.onGetNode('openJD');
+				if (node) {
+					this.logs.push(`得到数据 openJD:` + JSON.stringify(node));
+				}
+				break;
+			case 'get_cond':
+				let cond = this.flowchart.onGetNode('loop2');
+				debugger;
+				if (cond) {
+					this.logs.push(`得到数据 cond:` + JSON.stringify(cond));
+				}
 				break;
 			default:
 				this.log('未实现的操作');
