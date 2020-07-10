@@ -225,8 +225,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return false;
 	}
 
-	getNode8NodeId() {}
-
 	private getNodeModel8Type(type: NodeEnum, group: string): INodeModel {
 		let newNode = NodeStore.getNode(type, group);
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
