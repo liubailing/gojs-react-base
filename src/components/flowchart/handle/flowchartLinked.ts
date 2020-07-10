@@ -1,11 +1,12 @@
 import go from 'gojs';
 import { observable, action, toJS } from 'mobx';
-import FlowchartData from './flowchartData';
+import flowchartStore from './flowchartStore';
 import { IDiagramHander, IFlowchartHander, IDiagramModel, INodeModel, ILineModel, INodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';
 import { NodeStore, LineStore } from '../store';
+import { FlowchartModel } from '../model';
 
-export default class HanderFlowchart extends FlowchartData implements IDiagramHander {
+export default class HanderFlowchart extends flowchartStore implements IDiagramHander {
 	/**调用 对外的暴露的接口方法 */
 	flowchartHander: IFlowchartHander;
 	private flowchartDiagram: go.Diagram | null = null;
@@ -38,14 +39,14 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 				const sel = e.subject.first();
 				if (sel) {
 					if (sel instanceof go.Node) {
-						const idx = this.mapNodeKeyIdx.get(sel.key as string);
-						if (idx !== undefined && idx >= 0) {
-							this.flowchartHander.handlerClickNode(this.nodeDataArray[idx]);
+						const node = this.mapNode.get(sel.key as string);
+						if (node) {
+							this.flowchartHander.handlerClickNode(node);
 						}
 					} else if (sel instanceof go.Group) {
-						const idx = this.mapLineKeyIdx.get(sel.key as string);
-						if (idx !== undefined && idx >= 0) {
-							this.flowchartHander.handlerClickNode(this.nodeDataArray[idx]);
+						const node = this.mapNode.get(sel.key as string);
+						if (node) {
+							this.flowchartHander.handlerClickNode(node);
 						}
 					}
 				} else {
@@ -97,12 +98,10 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	}
 
 	@action
-	initFlochart(nodeDataArray: Array<INodeModel>, linkDataArray: Array<ILineModel>) {
-		// const data = TestData.getFlowchartData(istrue);
-		this.nodeDataArray = nodeDataArray;
-		this.linkDataArray = linkDataArray;
-		this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
-		super.refresData(toJS(this.nodeDataArray), toJS(this.linkDataArray));
+	initFlochart(fcdata: FlowchartModel) {
+		// this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
+		super.refresData(fcdata);
+		this._refresDiagram();
 	}
 
 	/**
@@ -134,18 +133,16 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 				this._hideContextMenu();
 				break;
 			case HandleEnum.AddBranchToLeft:
-				let res = this.addBranch2Pre(node.key);
 				this._refresDiagram();
 
 				break;
 			case HandleEnum.AddBranchToRight:
-				this.addBranch2Next(node.key);
 				this._refresDiagram();
 				break;
 			case HandleEnum.DragNode2Link:
-				this.dragNode2link(node.key, e.toLine);
-				this._refresDiagram();
-
+				if (e.toLine) {
+					this.onDragNode2Node(node.key, e.toLine?.from);
+				}
 				break;
 			default:
 				break;
@@ -165,7 +162,9 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	 */
 	onAdd2After8NodeId(nodeId: string, type: NodeEnum): boolean {
 		let res = this.add2After8NodeId(nodeId, type);
-		this._refresDiagram();
+		if (res) {
+			this._refresDiagram();
+		}
 		return res;
 	}
 
@@ -174,13 +173,52 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
-	onAdd2Inner8NodeId(nodeId: string, type: NodeEnum): boolean {
-		let res = this.add2Inner8NodeId(nodeId, type);
+	onAdd2InnerTail8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2InnerTail8NodeId(nodeId, type);
 		this._refresDiagram();
+		return res;
+		// return false;
+	}
+
+	/**
+	 * 往内部的头部 新增节点，依据nodeid
+	 * @param nodekey  要添加的节点Id。
+	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
+	 */
+	onAdd2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
+		let res = this.add2InnerHeader8NodeId(nodeId, type);
+		this._refresDiagram();
+		return res;
+		// return false;
+	}
+
+	/**
+	 * 移除
+	 * @param nodekey
+	 */
+	onRemoveNode(nodekey: string) {
+		let res = this.remove8NodeId(nodekey);
+		if (res) {
+			this._refresDiagram();
+		}
 		return res;
 	}
 
-	onDeleteNode(nodekey: string) {}
+	onDragNode2Node(nodekey: string, toNodekey: string) {
+		let res = this.removeNode2Node(nodekey, toNodekey);
+		if (res) {
+			this._refresDiagram();
+		}
+		return res;
+	}
+
+	onCopyNode2Node(nodekey: string, toNodekey: string) {
+		let res = this.copyNode2Node(nodekey, toNodekey);
+		if (res) {
+			this._refresDiagram();
+		}
+		return res;
+	}
 
 	private get _getPostion(): { x: number; y: number } {
 		if (this.flowchartDiagram) {
@@ -207,16 +245,15 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 
 	@action
 	_refresDiagram() {
-		// this.nodeDataArray = [];
-		// this.linkDataArray = [];
-		this.nodeDataArray = [...this.getNodes(), ...[]];
-		this.linkDataArray = [...this.getLines(), ...[]];
+		let data = this.getDiagram();
+		this.nodeDataArray = [...data.nodeArray, ...[]];
+		this.linkDataArray = [...data.linkArray, ...[]];
 		console.log(`数据：nodes-${this.nodeDataArray.length},lines:${this.linkDataArray.length}`);
 	}
 
 	getAll() {
-		this.nodeDataArray = [...this.getNodes(), ...[]];
-		this.linkDataArray = [...this.getLines(), ...[]];
+		// this.nodeDataArray = [...this.getNodes(), ...[]];
+		// this.linkDataArray = [...this.getLines(), ...[]];
 		return {
 			nodes: this.nodeDataArray,
 			lines: this.linkDataArray

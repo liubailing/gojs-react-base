@@ -6,7 +6,7 @@ export default {
 	childKeys: [],
 	childs: [
 		{
-			key: '打开京东',
+			key: 'openJD',
 			label: 'testtest123',
 			type: ActionNodeType.Navigate as string,
 			data: { tip: '这是一个node1存值' }
@@ -60,7 +60,8 @@ export default {
 			key: 'loop',
 			type: ActionNodeType.Loop as string,
 			parentKey: 'root',
-			data: { tip: '这是一个loop存值' }
+			data: { tip: '这是一个loop存值' },
+			childs: []
 		},
 		{
 			key: 'loop2',
@@ -82,3 +83,12 @@ export default {
 		{ key: 'data', type: ActionNodeType.ExtractData as string, parentKey: 'root' }
 	]
 };
+
+export class testNode {
+	gettest() {
+		nodeArray: {
+		}
+		linkArray: {
+		}
+	}
+}

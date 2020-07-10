@@ -119,15 +119,6 @@ class WorkflowTest extends React.Component<{}> {
 									Workflow.test('');
 								}}
 							>
-								为循环追加打开网页
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
 								当前值追加条件节点
 							</button>
 						</div>
@@ -141,31 +132,118 @@ class WorkflowTest extends React.Component<{}> {
 								新增条件判断
 							</button>
 						</div>
+
+						<div>
+							{' '}
+							<div className="divActionItem">
+								<div>
+									<label>内部尾部：</label>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_cond');
+										}}
+									>
+										新增一个条件分支
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_loop');
+										}}
+									>
+										循环追加一个节点
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_branch');
+										}}
+									>
+										分支追加一个节点
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_loop_tail');
+										}}
+									>
+										为循环追加打开网页
+									</button>
+								</div>
+							</div>
+						</div>
+
+						<div>
+							{' '}
+							<div className="divActionItem">
+								<div>
+									<label>内部头部：</label>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_cond_header');
+										}}
+									>
+										追加到条件
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_inner_loop_header');
+										}}
+									>
+										追加到循环
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="divActionItem">
+						<div>
+							<label>删除节点：</label>
+						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('add_branch');
+									Workflow.test('delete_data');
 								}}
 							>
-								新增一个条件分支
+								删除节点
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('add_inner_loop');
+									Workflow.test('delete_loop2');
 								}}
 							>
-								循环追加一个节点
+								删除节点 循环
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('add_inner_branch');
+									Workflow.test('delete_branch');
 								}}
 							>
-								分支追加一个节点
+								删除节点 条件分支2
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('delete_cond');
+								}}
+							>
+								删除节点 条件
 							</button>
 						</div>
 					</div>
@@ -192,8 +270,51 @@ class WorkflowTest extends React.Component<{}> {
 								取出Data
 							</button>
 						</div>
+						<div>
+							{' '}
+							<div className="divActionItem">
+								<div>
+									<label>“值”操作：</label>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('');
+										}}
+									>
+										取出node1的Data
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('');
+										}}
+									>
+										取出node1的Data
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('');
+										}}
+									>
+										改变 loop
+									</button>
+								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('');
+										}}
+									>
+										再取出node1的Data
+									</button>
+								</div>
+							</div>
+						</div>
 					</div>
-
 					<div className="divActionItem" style={{ marginTop: '10px' }}>
 						<div>
 							<label>流程图测试：</label>
@@ -299,184 +420,6 @@ class WorkflowTest extends React.Component<{}> {
 									</button>
 								</div>
 							</div>
-						</div>
-					</div>
-
-					<div className="divActionItem">
-						<div>
-							<label>“值”操作：</label>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								取出node1的Data
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								取出node1的Data
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								改变 loop
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								再取出node1的Data
-							</button>
-						</div>
-					</div>
-					<div className="divActionItem">
-						<div>
-							<label>追加节点：</label>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								条件分支1增加条件分支(没实现)
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								追加到分支1
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								追加到分支2
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								追加到循环
-							</button>
-						</div>
-						<div>
-							{' '}
-							<div className="divActionItem">
-								<div>
-									<label>追加节点2：</label>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										追加到循环(内部最前面)
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										追加到循环(内部最后面)
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										追加在循环(前面) 并选中
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										追加在循环(后面)
-									</button>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											Workflow.test('');
-										}}
-									>
-										追加到循环(里面) 并选中
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div className="divActionItem">
-						<div>
-							<label>删除节点：</label>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								删除节点
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								删除节点 循环
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								删除节点 条件分支2
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								删除节点 条件
-							</button>
 						</div>
 					</div>
 				</div>

@@ -41,7 +41,8 @@ export class NodeStore {
 			key: NodeStore.getRandomKey(),
 			isGroup: false,
 			// hasChild: false,
-			category: ''
+			category: '',
+			childs: null
 		};
 		return n;
 	}

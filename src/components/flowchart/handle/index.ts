@@ -1,3 +1,3 @@
-import HanderFlowchart from './flowchart';
+import HanderFlowchart from './flowchartLinked';
 
 export { HanderFlowchart };

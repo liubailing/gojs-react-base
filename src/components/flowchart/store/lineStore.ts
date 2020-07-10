@@ -16,7 +16,7 @@ export class LineStore {
 		if (!from || from === to) return { key: '', from: '', to: '' };
 		if (!group) group = 'root';
 		let link: ILineModel = {
-			key: `${from}-${to}`,
+			key: `${from}${to}`,
 			from: from,
 			to: to
 		};

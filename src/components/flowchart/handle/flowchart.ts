@@ -20,7 +20,7 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	data: IDiagramModel<INodeModel, ILineModel> | null = null;
 
 	@observable nodeDataArray: Array<INodeModel> = [];
-	@observable linkDataArray: Array<ILineModel> = [];
+	linkDataArray: Array<ILineModel> = [];
 	@observable modelData: go.ObjectData = {};
 	@observable selectedData: go.ObjectData | null = null;
 	@observable skipsDiagramUpdate: boolean = false;
@@ -102,62 +102,60 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 		// const data = TestData.getFlowchartData(istrue);
 		this.nodeDataArray = nodeDataArray;
 		this.linkDataArray = linkDataArray;
-		this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
-		super.refresData(toJS(this.nodeDataArray), toJS(this.linkDataArray));
+		// this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
+		// super.refresData(toJS(this.nodeDataArray), toJS(this.linkDataArray));
 	}
 
 	/**
 	 * 监听到流程图操作
 	 */
 	handFlowchartEvent(e: INodeEvent) {
-		let node: INodeModel = e.node ? e.node : NodeStore.baseModel;
-		let line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
-		let pos;
-		switch (e.eType) {
-			/** 打开点菜单 */
-			case HandleEnum.ShowNodeMenu:
-				pos = this._getPostion;
-				this.flowchartHander.handlerShowNodeMenu(node, pos.x, pos.y);
-				break;
-			case HandleEnum.ShowNodeInfo:
-				pos = this._getPostion;
-				this.flowchartHander.handlerShowNodeInfo(node, pos.x, pos.y);
-				break;
-			case HandleEnum.ShowNodeSetting:
-				pos = this._getPostion;
-				this.flowchartHander.handlerShowNodeSetting(node, pos.x, pos.y);
-				break;
-			case HandleEnum.ShowLineMenu:
-				pos = this._getPostion;
-				this.flowchartHander.handlerShowLineMenu(line, pos.x, pos.y);
-				break;
-			case HandleEnum.HideContextMenu:
-				this._hideContextMenu();
-				break;
-			case HandleEnum.AddBranchToLeft:
-				let res = this.addBranch2Pre(node.key);
-				this._refresDiagram();
-
-				break;
-			case HandleEnum.AddBranchToRight:
-				this.addBranch2Next(node.key);
-				this._refresDiagram();
-				break;
-			case HandleEnum.DragNode2Link:
-				this.dragNode2link(node.key, e.toLine);
-				this._refresDiagram();
-
-				break;
-			default:
-				break;
-		}
+		// let node: INodeModel = e.node ? e.node : NodeStore.baseModel;
+		// let line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
+		// let pos;
+		// switch (e.eType) {
+		// 	/** 打开点菜单 */
+		// 	case HandleEnum.ShowNodeMenu:
+		// 		pos = this._getPostion;
+		// 		this.flowchartHander.handlerShowNodeMenu(node, pos.x, pos.y);
+		// 		break;
+		// 	case HandleEnum.ShowNodeInfo:
+		// 		pos = this._getPostion;
+		// 		this.flowchartHander.handlerShowNodeInfo(node, pos.x, pos.y);
+		// 		break;
+		// 	case HandleEnum.ShowNodeSetting:
+		// 		pos = this._getPostion;
+		// 		this.flowchartHander.handlerShowNodeSetting(node, pos.x, pos.y);
+		// 		break;
+		// 	case HandleEnum.ShowLineMenu:
+		// 		pos = this._getPostion;
+		// 		this.flowchartHander.handlerShowLineMenu(line, pos.x, pos.y);
+		// 		break;
+		// 	case HandleEnum.HideContextMenu:
+		// 		this._hideContextMenu();
+		// 		break;
+		// 	case HandleEnum.AddBranchToLeft:
+		// 		let res = this.addBranch2Pre(node.key);
+		// 		this._refresDiagram();
+		// 		break;
+		// 	case HandleEnum.AddBranchToRight:
+		// 		this.addBranch2Next(node.key);
+		// 		this._refresDiagram();
+		// 		break;
+		// 	case HandleEnum.DragNode2Link:
+		// 		this.dragNode2link(node.key, e.toLine);
+		// 		this._refresDiagram();
+		// 		break;
+		// 	default:
+		// 		break;
+		// }
 		// console.log(`---------,`, e);
 	}
 
 	handleGetDiagram = (d: go.Diagram) => {
-		if (d) {
-			this.flowchartDiagram = d;
-		}
+		// if (d) {
+		// 	this.flowchartDiagram = d;
+		// }
 	};
 	/**
 	 * 往后新增节点，依据nodeId
@@ -165,9 +163,10 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	 * @param type 添加的节点类型
 	 */
 	onAdd2After8NodeId(nodeId: string, type: NodeEnum): boolean {
-		let res = this.add2After8NodeId(nodeId, type);
-		this._refresDiagram();
-		return res;
+		// let res = this.add2After8NodeId(nodeId, type);
+		// this._refresDiagram();
+		// return res;
+		return false;
 	}
 
 	/**
@@ -176,9 +175,10 @@ export default class HanderFlowchart extends FlowchartData implements IDiagramHa
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
 	onAdd2Inner8NodeId(nodeId: string, type: NodeEnum): boolean {
-		let res = this.add2Inner8NodeId(nodeId, type);
-		this._refresDiagram();
-		return res;
+		// let res = this.add2Inner8NodeId(nodeId, type);
+		// this._refresDiagram();
+		// return res;
+		return false;
 	}
 
 	onDeleteNode(nodekey: string) {}

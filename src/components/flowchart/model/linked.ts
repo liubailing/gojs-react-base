@@ -1,11 +1,10 @@
 interface IList<T> {
 	add(a: T): void; //添加元素
 	insert(item: T, a: T): void; //插入元素
+	replace(item: T, a: T): void; //替换元素
 	remove(a: T): void; //移除元素
 	header(): T; //返回头元素
-	tail(): T; //返回尾元素
 	find(a: T): T; //查找元素
-	reverse_find(a: T): T; //反向查找元素
 	size(): number; //返回列表元素个数
 	empty(): boolean; //是否空列表
 	clear(): void; //清空列表
@@ -14,12 +13,10 @@ interface IList<T> {
 class Item<T> {
 	private _name: string;
 	private _value: T; //值
-	private _prev: Item<T> | null; //指向的上一个元素
 	private _next: Item<T> | null; //指向的下一个元素
 	constructor(value?: T) {
 		this._name = value + '';
-		this._value = value as any;
-		this._prev = null;
+		this._value = value as T;
 		this._next = null;
 	}
 	set name(name: string) {
@@ -32,13 +29,7 @@ class Item<T> {
 		this._value = value;
 	}
 	get value(): T {
-		return this._value;
-	}
-	set prev(item: Item<T>) {
-		this._prev = item;
-	}
-	get prev(): Item<T> {
-		return this._prev as any;
+		return this._value as T;
 	}
 	set next(item: Item<T>) {
 		this._next = item;
@@ -49,43 +40,63 @@ class Item<T> {
 }
 
 class DobuleList<T> implements IList<T> {
-	private _count: number = 0; //记录元素个数
-	private _header: Item<T>; //头元素
-	private _tail: Item<T>; //尾元素
+	_count: number = 0; //记录元素个数
+	_header: Item<T>; //头元素
+	_tail: Item<T>; //尾元素
 	constructor() {
 		this._header = new Item<T>();
 		this._header.name = 'header';
 		this._tail = new Item<T>();
 		this._tail.name = 'tail';
-		this._header.prev = this._header.next = this._tail;
-		this._tail.next = this._tail.prev = this._header;
-	}
-	add(a: T) {
-		let item = new Item<T>(a);
-		item.prev = this._tail.prev;
-		item.next = this._tail;
-		this._tail.prev = item;
-		item.prev.next = item;
-		this._count++;
+		this._header.next = this._tail;
+		this._tail.next = null as any;
 	}
 
-	insert(item: T, a: T) {
+	add(a: T): boolean {
+		let item = new Item<T>(a);
+		let indexItem: any = this._header;
+		while (indexItem.next !== this._tail) {
+			indexItem = indexItem.next;
+		}
+		indexItem.next = item;
+		item.next = this._tail;
+		this._count++;
+		return true;
+	}
+
+	insert(item: T, a: T): boolean {
 		if (this.empty()) {
-			return;
+			return false;
 		}
 		let indexItem = this._header.next;
 		while (indexItem !== this._tail) {
 			if (indexItem.value == item) {
 				let valueItem = new Item<T>(a);
-				valueItem.prev = indexItem;
 				valueItem.next = indexItem.next;
-				indexItem.next.prev = valueItem;
 				indexItem.next = valueItem;
 				this._count++;
+				return true;
+			}
+			indexItem = indexItem.next;
+		}
+
+		return false;
+	}
+
+	replace(item: T, newItem: T): boolean {
+		if (this.empty()) {
+			return false;
+		}
+		let indexItem = this._header.next;
+		while (indexItem !== this._tail) {
+			if (indexItem.value == item) {
+				indexItem.value = newItem;
+				return true;
 				break;
 			}
 			indexItem = indexItem.next;
 		}
+		return false;
 	}
 
 	remove(a: T): T {
@@ -93,18 +104,19 @@ class DobuleList<T> implements IList<T> {
 			return null as any;
 		}
 		let indexItem = this._header.next;
+		let preItem = this._header;
 		while (indexItem !== this._tail) {
 			if (indexItem.value == a) {
-				indexItem.prev.next = indexItem.next;
-				indexItem.next.prev = indexItem.prev;
-				indexItem.next = null as any;
-				indexItem.prev = null as any;
+				// 前指针 重新 指向后指针
+				preItem.next = indexItem.next;
+
 				let value = indexItem.value;
 				indexItem.value = null as any;
 				indexItem = null as any;
 				this._count--;
 				return value;
 			}
+			preItem = indexItem;
 			indexItem = indexItem.next;
 		}
 		return null as any;
@@ -115,34 +127,71 @@ class DobuleList<T> implements IList<T> {
 	}
 
 	tail(): T {
-		return this._tail.prev.value;
+		if (this.empty()) {
+			return null as any;
+		}
+
+		let indexItem: any = this._header.next;
+		while (indexItem !== this._tail) {
+			if (indexItem.next == this._tail) {
+				return indexItem;
+			}
+			indexItem = indexItem.next;
+		}
+		return indexItem;
+	}
+
+	tailPre(): T {
+		if (this.empty()) {
+			return null as any;
+		}
+
+		let indexItem: any = this._header.next;
+		let preItem = this._header;
+		while (indexItem !== this._tail) {
+			if (indexItem.next == this._tail) {
+				if (preItem === this._header) {
+					return null as any;
+				}
+				return preItem.value;
+			}
+			preItem = indexItem;
+			indexItem = indexItem.next;
+		}
+
+		return null as any;
 	}
 
 	find(a: T): T {
 		if (this.empty()) {
 			return null as any;
 		}
-		let indexItem = this._header.next;
-		while (indexItem !== this._tail) {
-			if (indexItem.value == a) {
-				return indexItem.value;
-			}
+
+		let indexItem: any = this._header.next;
+		while (indexItem.value !== a) {
 			indexItem = indexItem.next;
 		}
-		return null as any;
+		return indexItem;
 	}
 
-	reverse_find(a: T): T {
+	findPre(a: T): T {
 		if (this.empty()) {
 			return null as any;
 		}
-		let indexItem = this._tail.prev;
-		while (indexItem !== this._header) {
-			if (indexItem.value == a) {
-				return indexItem.value;
+
+		let indexItem: any = this._header.next;
+		let preItem = this._header;
+		while (indexItem !== this._tail) {
+			if (indexItem.next == a) {
+				if (preItem === this._header) {
+					return null as any;
+				}
+				return preItem.value;
 			}
-			indexItem = indexItem.prev;
+			preItem = indexItem;
+			indexItem = indexItem.next;
 		}
+
 		return null as any;
 	}
 
@@ -154,25 +203,24 @@ class DobuleList<T> implements IList<T> {
 		return this._count === 0;
 	}
 
+	toArray(): T[] {
+		let arr = new Array<T>();
+		let indexItem: any = this._header.next;
+		while (indexItem !== this._tail) {
+			arr.push(indexItem.value);
+			indexItem = indexItem.next;
+		}
+		return arr;
+	}
+
 	clear(): void {
 		let item = this._header.next;
 		while (item !== this._tail) {
-			item.prev = null as any;
 			item.value = null as any;
 			item = item.next;
-			item.prev.next = null as any;
 		}
 		this._header.next = this._tail;
-		this._tail.prev = this._header;
 		this._count = 0;
-	}
-
-	print() {
-		let item = this._header.next;
-		while (item !== this._tail) {
-			console.log(`${item}`);
-			item = item.next;
-		}
 	}
 }
 

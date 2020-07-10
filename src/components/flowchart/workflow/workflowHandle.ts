@@ -2,7 +2,7 @@ import { IFlowchartHander, INodeModel, ILineModel } from '../interface';
 import { HanderFlowchart } from '../handle';
 import { observable, computed, action } from 'mobx';
 import { NodeEnum } from '../enum';
-import { TestData } from '.';
+import { TestData } from './index';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -145,40 +145,56 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'init':
 				this.isSimpleData = !this.isSimpleData;
 				const data = TestData.getFlowchartData(this.isSimpleData);
-				this.flowchart.initFlochart(data.nodeArray, data.linkArray);
+				this.flowchart.initFlochart(data);
 				break;
 			case 'getall':
 				const dataAll = this.flowchart.getAll();
-				this.flowchart.initFlochart(dataAll.nodes, dataAll.lines);
+				// this.flowchart.initFlochart(dataAll.nodes, dataAll.lines);
 				break;
 			case 'hide_contextMenu':
 				this.flowchart._hideContextMenu();
 				break;
 			case 'add_smiple':
-				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.ExtractData);
-				// this();
+				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.ExtractData);
 				break;
 			case 'add_loop':
-				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.Loop);
-				// this();
+				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.Loop);
 				break;
 			case 'add_condition':
-				this.flowchart.onAdd2After8NodeId('打开京东', NodeEnum.Condition);
-
+				this.flowchart.onAdd2After8NodeId('openJD', NodeEnum.Condition);
 				break;
-			case 'add_branch':
-				this.flowchart.onAdd2Inner8NodeId('cond', NodeEnum.Branch);
-				// this();
+			case 'add_inner_cond':
+				this.flowchart.onAdd2InnerTail8NodeId('cond', NodeEnum.Branch);
 				break;
 			case 'add_inner_branch':
-				this.flowchart.onAdd2Inner8NodeId('branch1-1', NodeEnum.Loop);
-				// this();
+				this.flowchart.onAdd2InnerTail8NodeId('branch1-1', NodeEnum.Loop);
 				break;
 			case 'add_inner_loop':
-				this.flowchart.onAdd2Inner8NodeId('loop', NodeEnum.Condition);
-				// this();
+				this.flowchart.onAdd2InnerTail8NodeId('loop', NodeEnum.Condition);
+				break;
+			case 'add_inner_loop_tail':
+				this.flowchart.onAdd2InnerTail8NodeId('loop2', NodeEnum.Navigate);
+				break;
+			case 'add_inner_loop_header':
+				this.flowchart.onAdd2InnerHeader8NodeId('loop2', NodeEnum.Navigate);
+				break;
+			case 'add_inner_cond_header':
+				this.flowchart.onAdd2InnerHeader8NodeId('cond', NodeEnum.Branch);
+				break;
+			case 'delete_loop2':
+				this.flowchart.onRemoveNode('loop2');
+				break;
+			case 'delete_cond':
+				this.flowchart.onRemoveNode('cond');
+				break;
+			case 'delete_branch':
+				this.flowchart.onRemoveNode('branch1-2');
+				break;
+			case 'delete_data':
+				this.flowchart.onRemoveNode('data11-1');
 				break;
 			default:
+				this.log('未实现的操作');
 				break;
 		}
 	};

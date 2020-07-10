@@ -1,3 +1,5 @@
 import NodeModel from './node';
 import LineModel from './line';
-export { NodeModel, LineModel };
+import FlowchartModel from './flowchart';
+import Linked from './linked';
+export { NodeModel, LineModel, FlowchartModel, Linked };

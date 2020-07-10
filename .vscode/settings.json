@@ -1,6 +1,6 @@
 {
 	"files.autoSave": "afterDelay",
-	"files.autoSaveDelay": 3000,
+	"files.autoSaveDelay": 8000,
 	// 使能每一种语言默认格式化规则
 	"[html]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"

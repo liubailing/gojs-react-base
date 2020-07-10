@@ -1,5 +1,5 @@
 import { DiagramEnum, NodeEnum } from '../enum';
-import { DobuleLinked } from '../../../structure';
+import { FlowchartModel } from '../model';
 /**
  * 图形节点属性
  */
@@ -23,6 +23,8 @@ export interface INodeModel {
 	 * 以下属性不用管
 	 **********************/
 
+	childs: FlowchartModel | null;
+
 	/** 是否有子步骤    当 isGroup == true ,必须给 hasChild赋值 */
 	hasChild?: boolean;
 
@@ -37,7 +39,4 @@ export interface INodeModel {
 	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
 	 * */
 	category?: string | DiagramEnum;
-
-	/** 自身 */
-	nodeLinked?: DobuleLinked<INodeModel>;
 }

@@ -41,7 +41,7 @@ const nodeEnum2HasChild: NodeEnum[] = [NodeEnum.Loop, NodeEnum.Condition, NodeEn
 /**
  * 处理数据
  */
-export default class HanderFlowchart {
+export default class HanderFlowchartData {
 	//以下是 线 相关的缓存数据
 	mapLineKeyIdx: Map<string, number>;
 	mapLineFromTo = new Map<string, string>();

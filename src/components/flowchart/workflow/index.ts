@@ -1,2 +1,2 @@
 export { ActionNode, ActionNodeType } from './entity';
-export { TestData } from './data';
+export { TestData } from './data2Linked';

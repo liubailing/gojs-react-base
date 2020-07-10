@@ -1,5 +1,6 @@
 import { IDiagramModel, INodeModel, ILineModel } from '../interface';
 import { NodeStore, LineStore } from '../store';
+import { FlowchartModel } from '../model';
 import { NodeEnum } from '../enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
 import TestDataJson from './testData';
@@ -16,139 +17,113 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowchartData(wfData: boolean = false): IDiagramModel<INodeModel, ILineModel> {
-		let d: IDiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
+	static getFlowchartData(wfData: boolean = false): FlowchartModel {
+		let d: FlowchartModel = new FlowchartModel();
 
 		let start = NodeStore.getNode(NodeEnum.Start);
 		let end = NodeStore.getNode(NodeEnum.End);
 		let data = TestDataJson;
-		d = TestData.doFlowchartData(data, data.childs);
-		if (wfData || data.childs.length === 0) {
-			d.nodeArray = [start, end];
-			d.linkArray = [LineStore.getLink(start.key, end.key, end.group)];
-			d.nodeArray.map((x) => {
-				x.category = NodeStore.getDiagramEnum(x.type as NodeEnum);
+
+		d.add(start);
+
+		if (!wfData && data.childs.length > 0) {
+			data.childs.forEach((x) => {
+				let n = this.getNodeModel(x, 'root');
+				n.label = x.label || n.label;
+				n.childs = this.doFlowchartData(n, x.childs);
+				d.add(n);
 			});
-		} else {
-			d.linkArray.push(LineStore.getLink(start.key, d.nodeArray[0].key, start.group));
-			d.linkArray.push(LineStore.getLink(d.nodeArray[d.nodeArray.length - 1].key, end.key, end.group));
-			d.nodeArray.push(start);
-			d.nodeArray.push(end);
 		}
 
+		d.add(end);
+		// let dd = d.toDiagram();
 		return d;
 	}
 
 	/**
 	 * 工作流数据 -> 流程图数据
 	 */
-	private static doFlowchartData(parent: ActionNode, childs?: ActionNode[]): IDiagramModel<INodeModel, ILineModel> {
-		let d: IDiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
-		let nodes: INodeModel[] = [];
-		let links: ILineModel[] = [];
+	private static doFlowchartData(parent: INodeModel, childs?: ActionNode[]): FlowchartModel {
+		let dlist: FlowchartModel = new FlowchartModel();
+
 		switch (parent.type) {
 			case ActionNodeType.Condition:
 				if (childs) {
-					//开始循环数据
+					//开始循环分支
 					childs.forEach((x, i) => {
 						let n = this.getNodeModel(x, parent.key);
 						n.label = x.label || n.label;
 						n.sortIndex = i;
-						nodes.push(n);
-
-						//如果有子集
-						let c = TestData.doFlowchartData(x, x.childs);
-						d = {
-							nodeArray: [...d.nodeArray.slice(0, 1), ...c.nodeArray, ...d.nodeArray.slice(1)],
-							linkArray: [...d.linkArray.slice(0, 1), ...c.linkArray, ...d.linkArray.slice(1)]
-						};
+						n.childs = TestData.doFlowchartData(n, x.childs);
+						dlist.add(n);
 					});
 				}
 
 				break;
 			case ActionNodeType.Loop:
 			case ActionNodeType.Branch:
-				let loopStart = NodeStore.getNode(NodeEnum.SubOpen, parent.key);
+				// let loopStart = NodeStore.getNode(NodeEnum.SubOpen, parent.key);
+				let currChilds: Array<ActionNode> = [];
 
-				let loopEnd = NodeStore.getNode(NodeEnum.SubClose, parent.key);
+				// 头结点
+				currChilds.push({
+					key: 'start' + parent.key,
+					label: '',
+					type: NodeEnum.SubOpen,
+					parentKey: parent.key
+				});
+
+				// 追加进来
 				if (childs && childs.length > 0) {
-					//开始循环数据
-					childs.forEach((x, i) => {
-						//2除去头尾
-						if (i !== 0 && i !== childs.length) {
-							links.push(LineStore.getLink(childs[i - 1].key, childs[i].key, parent.key));
-						}
-
-						let n = this.getNodeModel(x, parent.key);
-						n.label = x.label || n.label;
-						nodes.push(n);
-
-						//如果有子集
-						let c = TestData.doFlowchartData(x, x.childs);
-						d = {
-							nodeArray: [...d.nodeArray.slice(0, 1), ...c.nodeArray, ...d.nodeArray.slice(1)],
-							linkArray: [...d.linkArray.slice(0, 1), ...c.linkArray, ...d.linkArray.slice(1)]
-						};
-					});
-
-					loopStart.group = parent.key;
-					loopEnd.group = parent.key;
-					links.push(LineStore.getLink(loopStart.key, nodes[0].key, parent.key));
-					links.push(LineStore.getLink(nodes[nodes.length - 1].key, loopEnd.key, parent.key));
-					nodes.push(loopStart);
-					nodes.push(loopEnd);
+					currChilds = [...currChilds, ...childs];
 				} else {
-					loopStart.group = parent.key;
-					loopEnd.group = parent.key;
-					let guide = NodeStore.getNode(NodeEnum.WFGuideNode, parent.key);
-					guide.group = parent.key;
-
-					links.push(LineStore.getLink(loopStart.key, guide.key, parent.key));
-					links.push(LineStore.getLink(guide.key, loopEnd.key, parent.key));
-					nodes.push(loopStart);
-					nodes.push(loopEnd);
-					nodes.push(guide);
-				}
-			default:
-				if (childs && childs.length > 0) {
-					//开始循环数据
-					childs.forEach((x, i) => {
-						//2除去头尾
-						if (i !== 0 && i !== childs.length) {
-							links.push(LineStore.getLink(childs[i - 1].key, childs[i].key, parent.key));
-						}
-
-						let n = this.getNodeModel(x, parent.key);
-						n.label = x.label || n.label;
-						nodes.push(n);
-
-						//如果有子集
-						let c = TestData.doFlowchartData(x, x.childs);
-						d = {
-							nodeArray: [...d.nodeArray.slice(0, 1), ...c.nodeArray, ...d.nodeArray.slice(1)],
-							linkArray: [...d.linkArray.slice(0, 1), ...c.linkArray, ...d.linkArray.slice(1)]
-						};
+					// 提示节点
+					currChilds.push({
+						key: 'guid' + parent.key,
+						label: '',
+						type: NodeEnum.WFGuideNode,
+						parentKey: parent.key
 					});
 				}
+
+				// 结尾
+				currChilds.push({
+					key: 'end' + parent.key,
+					label: '',
+					type: NodeEnum.SubClose,
+					parentKey: parent.key
+				});
+
+				//开始循环数据
+				currChilds.forEach((x, i) => {
+					let n = this.getNodeModel(x, parent.key);
+					n.label = x.label || n.label;
+
+					//如果有子集
+					if (x.childs && x.childs.length > 0) {
+						n.childs = TestData.doFlowchartData(n, x.childs);
+					}
+					dlist.add(n);
+				});
+				break;
+			default:
 				break;
 		}
 
-		return {
-			nodeArray: [...nodes.slice(0, 1), ...d.nodeArray, ...nodes.slice(1)],
-			linkArray: [...d.linkArray, ...links]
-		};
+		return dlist;
 	}
 
 	//
 	private static getNodeModel(node: ActionNode, parentkey: string): INodeModel {
-		let f = NodeStore.getNode(node.type);
+		let f = NodeStore.getNode(node.type, parentkey);
 		let n: INodeModel = {
 			type: node.type,
 			group: '',
 			label: f.label,
 			key: node.key,
 			category: f.category,
-			isGroup: f.isGroup
+			isGroup: f.isGroup,
+			childs: null
 		};
 		return { ...n, ...{ group: parentkey } };
 	}
