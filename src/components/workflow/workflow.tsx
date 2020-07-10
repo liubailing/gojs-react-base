@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import Flowchart from '../flowchartDiagram';
+import Flowchart from '../flowchart/flowchartDiagram';
 import Workflow, { WorkflowHandle } from './workflowHandle';
 import './base.css';
 /**

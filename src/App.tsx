@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 // import Base from './components/base/index';
-import Workflow from './components/flowchart/workflow/workflow';
+import Workflow from './components/workflow/workflow';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that

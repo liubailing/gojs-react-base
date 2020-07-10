@@ -1,7 +1,7 @@
-import { IFlowchartHander, INodeModel, ILineModel } from '../interface';
-import { HanderFlowchart } from '../handle';
+import { IFlowchartHander, INodeModel, ILineModel } from '../flowchart/interface';
+import { HanderFlowchart } from '../flowchart/handle';
 import { observable, action } from 'mobx';
-import { NodeEnum } from '../enum';
+import { NodeEnum } from '../flowchart/enum';
 import { TestData } from './index';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,

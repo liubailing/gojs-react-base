@@ -1,7 +1,7 @@
-import { IDiagramModel, INodeModel, ILineModel } from '../interface';
-import { NodeStore, LineStore } from '../store';
-import { FlowchartModel } from '../model';
-import { NodeEnum } from '../enum';
+import { IDiagramModel, INodeModel, ILineModel } from '../flowchart/interface';
+import { NodeStore, LineStore } from '../flowchart/store';
+import { FlowchartModel } from '../flowchart/model';
+import { NodeEnum } from '../flowchart/enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
 import TestDataJson from './testData';
 
