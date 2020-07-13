@@ -1,42 +1,42 @@
 import { NodeEnum } from '../enum';
-import { ILineModel, INodeModel } from '../interface';
+import { INodeModel } from '../interface';
 import { FlowchartModel } from '../model';
 
 /**
  * 各种操作的中间数据
  */
-type FCModel = {
-	nodes: INodeModel[];
-	lines: ILineModel[];
-};
+// type FCModel = {
+// 	nodes: INodeModel[];
+// 	lines: ILineModel[];
+// };
 
 /**
  * 辅助点
  * 这些节点存在只为展示，不出现在最后的数据里面
  *  */
-const nodeEnum2Helper: NodeEnum[] = [
-	NodeEnum.WFGuideNode,
-	NodeEnum.Start,
-	NodeEnum.End,
-	NodeEnum.SubOpen,
-	NodeEnum.SubClose
-];
+// const nodeEnum2Helper: NodeEnum[] = [
+// 	NodeEnum.WFGuideNode,
+// 	NodeEnum.Start,
+// 	NodeEnum.End,
+// 	NodeEnum.SubOpen,
+// 	NodeEnum.SubClose
+// ];
 
 /**
  * 辅助点
  * 这些节点存在只为展示，不出现在最后的数据里面
  *  */
-enum AddBranchEnum {
-	pre,
-	next,
-	inner
-}
+// enum AddBranchEnum {
+// 	pre,
+// 	next,
+// 	inner
+// }
 
 /**
  * 节点类型
  * 可以包含子节点的数据节点
  *  */
-const nodeEnum2HasChild: NodeEnum[] = [NodeEnum.Loop, NodeEnum.Condition, NodeEnum.Branch];
+// const nodeEnum2HasChild: NodeEnum[] = [NodeEnum.Loop, NodeEnum.Condition, NodeEnum.Branch];
 
 /**
  * 处理数据

@@ -1,5 +1,5 @@
-import { IDiagramModel, INodeModel, ILineModel } from '../flowchart/interface';
-import { NodeStore, LineStore } from '../flowchart/store';
+import { INodeModel } from '../flowchart/interface';
+import { NodeStore } from '../flowchart/store';
 import { FlowchartModel } from '../flowchart/model';
 import { NodeEnum } from '../flowchart/enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';

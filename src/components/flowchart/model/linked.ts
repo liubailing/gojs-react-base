@@ -1,10 +1,12 @@
 interface IList<T> {
 	add(a: T): void; //添加元素
 	insert(item: T, a: T): void; //插入元素
+	insertPre(item: T, a: T): void; //插入元素
 	replace(item: T, a: T): void; //替换元素
 	remove(a: T): void; //移除元素
 	header(): T; //返回头元素
 	find(a: T): T; //查找元素
+	findPre(a: T): T; //查找元素
 	size(): number; //返回列表元素个数
 	empty(): boolean; //是否空列表
 	clear(): void; //清空列表
@@ -70,7 +72,7 @@ class DobuleList<T> implements IList<T> {
 		}
 		let indexItem = this._header.next;
 		while (indexItem !== this._tail) {
-			if (indexItem.value == item) {
+			if (indexItem.value === item) {
 				let valueItem = new Item<T>(a);
 				valueItem.next = indexItem.next;
 				indexItem.next = valueItem;
@@ -90,7 +92,7 @@ class DobuleList<T> implements IList<T> {
 		let indexItem = this._header.next;
 		let preItem = this._header;
 		while (indexItem !== this._tail) {
-			if (indexItem.value == item) {
+			if (indexItem.value === item) {
 				let valueItem = new Item<T>(a);
 				valueItem.next = indexItem;
 				preItem.next = valueItem;
@@ -110,10 +112,9 @@ class DobuleList<T> implements IList<T> {
 		}
 		let indexItem = this._header.next;
 		while (indexItem !== this._tail) {
-			if (indexItem.value == item) {
+			if (indexItem.value === item) {
 				indexItem.value = newItem;
 				return true;
-				break;
 			}
 			indexItem = indexItem.next;
 		}
@@ -127,7 +128,7 @@ class DobuleList<T> implements IList<T> {
 		let indexItem = this._header.next;
 		let preItem = this._header;
 		while (indexItem !== this._tail) {
-			if (indexItem.value == a) {
+			if (indexItem.value === a) {
 				// 前指针 重新 指向后指针
 				preItem.next = indexItem.next;
 
@@ -154,7 +155,7 @@ class DobuleList<T> implements IList<T> {
 
 		let indexItem: any = this._header.next;
 		while (indexItem !== this._tail) {
-			if (indexItem.next == this._tail) {
+			if (indexItem.next === this._tail) {
 				return indexItem;
 			}
 			indexItem = indexItem.next;
@@ -170,7 +171,7 @@ class DobuleList<T> implements IList<T> {
 		let indexItem: any = this._header.next;
 		let preItem = this._header;
 		while (indexItem !== this._tail) {
-			if (indexItem.next == this._tail) {
+			if (indexItem.next === this._tail) {
 				if (preItem === this._header) {
 					return null as any;
 				}
@@ -203,7 +204,7 @@ class DobuleList<T> implements IList<T> {
 		let indexItem: any = this._header.next;
 		let preItem = this._header;
 		while (indexItem !== this._tail) {
-			if (indexItem.next == a) {
+			if (indexItem.next === a) {
 				if (preItem === this._header) {
 					return null as any;
 				}

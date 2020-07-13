@@ -8,47 +8,24 @@ export default class Base {
 	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowchartDiagram.OpenStepSet
 	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; //lang.FlowchartDiagram.ForMoreMenus
 	static nodeEvent: INodeEvent;
-	// onClick() {}
 
 	doFlowchartEvent(e: go.InputEvent, _obj: GraphObject, eType: HandleEnum, flowchartcallBack: Function) {
 		if (_obj && flowchartcallBack) {
 			let node: go.Part = (_obj as any).part;
-			// var p = node.location.copy();
-			// // p.x += 200;
-			// let loc = go.Point.stringify(p);
-			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.Center));
-			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopLeft));
-			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
 			if (node && node.data) {
 				let e: INodeEvent = {
 					eType: eType
 				} as INodeEvent;
 				//
+				/** 打开点菜单 */
 				switch (eType) {
-					/** 打开点菜单 */
 					case HandleEnum.ShowNodeMenu:
 					case HandleEnum.ShowNodeInfo:
-					// case HandleEnum.ShowNodeSetting:
-					case HandleEnum.ShowNodeMenu:
 					case HandleEnum.ShowLineMenu:
-						// if (eType === HandleEnum.ShowLineMenu) {
-						// 	e.line = node.data as ILineModel;
-						// } else {
-						// 	e.node = node.data as INodeModel;
-						// }
-
-						// let offset = node.diagram?.lastInput.viewPoint;
-						// if (offset) {
-						// 	e.posX = offset?.x;
-						// 	e.posY = offset?.y;
-						// }
-
 						if (node.diagram) {
-							// flowchartcallBack(e);
 							node.data._handleEnum = eType;
 							node.diagram?.commandHandler.showContextMenu(node.diagram);
 						}
-						// flowchartcallBack(e);
 						break;
 					default:
 						e.node = node.data;
@@ -71,6 +48,5 @@ export default class Base {
 		} else {
 			BaseChanges.setGroupCss(node, false);
 		}
-		// }
 	};
 }

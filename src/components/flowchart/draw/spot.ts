@@ -1,6 +1,5 @@
 import go, { GraphObject, Margin } from 'gojs';
 import { DiagramEnum } from '../enum';
-import { INodeEvent } from '../interface';
 import { HandleEnum } from '../enum';
 
 import ISet from '../../../assets/flowchart/i-node-set.png';

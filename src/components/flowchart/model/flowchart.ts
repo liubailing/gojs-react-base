@@ -2,7 +2,6 @@ import Linked from './linked';
 import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
-import flowchart from '..';
 
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
@@ -48,7 +47,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let childKeys: Array<string> = [];
 
 		if (item.value && item.value.group) {
-			this.toArray().map((x) => {
+			this.toArray().forEach((x) => {
 				// console.log(x);
 				childKeys.push(x.key);
 			});

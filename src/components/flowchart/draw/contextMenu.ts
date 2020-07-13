@@ -3,7 +3,7 @@ import { HandleEnum } from '../enum';
 import Base from './base';
 import { INodeEvent, ILineModel, INodeModel } from '../interface';
 const $ = go.GraphObject.make;
-const domId = 'div-flowchart-contextMenu';
+// const domId = 'div-flowchart-contextMenu';
 
 export default class DrawContextMenu extends Base {
 	callBack: Function;
@@ -39,7 +39,7 @@ export default class DrawContextMenu extends Base {
 				e.node = node.data as INodeModel;
 			}
 
-			let offset = this.diagram.lastInput.viewPoint;
+			// let offset = this.diagram.lastInput.viewPoint;
 			// let offset = node.getDocumentPoint(go.Spot.BottomCenter);
 			// if (offset) {
 			// 	e.posX = offset?.x;

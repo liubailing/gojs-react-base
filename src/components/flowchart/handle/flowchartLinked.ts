@@ -350,12 +350,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		let data = this.getDiagram();
 		this.nodeDataArray = [...data.nodeArray, ...[]];
 		this.linkDataArray = [...data.linkArray, ...[]];
-		console.log(`数据：nodes-${this.nodeDataArray.length},lines:${this.linkDataArray.length}`);
 	}
 
 	getAll() {
-		// this.nodeDataArray = [...this.getNodes(), ...[]];
-		// this.linkDataArray = [...this.getLines(), ...[]];
 		return {
 			nodes: this.nodeDataArray,
 			lines: this.linkDataArray

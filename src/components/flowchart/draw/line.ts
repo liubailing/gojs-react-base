@@ -1,5 +1,5 @@
 import go, { GraphObject } from 'gojs';
-import { DiagramSetting, BaseColors, HoverColors } from '../config';
+import { DiagramSetting, BaseColors } from '../config';
 import Base from './base';
 import BaseChangese from './baseChanges';
 import { HandleEnum } from '../enum';

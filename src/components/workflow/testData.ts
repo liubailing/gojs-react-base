@@ -83,12 +83,3 @@ export default {
 		{ key: 'data', type: ActionNodeType.ExtractData as string, parentKey: 'root' }
 	]
 };
-
-export class testNode {
-	gettest() {
-		nodeArray: {
-		}
-		linkArray: {
-		}
-	}
-}

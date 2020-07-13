@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Flowchart from '../flowchart/flowchartDiagram';
-import Workflow, { WorkflowHandle } from './workflowHandle';
+import Workflow from './workflowHandle';
 import './base.css';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,

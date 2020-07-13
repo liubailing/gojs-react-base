@@ -3,14 +3,13 @@ import { HanderFlowchart } from '../flowchart/handle';
 import { observable, action } from 'mobx';
 import { NodeEnum } from '../flowchart/enum';
 import { TestData } from './index';
+
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
  * both are optional props in ReactDiagram.
  */
-
 export class WorkflowHandle implements IFlowchartHander {
-	constructor() {}
 	@observable logs: string[] = [];
 	taskId = 'cCDWC12344';
 	flowchart: HanderFlowchart = new HanderFlowchart(this);
@@ -148,8 +147,6 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.flowchart.initFlochart(data);
 				break;
 			case 'getall':
-				const dataAll = this.flowchart.getAll();
-				// this.flowchart.initFlochart(dataAll.nodes, dataAll.lines);
 				break;
 			case 'hide_contextMenu':
 				this.flowchart._hideContextMenu();
@@ -248,7 +245,7 @@ export class WorkflowHandle implements IFlowchartHander {
 				}
 				break;
 			case 'copy_cond':
-				let resCopy = this.flowchart.onCopyNode2Node('cond', 'loop');
+				this.flowchart.onCopyNode2Node('cond', 'loop');
 				break;
 			default:
 				this.log('未实现的操作');
