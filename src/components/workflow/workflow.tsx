@@ -245,6 +245,18 @@ class WorkflowTest extends React.Component<{}> {
 								删除节点 条件
 							</button>
 						</div>
+						<div>
+							<label>复制节点：</label>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('copy_cond');
+								}}
+							>
+								复制cond到loop
+							</button>
+						</div>
 
 						<div>
 							<label>存取数据：</label>

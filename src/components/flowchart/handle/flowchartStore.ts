@@ -144,7 +144,7 @@ export default class FlowchartStore {
 	}
 
 	copyNode2Node(nodekey: string, toNodekey: string) {
-		let res = this._data.removeNode2Node(nodekey, toNodekey);
+		let res = this._data.copyNode2Node(nodekey, toNodekey);
 		if (res) {
 			return true;
 		}

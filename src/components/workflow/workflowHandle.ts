@@ -243,10 +243,12 @@ export class WorkflowHandle implements IFlowchartHander {
 				break;
 			case 'get_cond':
 				let cond = this.flowchart.onGetNode('loop2');
-				debugger;
 				if (cond) {
 					this.logs.push(`得到数据 cond:` + JSON.stringify(cond));
 				}
+				break;
+			case 'copy_cond':
+				let resCopy = this.flowchart.onCopyNode2Node('cond', 'loop');
 				break;
 			default:
 				this.log('未实现的操作');

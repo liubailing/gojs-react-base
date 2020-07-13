@@ -49,7 +49,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case 'ChangedSelection': {
 				const sel = e.subject.first();
 				if (sel) {
-					debugger;
 					if (sel instanceof go.Node) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick) {
@@ -340,7 +339,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	@action
 	onGetNode(nodekey: string): INodeModel | undefined {
 		let data = this.mapNode.get(nodekey);
-		debugger;
 		if (data) {
 			return data;
 		}

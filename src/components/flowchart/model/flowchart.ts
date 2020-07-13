@@ -2,6 +2,7 @@ import Linked from './linked';
 import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
+import flowchart from '..';
 
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
@@ -238,11 +239,42 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	}
 
 	copyNode2Node(nodekey: string, toNodekey: string): boolean {
-		let res = this.remove8NodeId(nodekey);
-		if (res) {
-			return this.insert8NodeId(toNodekey, res);
+		let newM = this.getNode8Copy(nodekey, '');
+		if (newM) {
+			return this.insert8NodeId(toNodekey, newM);
 		}
 		return false;
+	}
+
+	private getNode8Copy(nodekey: string, groupId: string): INodeModel | null {
+		let newM = this.mapNode.get(nodekey);
+		let newC: FlowchartModel | null = null;
+
+		if (newM) {
+			// 将要扥到的结果
+			let res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
+			if (newM.childs) {
+				newC = new FlowchartModel();
+				let idxItem = newM.childs._header.next;
+				while (idxItem !== newM.childs._tail) {
+					if (idxItem.value) {
+						let newN = this.getNode8Copy(idxItem.value.key, res.key);
+						// 追加子节点
+						if (newN) {
+							newC.add(newN);
+						}
+					}
+
+					idxItem = idxItem.next;
+				}
+				// 赋值
+				if (newC) {
+					res.childs = newC;
+				}
+			}
+			return res;
+		}
+		return null;
 	}
 
 	/**
@@ -286,7 +318,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let item = this._header.next;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
-				debugger;
 				newNode.group = item.value.group;
 				if (item.value.type === NodeEnum.SubOpen) {
 					// 去判断下一次节点是不是 wfguide;
@@ -309,6 +340,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 			if (item.value.childs) {
 				let res = item.value.childs.insert8NodeId(nodekey, newNode);
+
 				if (res) {
 					if (item.value.type === NodeEnum.Condition) {
 						let cItem = item.value.childs._header.next;
