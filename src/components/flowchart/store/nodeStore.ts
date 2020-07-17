@@ -21,16 +21,8 @@ export class NodeStore {
 	static strBranch = '条件分支'; //lang.FCEntities.Branch;
 	static strWFGuideNode = '将要执行的流程拖放在此'; //lang.FCEntities.WFGuideNode;
 
-	static getRandomKey = (len: number = 8): string => {
-		len = len < 1 ? 8 : len;
-		let $chars =
-			'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'; /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
-		let maxPos = $chars.length;
-		let pwd = '';
-		for (let i = 0; i < len; i++) {
-			pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-		}
-		return pwd;
+	static getRandomKey = (): string => {
+		return Math.random().toString(36).substring(2);
 	};
 
 	static get baseModel(): INodeModel {
