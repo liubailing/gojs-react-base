@@ -1,24 +1,36 @@
 {
-	"compilerOptions": {
-		"declaration": true,
-		"importHelpers": true,
-		"module": "esnext",
-		"outDir": "lib",
-		"rootDir": "src",
-		"strict": true,
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react",
-		"target": "es2017",
-		"allowSyntheticDefaultImports": true,
-		"lib": ["dom", "dom.iterable", "esnext"],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"forceConsistentCasingInFileNames": true
-	},
-	"include": ["src/**/*"]
+  "compilerOptions": {
+    "module": "esnext",
+    "outDir": "build",
+    "rootDir": "src",
+    "strict": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react",
+    "target": "es2017",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "lib",
+    "build",
+    "src/workflow/**/*",
+    "src/App.tsx",
+    "src/index.tsx"
+  ]
 }
