@@ -2,10 +2,10 @@ import go, { GraphObject, Margin } from 'gojs';
 import { DiagramEnum } from '../enum';
 import { HandleEnum } from '../enum';
 
-import ISet from '../../../assets/flowchart/i-node-set.png';
-import ISetHover from '../../../assets/flowchart/i-node-set-hover.png';
-import IMenu from '../../../assets/flowchart/i-node-menu.png';
-import IMenuHover from '../../../assets/flowchart/i-node-menu-hover.png';
+import ISet from '../../../assets/images/flowchart/i-node-set.png';
+import ISetHover from '../../../assets/images/flowchart/i-node-set-hover.png';
+import IMenu from '../../../assets/images/flowchart/i-node-menu.png';
+import IMenuHover from '../../../assets/images/flowchart/i-node-menu-hover.png';
 import Base from './base';
 
 const $ = go.GraphObject.make;
