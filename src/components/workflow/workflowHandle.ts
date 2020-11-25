@@ -254,10 +254,10 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.flowchart.onPaste2Node('loop');
 				break;
 			case 'copy_paste':
-				this.flowchart.onCopyNode2PasteNode('cond', 'loop2');
+				this.flowchart.onCopyNode2PasteNode('cond', 'loop');
 				break;
 			case 'copy_paste2':
-				this.flowchart.onCopyNode2PasteNode('cond', 'cond');
+				this.flowchart.onCopyNode2PasteNode('cond', 'loop2');
 				break;
 			default:
 				this.log('未实现的操作');

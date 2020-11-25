@@ -183,7 +183,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	/**
-	 * 往后新增节点，依据nodeId
+	 * 往前面新增节点，依据nodeId
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型
 	 */
@@ -247,7 +247,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	/**
-	 * 复制
+	 * 复制此节点
 	 * @param nodekey 要复制的nodeId
 	 * @param isCopyOnce 是否只复制一次，
 	 */
@@ -261,8 +261,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	/**
-	 * 复制
-	 * @param nodekey 要复制的nodeId
+	 * 黏贴到节点
+	 * @param toNodekey 要黏贴到的nodeId
 	 */
 	onPaste2Node(toNodekey: string) {
 		if (!this._willCopyNodeId) return;
@@ -281,6 +281,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 
 	/**
 	 * 复制 和 黏贴
+	 * 重点注意 *当复制到循环时候，默认追加到循环的内部
 	 * @param nodekey
 	 * @param toNodekey
 	 */
