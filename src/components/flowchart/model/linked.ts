@@ -1,23 +1,23 @@
 interface IList<T> {
-	add(a: T): void; //添加元素
-	insert(item: T, a: T): void; //插入元素
-	insertPre(item: T, a: T): void; //插入元素
-	replace(item: T, a: T): void; //替换元素
-	remove(a: T): void; //移除元素
-	header(): T; //返回头元素
-	find(a: T): T; //查找元素
-	findPre(a: T): T; //查找元素
-	size(): number; //返回列表元素个数
-	empty(): boolean; //是否空列表
-	clear(): void; //清空列表
+	add: (a: T) => void; // 添加元素
+	insert: (item: T, a: T) => void; // 插入元素
+	insertPre: (item: T, a: T) => void; // 插入元素
+	replace: (item: T, a: T) => void; // 替换元素
+	remove: (a: T) => void; // 移除元素
+	header: () => T; // 返回头元素
+	find: (a: T) => T; // 查找元素
+	findPre: (a: T) => T; // 查找元素
+	size: () => number; // 返回列表元素个数
+	empty: () => boolean; // 是否空列表
+	clear: () => void; // 清空列表
 }
 
 class Item<T> {
 	private _name: string;
-	private _value: T; //值
-	private _next: Item<T> | null; //指向的下一个元素
+	private _value: T; // 值
+	private _next: Item<T> | null; // 指向的下一个元素
 	constructor(value?: T) {
-		this._name = value + '';
+		this._name = String(value);
 		this._value = value as T;
 		this._next = null;
 	}
@@ -42,9 +42,9 @@ class Item<T> {
 }
 
 class DobuleList<T> implements IList<T> {
-	_count: number = 0; //记录元素个数
-	_header: Item<T>; //头元素
-	_tail: Item<T>; //尾元素
+	_count: number = 0; // 记录元素个数
+	_header: Item<T>; // 头元素
+	_tail: Item<T>; // 尾元素
 	constructor() {
 		this._header = new Item<T>();
 		this._header.name = 'header';
@@ -55,7 +55,7 @@ class DobuleList<T> implements IList<T> {
 	}
 
 	add(a: T): boolean {
-		let item = new Item<T>(a);
+		const item = new Item<T>(a);
 		let indexItem: any = this._header;
 		while (indexItem.next !== this._tail) {
 			indexItem = indexItem.next;
@@ -73,7 +73,7 @@ class DobuleList<T> implements IList<T> {
 		let indexItem = this._header.next;
 		while (indexItem !== this._tail) {
 			if (indexItem.value === item) {
-				let valueItem = new Item<T>(a);
+				const valueItem = new Item<T>(a);
 				valueItem.next = indexItem.next;
 				indexItem.next = valueItem;
 				this._count++;
@@ -93,7 +93,7 @@ class DobuleList<T> implements IList<T> {
 		let preItem = this._header;
 		while (indexItem !== this._tail) {
 			if (indexItem.value === item) {
-				let valueItem = new Item<T>(a);
+				const valueItem = new Item<T>(a);
 				valueItem.next = indexItem;
 				preItem.next = valueItem;
 				this._count++;
@@ -132,7 +132,7 @@ class DobuleList<T> implements IList<T> {
 				// 前指针 重新 指向后指针
 				preItem.next = indexItem.next;
 
-				let value = indexItem.value;
+				const { value } = indexItem;
 				indexItem.value = null as any;
 				indexItem = null as any;
 				this._count--;
@@ -226,7 +226,7 @@ class DobuleList<T> implements IList<T> {
 	}
 
 	toArray(): T[] {
-		let arr = new Array<T>();
+		const arr = new Array<T>();
 		let indexItem: any = this._header.next;
 		while (indexItem !== this._tail) {
 			arr.push(indexItem.value);

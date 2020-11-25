@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import * as go from 'gojs';
 
 export default class CommandHandler extends go.CommandHandler {

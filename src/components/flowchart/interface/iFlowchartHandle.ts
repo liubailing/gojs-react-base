@@ -1,4 +1,5 @@
-import go from 'gojs';
+/* eslint-disable @typescript-eslint/method-signature-style */
+// import go from 'gojs';
 import { INodeModel } from './iNodeModel';
 import { ILineModel } from './iLineModel';
 

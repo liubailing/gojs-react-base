@@ -60,10 +60,10 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 
 	public render() {
 		// const selectedData = this.state.selectedData;
-		let domId = 'divFlowchart' + this.props.taskId;
+		const domId = `divFlowchart${this.props.taskId}`;
 		return (
-			<div className={'div-flowchart'}>
-				<div id={domId} className={'div-flowchart-diagram'}></div>
+			<div className="div-flowchart">
+				<div id={domId} className="div-flowchart-diagram" />
 				<Diagram
 					diagramId={domId}
 					nodeDataArray={this.props.flowchart.nodeDataArray}

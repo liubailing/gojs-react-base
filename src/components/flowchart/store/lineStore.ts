@@ -13,12 +13,16 @@ export class LineStore {
 	 * @param isCondition
 	 */
 	static getLink(from: string, to: string, group: string): ILineModel {
-		if (!from || from === to) return { key: '', from: '', to: '' };
-		if (!group) group = 'root';
-		let link: ILineModel = {
+		if (!from || from === to) {
+			return { key: '', from: '', to: '' };
+		}
+		if (!group) {
+			group = 'root';
+		}
+		const link: ILineModel = {
 			key: `${from}${to}`,
-			from: from,
-			to: to
+			from,
+			to
 		};
 		return link;
 	}

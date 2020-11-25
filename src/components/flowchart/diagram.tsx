@@ -51,19 +51,25 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	 * Typically the same function will be used for each listener, with the function using a switch statement to handle the events.
 	 */
 	public componentDidMount() {
-		if (!this.diagramRef.current) return;
+		if (!this.diagramRef.current) {
+			return;
+		}
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
 		}
-		if (diagram) this.props.getDiagram(diagram);
+		if (diagram) {
+			this.props.getDiagram(diagram);
+		}
 	}
 
 	/**
 	 * Get the diagram reference and remove listeners that were added during mounting.
 	 */
 	public componentWillUnmount() {
-		if (!this.diagramRef.current) return;
+		if (!this.diagramRef.current) {
+			return;
+		}
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.removeDiagramListener('ChangedSelection', this.props.onDiagramEvent);
@@ -109,14 +115,18 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 				// positive keys for nodes
 				makeUniqueKeyFunction: (m: go.Model, data: any) => {
 					let k = data.key || 1;
-					while (m.findNodeDataForKey(k)) k++;
+					while (m.findNodeDataForKey(k)) {
+						k++;
+					}
 					data.key = k;
 					return k;
 				},
 				// negative keys for links
 				makeUniqueLinkKeyFunction: (m: go.GraphLinksModel, data: any) => {
 					let k = data.key || -1;
-					while (m.findLinkDataForKey(k)) k--;
+					while (m.findLinkDataForKey(k)) {
+						k--;
+					}
 					data.key = k;
 					return k;
 				}
@@ -234,7 +244,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		);
 	}
 
-
 	/**
 	 *
 	 */
@@ -248,7 +257,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	 * 流程图画完
 	 */
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		//console.log(`~ test flowchart ~ LayoutCompleted 123`)
+		// console.log(`~ test flowchart ~ LayoutCompleted 123`)
 		if (this.isCtrlCopy) {
 			// let n = this.props.store.diagram.findNodeForKey(this.props.store.currNodeKey);
 			// if (n && n.part) {

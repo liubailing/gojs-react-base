@@ -46,10 +46,10 @@ export default class baseChanges {
 	 * @param isShow 是否显示
 	 */
 	static setActionCss(node: go.Part, isShow: boolean) {
-		let node_Iset = node.findObject('node_Iset');
-		let node_Imenu = node.findObject('node_Imenu');
-		let node_Iset_Hover = node.findObject('node_Iset_Hover');
-		let node_Imenu_Hover = node.findObject('node_Imenu_Hover');
+		const node_Iset = node.findObject('node_Iset');
+		const node_Imenu = node.findObject('node_Imenu');
+		const node_Iset_Hover = node.findObject('node_Iset_Hover');
+		const node_Imenu_Hover = node.findObject('node_Imenu_Hover');
 
 		if (isShow) {
 			if (node_Iset) {
@@ -86,8 +86,8 @@ export default class baseChanges {
 	 * @param isShow 是否显示
 	 */
 	static setListCss(node: go.Part, isShow: boolean) {
-		let node_Ilist = node.findObject('node_Ilist');
-		let node_Ilist_Hover = node.findObject('node_Ilist_Hover');
+		const node_Ilist = node.findObject('node_Ilist');
+		const node_Ilist_Hover = node.findObject('node_Ilist_Hover');
 
 		if (isShow) {
 			if (node_Ilist) {
@@ -114,7 +114,7 @@ export default class baseChanges {
 	 * @param isShow 是否显示
 	 */
 	static setNodeCss(node: go.Part, isShow: boolean) {
-		let node_Body = node.findObject('node_Body');
+		const node_Body = node.findObject('node_Body');
 
 		if (isShow) {
 			if (node_Body) {
@@ -154,7 +154,9 @@ export default class baseChanges {
 	}
 
 	static setLinkCss(node: go.Part, isShow: boolean) {
-		if (!node) return;
+		if (!node) {
+			return;
+		}
 		const link_Body = node.findObject('link_Body') as any;
 		const link_Arr = node.findObject('link_Arr') as any;
 		const link_Hover = node.findObject('link_Hover');
@@ -166,8 +168,12 @@ export default class baseChanges {
 			if (link_Arr) {
 				link_Arr.fill = HoverColors.link;
 			}
-			if (link_Hover) link_Hover.visible = true;
-			if (link_Add) link_Add.visible = true;
+			if (link_Hover) {
+				link_Hover.visible = true;
+			}
+			if (link_Add) {
+				link_Add.visible = true;
+			}
 		} else {
 			if (link_Body) {
 				link_Body.stroke = BaseColors.link;
@@ -175,8 +181,12 @@ export default class baseChanges {
 			if (link_Arr) {
 				link_Arr.fill = BaseColors.link;
 			}
-			if (link_Hover) link_Hover.visible = false;
-			if (link_Add) link_Add.visible = false;
+			if (link_Hover) {
+				link_Hover.visible = false;
+			}
+			if (link_Add) {
+				link_Add.visible = false;
+			}
 		}
 	}
 }
