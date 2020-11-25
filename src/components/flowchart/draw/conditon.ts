@@ -14,18 +14,22 @@ export default class DrawCondition extends Base {
 		this.callBack = e;
 	}
 	getCondition(): go.Group {
-		let $DrawSpot = new DrawSpot(this.callBack);
+		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
 			{
 				layout: $(go.GridLayout, {
 					sorting: go.TreeLayout.SortingAscending,
-					comparer: function (va: any, vb: any) {
-						var da = va.data;
-						var db = vb.data;
-						if (da.sortIndex < db.sortIndex) return -1;
-						if (da.sortIndex > db.sortIndex) return 1;
+					comparer(va: any, vb: any) {
+						const da = va.data;
+						const db = vb.data;
+						if (da.sortIndex < db.sortIndex) {
+							return -1;
+						}
+						if (da.sortIndex > db.sortIndex) {
+							return 1;
+						}
 						return 0;
 					},
 					cellSize: new go.Size(10, 10),
@@ -84,7 +88,7 @@ export default class DrawCondition extends Base {
 	}
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
@@ -92,7 +96,7 @@ export default class DrawCondition extends Base {
 	};
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);

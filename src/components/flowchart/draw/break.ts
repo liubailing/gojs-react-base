@@ -13,7 +13,7 @@ export default class DrawBreak extends Base {
 		this.callBack = e;
 	}
 	getBreak(): go.Part {
-		let $DrawSpot = new DrawSpot(this.callBack);
+		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Node,
 			'Auto',
@@ -40,7 +40,7 @@ export default class DrawBreak extends Base {
 					fill: BaseColors.backgroud
 				},
 				new go.Binding('fill', 'color')
-				//new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
+				// new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
 			),
 			$(
 				go.Panel,

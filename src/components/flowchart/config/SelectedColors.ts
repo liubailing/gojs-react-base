@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const SelectedColors = {
 	highlight: '#2b71ed',
 	group_bg: '#2b71ed',

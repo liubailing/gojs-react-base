@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import go from 'gojs';
 import { BaseColors, HoverColors } from '../config';
 

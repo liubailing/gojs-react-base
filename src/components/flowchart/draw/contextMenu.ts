@@ -23,14 +23,14 @@ export default class DrawContextMenu extends Base {
 		});
 	}
 
-	//contextmenu: Adornment | HTMLInfo, obj: GraphObject | null
+	// contextmenu: Adornment | HTMLInfo, obj: GraphObject | null
 	showContextMenu = () => {
-		let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+		const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 		if (node) {
 			// console.log(`%%%%%%%%%%`, node.data);
-			let eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
-			let e: INodeEvent = {
-				eType: eType
+			const eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
+			const e: INodeEvent = {
+				eType
 			} as INodeEvent;
 
 			if (eType === HandleEnum.ShowLineMenu) {
@@ -98,7 +98,7 @@ export default class DrawContextMenu extends Base {
 		// 	document.body.removeChild(this.contextMenuDIV);
 		// }
 
-		let handle: INodeEvent = {
+		const handle: INodeEvent = {
 			eType: HandleEnum.HideContextMenu
 		} as INodeEvent;
 		this.callBack(handle);

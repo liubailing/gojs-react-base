@@ -8,8 +8,8 @@ export class DrawSimple extends Base {
 	/**
 	 * 起始点
 	 */
-	getStart = (): go.Part => {
-		return $(
+	getStart = (): go.Part =>
+		$(
 			go.Node,
 			'Panel',
 			{
@@ -37,13 +37,12 @@ export class DrawSimple extends Base {
 				})
 			)
 		);
-	};
 
 	/**
 	 * 结束点
 	 */
-	getEnd = (): go.Part => {
-		return $(
+	getEnd = (): go.Part =>
+		$(
 			go.Node,
 			'Panel',
 			{
@@ -69,13 +68,12 @@ export class DrawSimple extends Base {
 				})
 			)
 		);
-	};
 
 	/**
 	 * 流程指示点
 	 */
-	getGuidNode = (): go.Part => {
-		return $(
+	getGuidNode = (): go.Part =>
+		$(
 			go.Node,
 			'Auto',
 			{
@@ -89,8 +87,8 @@ export class DrawSimple extends Base {
 					strokeWidth: 0,
 					fill: BaseColors.transparent
 				}
-				//new go.Binding('fill', 'color'),
-				//new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
+				// new go.Binding('fill', 'color'),
+				// new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted
 			),
 			$(
 				go.TextBlock,
@@ -105,7 +103,6 @@ export class DrawSimple extends Base {
 				new go.Binding('text', 'label')
 			)
 		);
-	};
 }
 
 const drawSimple = new DrawSimple();

@@ -1,5 +1,3 @@
-import { DiagramEnum } from '../enum';
-
 /**
  * 连线对应的属性
  */

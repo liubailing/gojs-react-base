@@ -14,8 +14,8 @@ export default class DrawLink extends Base {
 	/**
 	 * 画线
 	 */
-	getLink = (): go.Link => {
-		return $(
+	getLink = (): go.Link =>
+		$(
 			go.Link,
 			{
 				mouseLeave: this.onMouseLeave,
@@ -41,8 +41,8 @@ export default class DrawLink extends Base {
 			}),
 			$(go.Panel, 'Auto', {
 				name: 'link_Hover',
-				width: DiagramSetting.nodeWith, //增加宽度，方便触发相关事件
-				height: DiagramSetting.layerSpacing, //增加高度，方便触发相关事件
+				width: DiagramSetting.nodeWith, // 增加宽度，方便触发相关事件
+				height: DiagramSetting.layerSpacing, // 增加高度，方便触发相关事件
 				opacity: 0,
 				background: BaseColors.link,
 				visible: true
@@ -73,17 +73,20 @@ export default class DrawLink extends Base {
 				})
 			)
 		);
-	};
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
-		if (!node) return;
+		if (!node) {
+			return;
+		}
 		BaseChangese.setLinkCss(node, true);
 	};
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
-		if (!node) return;
+		if (!node) {
+			return;
+		}
 		BaseChangese.setLinkCss(node, false);
 	};
 
@@ -93,13 +96,17 @@ export default class DrawLink extends Base {
 
 	onMouseDragEnter = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
-		if (!node) return;
+		if (!node) {
+			return;
+		}
 		BaseChangese.setLinkCss(node, true);
 	};
 
 	onMouseDragLeave = (_e: go.InputEvent, obj: GraphObject) => {
 		const node = (obj as any).part;
-		if (!node) return;
+		if (!node) {
+			return;
+		}
 		BaseChangese.setLinkCss(node, false);
 	};
 }

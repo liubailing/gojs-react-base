@@ -15,7 +15,7 @@ export default class DrawBranch extends Base {
 		this.callBack = e;
 	}
 	getBranch(): go.Group {
-		let $DrawSpot = new DrawSpot(this.callBack);
+		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
@@ -38,8 +38,10 @@ export default class DrawBranch extends Base {
 				// doubleClick: this.onSettingClick,
 				// contextClick: this.onContextClick,
 				isSubGraphExpanded: true,
-				subGraphExpandedChanged: function (_group: any) {
-					if (_group instanceof go.Adornment) _group = _group.adornedPart;
+				subGraphExpandedChanged(_group: any) {
+					if (_group instanceof go.Adornment) {
+						_group = _group.adornedPart;
+					}
 					// const cmd = myDiagram.commandHandler;
 					const lspot = _group.part.findObject('left_Spot');
 					const rspot = _group.part.findObject('right_Spot');
@@ -132,7 +134,7 @@ export default class DrawBranch extends Base {
 					strokeWidth: 1
 				})
 			),
-			//output port
+			// output port
 			$(
 				go.Panel,
 				'Auto',
@@ -165,7 +167,7 @@ export default class DrawBranch extends Base {
 	}
 
 	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		// console.log('node', node);
 
 		if (node && node.diagram && !node.isSelected) {
@@ -175,7 +177,7 @@ export default class DrawBranch extends Base {
 	}
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		// console.log('node', node);
 
 		if (node && node.diagram) {

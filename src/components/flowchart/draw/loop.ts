@@ -22,7 +22,7 @@ export default class DrawLoop extends Base {
 	 */
 	loopSpotTitleHelper = (): go.Panel => {
 		// 节点基本样式
-		let spotCss = {
+		const spotCss = {
 			alignment: go.Spot.TopRight,
 			cursor: 'pointer',
 			height: 26,
@@ -30,13 +30,13 @@ export default class DrawLoop extends Base {
 			margin: new Margin(0, 50, 0, 0)
 		};
 		// 图标基本样式
-		let baseCss = {
+		const baseCss = {
 			margin: new Margin(0, 0, 0, 0),
 			visible: false,
 			height: 26,
 			width: 25
 		};
-		let hoverCss = {
+		const hoverCss = {
 			background: '#ffffff'
 		};
 		return $(
@@ -80,7 +80,7 @@ export default class DrawLoop extends Base {
 	};
 
 	getLoop(): go.Group {
-		let $DrawSpot = new DrawSpot(this.callBack);
+		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Group,
 			'Auto',
@@ -161,12 +161,16 @@ export default class DrawLoop extends Base {
 	private onListMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let list = node.findObject('node_Ilist');
-					if (list) list.visible = false;
-					let listHover = node.findObject('node_Ilist_Hover');
-					if (listHover) listHover.visible = true;
+					const list = node.findObject('node_Ilist');
+					if (list) {
+						list.visible = false;
+					}
+					const listHover = node.findObject('node_Ilist_Hover');
+					if (listHover) {
+						listHover.visible = true;
+					}
 				}
 			}
 		} catch (e) {}
@@ -180,19 +184,23 @@ export default class DrawLoop extends Base {
 			// this.changeNodeInfoOpacity(1);
 			if (_obj) {
 				// this.hideTitle();
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let list = node.findObject('node_Ilist');
-					if (list) list.visible = true;
-					let listHover = node.findObject('node_Ilist_Hover');
-					if (listHover) listHover.visible = false;
+					const list = node.findObject('node_Ilist');
+					if (list) {
+						list.visible = true;
+					}
+					const listHover = node.findObject('node_Ilist_Hover');
+					if (listHover) {
+						listHover.visible = false;
+					}
 				}
 			}
 		} catch (e) {}
 	};
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		// console.log('node', node);
 
 		if (node && node.diagram && !node.isSelected) {
@@ -202,7 +210,7 @@ export default class DrawLoop extends Base {
 	};
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		// console.log('node', node);
 
 		if (node && node.diagram && !node.isSelected) {

@@ -18,7 +18,7 @@ let spotCss = {
 	width: 50
 };
 /** 图标基本样式 */
-let baseCss = {
+const baseCss = {
 	margin: new Margin(0, 0, 0, 0),
 	visible: false,
 	// background: '#2b71ed',
@@ -26,7 +26,7 @@ let baseCss = {
 	width: 25
 };
 /** 图标基本样式 */
-let hoverCss = {
+const hoverCss = {
 	background: '#ffffff'
 };
 
@@ -163,12 +163,16 @@ export default class DrawSpot extends Base {
 	private onSetMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let set = node.findObject('node_Iset');
-					if (set) set.visible = false;
-					let setting = node.findObject('node_Iset_Hover');
-					if (setting) setting.visible = true;
+					const set = node.findObject('node_Iset');
+					if (set) {
+						set.visible = false;
+					}
+					const setting = node.findObject('node_Iset_Hover');
+					if (setting) {
+						setting.visible = true;
+					}
 				}
 			}
 		} catch (e) {}
@@ -177,12 +181,16 @@ export default class DrawSpot extends Base {
 	private onSetMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let set = node.findObject('node_Iset');
-					if (set) set.visible = true;
-					let setting = node.findObject('node_Iset_Hover');
-					if (setting) setting.visible = false;
+					const set = node.findObject('node_Iset');
+					if (set) {
+						set.visible = true;
+					}
+					const setting = node.findObject('node_Iset_Hover');
+					if (setting) {
+						setting.visible = false;
+					}
 				}
 			}
 		} catch (e) {}
@@ -191,12 +199,16 @@ export default class DrawSpot extends Base {
 	private onMenuMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let set = node.findObject('node_Imenu');
-					if (set) set.visible = false;
-					let setting = node.findObject('node_Imenu_Hover');
-					if (setting) setting.visible = true;
+					const set = node.findObject('node_Imenu');
+					if (set) {
+						set.visible = false;
+					}
+					const setting = node.findObject('node_Imenu_Hover');
+					if (setting) {
+						setting.visible = true;
+					}
 				}
 			}
 		} catch (e) {}
@@ -205,12 +217,16 @@ export default class DrawSpot extends Base {
 	private onMenuMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
-				let node = (_obj as any).part;
+				const node = (_obj as any).part;
 				if (node) {
-					let set = node.findObject('node_Imenu');
-					if (set) set.visible = true;
-					let setting = node.findObject('node_Imenu_Hover');
-					if (setting) setting.visible = false;
+					const set = node.findObject('node_Imenu');
+					if (set) {
+						set.visible = true;
+					}
+					const setting = node.findObject('node_Imenu_Hover');
+					if (setting) {
+						setting.visible = false;
+					}
 				}
 			}
 		} catch (e) {}

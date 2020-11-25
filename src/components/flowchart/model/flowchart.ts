@@ -44,7 +44,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let item = this._header.next;
 		let preItem = this._header;
 
-		let childKeys: Array<string> = [];
+		const childKeys: Array<string> = [];
 
 		if (item.value && item.value.group) {
 			this.toArray().forEach((x) => {
@@ -58,7 +58,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			// 添加到数组
 			data.nodeArray.push(item.value);
 			if (preItem.value && preItem.value.type !== NodeEnum.Branch) {
-				let l = LineStore.getLink(preItem.value.key, item.value.key, '');
+				const l = LineStore.getLink(preItem.value.key, item.value.key, '');
 				data.linkArray.push(l);
 			}
 
@@ -71,7 +71,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 			// 处理子节点
 			if (item.value.childs) {
-				let curData = item.value.childs.toDiagram();
+				const curData = item.value.childs.toDiagram();
 
 				// 完善缓存
 				this.doCacheh(item.value.childs);
@@ -109,7 +109,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	}
 
 	add2Next8NodeId(nodekey: string, type: NodeEnum): boolean {
-		let newNode = this.getNodeModel8Type(type, '');
+		const newNode = this.getNodeModel8Type(type, '');
 		return this.insert8NodeId(nodekey, newNode);
 	}
 
@@ -119,7 +119,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
 				// debugger;
-				let newNode = this.getNodeModel8Type(type, item.value.group);
+				const newNode = this.getNodeModel8Type(type, item.value.group);
 				if (item.value.type === NodeEnum.SubClose) {
 					// 去判断下一次节点是不是 wfguide;
 					// let nextNode = item.next;
@@ -139,7 +139,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 
 			if (item.value.childs) {
-				let res = item.value.childs.add2Pre8NodeId(nodekey, type);
+				const res = item.value.childs.add2Pre8NodeId(nodekey, type);
 				if (res) {
 					if (item.value.type === NodeEnum.Condition) {
 						let cItem = item.value.childs._header.next;
@@ -164,23 +164,21 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
 				if (item.value.childs) {
-					let newNode = this.getNodeModel8Type(type, item.value.key);
+					const newNode = this.getNodeModel8Type(type, item.value.key);
 					if (type === NodeEnum.Branch) {
 						newNode.sortIndex = item.value.childs.size();
 						return item.value.childs.add(newNode);
-					} else {
-						let tailPre = item.value.childs.tailPre();
-						if (tailPre.type === NodeEnum.WFGuideNode) {
-							return item.value.childs.replace(tailPre, newNode);
-						} else {
-							return item.value.childs.insert(tailPre, newNode);
-						}
 					}
+					const tailPre = item.value.childs.tailPre();
+					if (tailPre.type === NodeEnum.WFGuideNode) {
+						return item.value.childs.replace(tailPre, newNode);
+					}
+					return item.value.childs.insert(tailPre, newNode);
 				}
 			}
 
 			if (item.value.childs) {
-				let res = item.value.childs.add2Inner8NodeId(nodekey, type);
+				const res = item.value.childs.add2Inner8NodeId(nodekey, type);
 				if (res) {
 					return res;
 				}
@@ -197,16 +195,16 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let preItem = this._header;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
-				let resV = item.value;
+				const resV = item.value;
 				let resAct = false;
 				if (this.size() === 3 && preItem.value.type === NodeEnum.SubOpen) {
-					let newNode = NodeStore.getNode(NodeEnum.WFGuideNode, item.value.group);
-					let res = this.replace(item.value, newNode);
+					const newNode = NodeStore.getNode(NodeEnum.WFGuideNode, item.value.group);
+					const res = this.replace(item.value, newNode);
 					if (res) {
 						resAct = true;
 					}
 				} else {
-					let res = this.remove(item.value);
+					const res = this.remove(item.value);
 					if (res) {
 						resAct = true;
 					}
@@ -217,7 +215,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 
 			if (item.value.childs) {
-				let res = item.value.childs.remove8NodeId(nodekey);
+				const res = item.value.childs.remove8NodeId(nodekey);
 				if (res) {
 					return res;
 				}
@@ -230,7 +228,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	}
 
 	removeNode2Node(nodekey: string, toNodekey: string): boolean {
-		let res = this.remove8NodeId(nodekey);
+		const res = this.remove8NodeId(nodekey);
 		if (res) {
 			return this.insert8NodeId(toNodekey, res);
 		}
@@ -238,7 +236,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	}
 
 	copyNode2Node(nodekey: string, toNodekey: string): boolean {
-		let newM = this.getNode8Copy(nodekey, '');
+		const newM = this.getNode8Copy(nodekey, '');
 		if (newM) {
 			return this.insert8NodeId(toNodekey, newM);
 		}
@@ -246,18 +244,18 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	}
 
 	private getNode8Copy(nodekey: string, groupId: string): INodeModel | null {
-		let newM = this.mapNode.get(nodekey);
+		const newM = this.mapNode.get(nodekey);
 		let newC: FlowchartModel | null = null;
 
 		if (newM) {
 			// 将要扥到的结果
-			let res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
+			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
 			if (newM.childs) {
 				newC = new FlowchartModel();
 				let idxItem = newM.childs._header.next;
 				while (idxItem !== newM.childs._tail) {
 					if (idxItem.value) {
-						let newN = this.getNode8Copy(idxItem.value.key, res.key);
+						const newN = this.getNode8Copy(idxItem.value.key, res.key);
 						// 追加子节点
 						if (newN) {
 							newC.add(newN);
@@ -282,7 +280,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param newNode
 	 */
 	private getNodeModel8Type(type: NodeEnum, group: string): INodeModel {
-		let newNode = NodeStore.getNode(type, group);
+		const newNode = NodeStore.getNode(type, group);
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
 			newNode.childs = new FlowchartModel();
 			newNode.childs.add(NodeStore.getNode(NodeEnum.SubOpen, newNode.key));
@@ -290,13 +288,13 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			newNode.childs.add(NodeStore.getNode(NodeEnum.SubClose, newNode.key));
 		} else if (type === NodeEnum.Condition) {
 			newNode.childs = new FlowchartModel();
-			let branch1 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch1 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
 			branch1.childs = new FlowchartModel();
 			branch1.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch1.key));
 			branch1.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch1.key));
 			branch1.childs.add(NodeStore.getNode(NodeEnum.SubClose, branch1.key));
 
-			let branch2 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch2 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
 			branch2.childs = new FlowchartModel();
 			branch2.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch2.key));
 			branch2.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch2.key));
@@ -320,7 +318,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				newNode.group = item.value.group;
 				if (item.value.type === NodeEnum.SubOpen) {
 					// 去判断下一次节点是不是 wfguide;
-					let nextNode = item.next;
+					const nextNode = item.next;
 
 					// 替换
 					if (nextNode.value.type === NodeEnum.WFGuideNode) {
@@ -338,7 +336,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 
 			if (item.value.childs) {
-				let res = item.value.childs.insert8NodeId(nodekey, newNode);
+				const res = item.value.childs.insert8NodeId(nodekey, newNode);
 
 				if (res) {
 					if (item.value.type === NodeEnum.Condition) {

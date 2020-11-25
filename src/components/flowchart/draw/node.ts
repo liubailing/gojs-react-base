@@ -16,7 +16,7 @@ export default class DrawNode extends Base {
 	}
 
 	getNode(): go.Part {
-		let $DrawSpot = new DrawSpot(this.callBack);
+		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Node,
 			'Auto',
@@ -62,10 +62,9 @@ export default class DrawNode extends Base {
 	/**
 	 * 返回背景颜色
 	 */
-	private getNodeFill = (_val: any, _targetObj: any): string => {
+	private getNodeFill = (_val: any, _targetObj: any): string =>
 		// const node = (_targetObj as any).part;
-		return _val ? BaseColors.highlight : BaseColors.backgroud;
-	};
+		_val ? BaseColors.highlight : BaseColors.backgroud;
 
 	/**
 	 * 返回名字
@@ -76,7 +75,7 @@ export default class DrawNode extends Base {
 	};
 
 	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		// console.log('node', node);
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setActionCss(node, false);
@@ -85,7 +84,7 @@ export default class DrawNode extends Base {
 	}
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
-		let node = (obj as any).part;
+		const node = (obj as any).part;
 		if (node && node.diagram) {
 			BaseChanges.setActionCss(node, true);
 			BaseChanges.setNodeCss(node, true);

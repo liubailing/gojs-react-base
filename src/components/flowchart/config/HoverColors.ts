@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const HoverColors = {
 	diagram_bg: '#eee',
 	group_font: '#fff',

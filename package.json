@@ -6,7 +6,9 @@
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"c99": "cp -rf /Users/Admin/skWork/Client_8_fl/src/renderer/components/flowchart/*  /Users/Admin/myWork/gojs-react-base/src/components/flowchart",
+		"c": "cp -rf /Users/Admin/myWork/gojs-react-base/src/components/flowchart/* /Users/Admin/skWork/Client_8_fl/src/renderer/components/flowchart  "
 	},
 	"keywords": [
 		"react",

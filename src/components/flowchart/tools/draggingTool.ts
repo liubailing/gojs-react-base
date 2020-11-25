@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import * as go from 'gojs';
 import { HandleEnum, DiagramEnum } from '../enum';
 import { INodeEvent } from '../interface';
@@ -45,7 +46,7 @@ export default class DraggingTool extends go.DraggingTool {
 	 * consists of just one Part, the image, added to the Diagram at the current mouse point.
 	 */
 	public doActivate(): void {
-		//console.log(`~test flowchart~  doActivate`, this.diagram.scroll("pixel", "down", 11))
+		// console.log(`~test flowchart~  doActivate`, this.diagram.scroll("pixel", "down", 11))
 		super.doActivate();
 		if (this._imagePart !== null) {
 			this._imagePart.location = this.diagram.lastInput.documentPoint;
@@ -73,32 +74,41 @@ export default class DraggingTool extends go.DraggingTool {
 		this._ghostDraggedParts = null;
 		this._originalDraggedParts = null;
 
-		let dragNode = null,
-			dragToNode = null,
-			candrag = true;
-		if (this.currentPart && this.currentPart.part && this.currentPart.part.data)
+		let dragNode = null;
+		let dragToNode = null;
+		let candrag = true;
+		if (this.currentPart && this.currentPart.part && this.currentPart.part.data) {
 			dragNode = this.currentPart.part.data;
-		let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-		if (node && node.part && node.part.data) dragToNode = node.part.data;
-		if (dragNode.category === DiagramEnum.ConditionSwitch) candrag = false;
+		}
+		const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+		if (node && node.part && node.part.data) {
+			dragToNode = node.part.data;
+		}
+		if (dragNode.category === DiagramEnum.ConditionSwitch) {
+			candrag = false;
+		}
 
 		/**
 		 * 不能往子集里面拖动
 		 */
 		if (candrag && this.currentPart instanceof go.Group) {
-			let objs = this.currentPart.findSubGraphParts();
-			if (objs && objs.size > 0 && node && objs.has(node)) candrag = false;
+			const objs = this.currentPart.findSubGraphParts();
+			if (objs && objs.size > 0 && node && objs.has(node)) {
+				candrag = false;
+			}
 			// if (node) baseChanges.setLinkCss(node, false);
 		}
 
 		// 判断为线
 		if (dragToNode && dragToNode.from !== undefined && dragToNode.from) {
-			if (dragToNode.from === dragNode.key || dragToNode.to === dragNode.key) candrag = false;
+			if (dragToNode.from === dragNode.key || dragToNode.to === dragNode.key) {
+				candrag = false;
+			}
 			/**
 			 * 触发拖拽
 			 */
 			if (dragNode && dragToNode && candrag) {
-				let e: INodeEvent = {
+				const e: INodeEvent = {
 					eType: HandleEnum.DragNode2Link,
 					node: dragNode,
 					toLine: dragToNode

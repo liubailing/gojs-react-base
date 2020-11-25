@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export const BaseColors = {
 	start: '#95CD9A',
 	end: '#E99898',
