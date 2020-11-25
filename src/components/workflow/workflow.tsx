@@ -88,6 +88,46 @@ class WorkflowTest extends React.Component<{}> {
 								清除contextMenu
 							</button>
 						</div>
+
+						<div>
+							<label>存取数据：</label>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('set_data');
+								}}
+							>
+								第一个节点存储Data
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('get_data');
+								}}
+							>
+								取出Data
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('set_data_1');
+								}}
+							>
+								修改Data
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('get_data');
+								}}
+							>
+								再取出Data
+							</button>
+						</div>
 					</div>
 
 					<div className="divActionItem">
@@ -254,47 +294,44 @@ class WorkflowTest extends React.Component<{}> {
 									Workflow.test('copy_cond');
 								}}
 							>
-								复制cond到loop
+								复制cond一次
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
+									Workflow.test('copy_cond2');
+								}}
+							>
+								复制cond多次
 							</button>
 						</div>
 
 						<div>
-							<label>存取数据：</label>
-						</div>
-						<div>
 							<button
 								onClick={() => {
-									Workflow.test('set_data');
+									Workflow.test('paste_to_loop');
 								}}
 							>
-								第一个节点存储Data
+								粘贴到loop
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('get_data');
+									Workflow.test('copy_paste');
 								}}
 							>
-								取出Data
+								复制cond到loop
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('set_data_1');
+									Workflow.test('copy_paste2');
 								}}
 							>
-								修改Data
-							</button>
-						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('get_data');
-								}}
-							>
-								再取出Data
+								复制cond到openJD
 							</button>
 						</div>
 					</div>

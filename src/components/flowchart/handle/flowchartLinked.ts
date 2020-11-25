@@ -20,6 +20,17 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 为false的时候不触发click
 	 *  */
 	private setNodeSelected_OnClick = true;
+
+	/** 设置被复制的节点
+	 * 为false的时候不触发click
+	 *  */
+	private _willCopyNodeId = '';
+
+	/**
+	 * 是否只复制一次
+	 */
+	private _isCopyOnce = false;
+
 	constructor(handles: IFlowchartHander) {
 		super();
 		this.mapNodeData = new Map<string, object>();
@@ -237,10 +248,43 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 
 	/**
 	 * 复制
+	 * @param nodekey 要复制的nodeId
+	 * @param isCopyOnce 是否只复制一次，
+	 */
+	onCopyNode(nodekey: string, isCopyOnce: boolean = false) {
+		this._willCopyNodeId = nodekey;
+		// if (res) {
+		// 	this._refresDiagram();
+		// }
+		this._isCopyOnce = isCopyOnce;
+		return true;
+	}
+
+	/**
+	 * 复制
+	 * @param nodekey 要复制的nodeId
+	 */
+	onPaste2Node(toNodekey: string) {
+		if (!this._willCopyNodeId) return;
+
+		const res = this.copyNode2Node(this._willCopyNodeId, toNodekey);
+		if (res) {
+			this._refresDiagram();
+		}
+
+		// 如果只复制一次
+		if (this._isCopyOnce) {
+			this._willCopyNodeId = '';
+		}
+		return res;
+	}
+
+	/**
+	 * 复制 和 黏贴
 	 * @param nodekey
 	 * @param toNodekey
 	 */
-	onCopyNode2Node(nodekey: string, toNodekey: string) {
+	onCopyNode2PasteNode(nodekey: string, toNodekey: string) {
 		const res = this.copyNode2Node(nodekey, toNodekey);
 		if (res) {
 			this._refresDiagram();
