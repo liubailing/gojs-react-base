@@ -9,7 +9,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * 不是所有点。出去辅助节点
 	 * /
 
-
+	/**
+	 * 缓存 nodeKey - 缓存的数据
+	 */
+	mapNodeData: Map<string, object>;
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
 
@@ -33,7 +36,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		super();
 
 		this.mapNode = new Map();
-
+		this.mapNodeData = new Map<string, object>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 	}

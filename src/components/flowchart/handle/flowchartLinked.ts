@@ -14,7 +14,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	/**
 	 * 缓存 nodeKey - 缓存的数据
 	 */
-	private mapNodeData: Map<string, object>;
+	// private mapNodeData: Map<string, object>;
 
 	/** 设置选中节点后并触发 click,
 	 * 为false的时候不触发click
@@ -33,7 +33,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 
 	constructor(handles: IFlowchartHander) {
 		super();
-		this.mapNodeData = new Map<string, object>();
+		// this.dat.mapNodeData = new Map<string, object>();
 		this.handleDiagramEvent = this.handleDiagramEvent.bind(this);
 		this.handleModelChange = this.handleModelChange.bind(this);
 		this.handFlowchartEvent = this.handFlowchartEvent.bind(this);
@@ -112,7 +112,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	@action
-	initFlochart(fcdata: FlowchartModel) {
+	init(fcdata: FlowchartModel) {
 		// this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
 		super.refresData(fcdata);
 		this._refresDiagram();
@@ -228,7 +228,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (res) {
 			this._refresDiagram();
 			// 删除节点缓存数据
-			this.mapNodeData.delete(nodekey);
+			super._data.mapNodeData.delete(nodekey);
 		}
 		return res;
 	}
@@ -323,7 +323,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onSetNodeData(nodekey: string, data: object) {
 		if (data && Object.keys(data).length > 0) {
-			this.mapNodeData.set(nodekey, data);
+			super._data.mapNodeData.set(nodekey, data);
 		}
 	}
 
@@ -334,7 +334,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onGetNodeData(nodekey: string): object | null {
 		if (nodekey) {
-			const data = this.mapNodeData.get(nodekey);
+			const data = super._data.mapNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
 				return data;
 			}

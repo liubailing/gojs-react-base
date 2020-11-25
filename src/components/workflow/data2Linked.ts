@@ -56,6 +56,10 @@ export class TestData {
 						n.sortIndex = i;
 						n.childs = TestData.doFlowchartData(n, x.childs);
 						dlist.add(n);
+						// 缓存数据
+						if (x.data && Object.keys(x.data).length > 0) {
+							dlist.mapNodeData.set(n.key, x.data);
+						}
 					});
 				}
 

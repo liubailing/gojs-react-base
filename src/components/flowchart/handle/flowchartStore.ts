@@ -6,7 +6,7 @@ import { FlowchartModel } from '../model';
  * 处理数据
  */
 export default class FlowchartStore {
-	private _data: FlowchartModel;
+	_data: FlowchartModel;
 
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;

@@ -144,7 +144,7 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'init':
 				this.isSimpleData = !this.isSimpleData;
 				const data = TestData.getFlowchartData(this.isSimpleData);
-				this.flowchart.initFlochart(data);
+				this.flowchart.init(data);
 				break;
 			case 'getall':
 				break;
