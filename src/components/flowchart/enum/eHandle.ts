@@ -14,6 +14,14 @@ export enum HandleEnum {
 	HideContextMenu = 'Hide_Context',
 
 	DragNode2Link = 'dragNode_to_link',
+	/** 删除 */
+	DeleteNode = 'delete_Node',
+
+	/** 删除 */
+	CopyNode = 'copy_Node',
+
+	/** 删除 */
+	PasteNode = 'paste_Node',
 
 	AddBranchToLeft = 'addBranch_to_before',
 	AddBranchToRight = 'addBranch_to_after',

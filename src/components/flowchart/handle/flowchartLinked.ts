@@ -157,6 +157,29 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					this.onDragNode2Node(node.key, e.toLine.from);
 				}
 				break;
+			case HandleEnum.DeleteNode:
+				if (node && node.type === NodeEnum.Branch) {
+					// 如果就一个分支 则不删除该分支
+					let brother = this._data.mapNodeBrotherKeys.get(node.key);
+					if (brother && brother.length === 1) {
+						return false;
+					}
+				}
+				// console.log(`~test flowchart~ delete`, node.key, this.props.store.currNodeKey)
+				// if (node && node.key && node.key !== this.props.store.currNodeKey) return false;
+				this.onRemoveNode(node.key);
+				break;
+			case HandleEnum.CopyNode:
+				if (node) {
+					this.onCopyNode(node.key);
+				}
+				break;
+			case HandleEnum.PasteNode:
+				if (node) {
+					this.onPaste2Node(node.key);
+				}
+				break;
+
 			default:
 				break;
 		}
@@ -228,7 +251,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (res) {
 			this._refresDiagram();
 			// 删除节点缓存数据
-			super._data.mapNodeData.delete(nodekey);
+			this._data.mapNodeData.delete(nodekey);
 		}
 		return res;
 	}
@@ -323,7 +346,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onSetNodeData(nodekey: string, data: object) {
 		if (data && Object.keys(data).length > 0) {
-			super._data.mapNodeData.set(nodekey, data);
+			this._data.mapNodeData.set(nodekey, data);
 		}
 	}
 
@@ -334,7 +357,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onGetNodeData(nodekey: string): object | null {
 		if (nodekey) {
-			const data = super._data.mapNodeData.get(nodekey);
+			const data = this._data.mapNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
 				return data;
 			}

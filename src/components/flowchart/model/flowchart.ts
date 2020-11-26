@@ -243,9 +243,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		if (toNode) {
 			const newM = this.getNode8Copy(nodekey, '');
 			if (newM) {
-				if (toNode.type === NodeEnum.Loop) {
+				if (toNode.type === NodeEnum.Loop || toNode.type === NodeEnum.Branch) {
 					const childs = this.mapNodeChildKeys.get(toNodekey);
-					debugger;
+
 					if (childs && childs.length > 2) {
 						return this.insert8NodeId(childs[childs.length - 2], newM);
 					}

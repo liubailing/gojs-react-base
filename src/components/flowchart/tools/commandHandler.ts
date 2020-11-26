@@ -1,5 +1,7 @@
 /* eslint-disable complexity */
 import * as go from 'gojs';
+import { HandleEnum, DiagramEnum } from '../enum';
+import { INodeEvent } from '../interface';
 
 export default class CommandHandler extends go.CommandHandler {
 	private _arrowKeyBehavior: string = 'move';
@@ -317,22 +319,33 @@ export default class CommandHandler extends go.CommandHandler {
 			return;
 		}
 
-		if (control && key === 'C') {
+		if (control && key === 'C' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
-				this._doEvent.copy(node.part.data);
+				const e: INodeEvent = {
+					eType: HandleEnum.CopyNode,
+					node: node.part.data
+				} as INodeEvent;
+				this._doEvent(e);
 				return;
 			}
 		}
 
-		if (control && key === 'V') {
+		if (control && key === 'V' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-			this._doEvent.paste(node);
-			return;
+			if (node && node.part && node.part.data) {
+				const e: INodeEvent = {
+					eType: HandleEnum.PasteNode,
+					node: node.part.data
+				} as INodeEvent;
+				this._doEvent(e);
+				return;
+			}
 		}
 
 		// 将要删除
-		if (['Del', 'Backspace'].includes(key) && this._doEvent && this._doEvent.delete) {
+		if (['Del', 'Backspace'].includes(key) && this._doEvent) {
+			// debugger;
 			/** * 是否为windows系统 * */
 			const isWindows = /windows|win32/i.test(navigator.userAgent);
 			if (key === 'Backspace' && isWindows) {
@@ -345,22 +358,25 @@ export default class CommandHandler extends go.CommandHandler {
 				return;
 			}
 
-			const can = this._doEvent.canDelete(node.part.data);
-			if (!can) {
-				return;
-			}
+			const e: INodeEvent = {
+				eType: HandleEnum.DeleteNode,
+				node: node.part.data
+				// toLine: dragToNode
+			} as INodeEvent;
+			this._doEvent(e);
 
 			if (key === 'Del' && isWindows) {
-				this._doEvent.delete(node.part.data);
+				this._doEvent(e);
 				return;
 				// console.log(`~~isWindows~~`)
 			}
 			/** * 是否为mac系统（包含iphone手机） * */
 			const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
 			if (isMac) {
-				this._doEvent.delete();
+				this._doEvent(e);
 			}
-			// console.log(`~~isMac~~`)
+			console.log(`~~isMac~~`);
+			return;
 		}
 
 		// otherwise still does all standard commands
