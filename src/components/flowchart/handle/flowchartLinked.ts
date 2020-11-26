@@ -25,7 +25,10 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 为false的时候不触发click
 	 *  */
 	private _willCopyNodeId = '';
-
+	/**
+	 * 要剪切的节点
+	 */
+	private _willCutNodeId = '';
 	/**
 	 * 是否只复制一次
 	 */
@@ -170,16 +173,28 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.onRemoveNode(node.key);
 				break;
 			case HandleEnum.CopyNode:
-				if (node) {
+				// 分支条件不支持复制
+				if (node && node.type !== NodeEnum.Branch) {
 					this.onCopyNode(node.key);
 				}
 				break;
-			case HandleEnum.PasteNode:
+			case HandleEnum.Copy2PasteNode:
 				if (node) {
 					this.onPaste2Node(node.key);
 				}
 				break;
-
+			case HandleEnum.CutNode:
+				// 分支条件不支持剪切
+				if (node && node.type !== NodeEnum.Branch) {
+					this.onCutNode(node.key);
+				}
+				break;
+			case HandleEnum.Cut2PasteNode:
+				if (node && this._willCutNodeId) {
+					this.onDragNode2Node(this._willCutNodeId, node.key);
+					this._willCutNodeId = '';
+				}
+				break;
 			default:
 				break;
 		}
@@ -246,12 +261,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 移除
 	 * @param nodekey
 	 */
-	onRemoveNode(nodekey: string) {
+	onRemoveNode(nodekey: string, clearData: boolean = true) {
 		const res = this.remove8NodeId(nodekey);
 		if (res) {
 			this._refresDiagram();
 			// 删除节点缓存数据
-			this._data.mapNodeData.delete(nodekey);
+			if (clearData) {
+				this._data.mapNodeData.delete(nodekey);
+			}
 		}
 		return res;
 	}
@@ -280,6 +297,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		// 	this._refresDiagram();
 		// }
 		this._isCopyOnce = isCopyOnce;
+		return true;
+	}
+
+	/**
+	 * 复制此节点
+	 * @param nodekey 要复制的nodeId
+	 * @param isCopyOnce 是否只复制一次，
+	 */
+	onCutNode(nodekey: string) {
+		this._willCutNodeId = nodekey;
 		return true;
 	}
 

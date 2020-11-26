@@ -12,16 +12,18 @@ export enum HandleEnum {
 	ShowNodeSetting = 'Show_Setting',
 	/** 隐藏context */
 	HideContextMenu = 'Hide_Context',
-
+	/** 拖动 */
 	DragNode2Link = 'dragNode_to_link',
 	/** 删除 */
 	DeleteNode = 'delete_Node',
-
-	/** 删除 */
+	/** 复制 */
 	CopyNode = 'copy_Node',
-
-	/** 删除 */
-	PasteNode = 'paste_Node',
+	/** 复制到黏贴 */
+	Copy2PasteNode = 'copy_paste_Node',
+	/** 剪切 */
+	CutNode = 'cut_Node',
+	/** 剪切到黏贴 */
+	Cut2PasteNode = 'cut_paste_Node',
 
 	AddBranchToLeft = 'addBranch_to_before',
 	AddBranchToRight = 'addBranch_to_after',

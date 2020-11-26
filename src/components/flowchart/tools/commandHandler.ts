@@ -8,6 +8,8 @@ export default class CommandHandler extends go.CommandHandler {
 	private _pasteOffset: go.Point = new go.Point(10, 10);
 	private _lastPasteOffset: go.Point = new go.Point(0, 0);
 	private _doEvent: any = null;
+	/** 记录记录键盘 ctrl+v 的前一次操作是什么 */
+	private _prActionForKeyV: string = '';
 
 	constructor(_doEvent: any = null) {
 		super();
@@ -300,14 +302,14 @@ export default class CommandHandler extends go.CommandHandler {
 			return;
 			// const behavior = this.arrowKeyBehavior;
 			// if (behavior === 'none') {
-			//   // no-op
-			//   return;
+			// 	// no-op
+			// 	return;
 			// } else if (behavior === 'select') {
-			//   this._arrowKeySelect();
-			//   return;
+			// 	this._arrowKeySelect();
+			// 	return;
 			// } else if (behavior === 'move') {
-			//   this._arrowKeyMove();
-			//   return;
+			// 	this._arrowKeyMove();
+			// 	return;
 			// }
 			// otherwise drop through to get the default scrolling behavior
 		}
@@ -315,32 +317,58 @@ export default class CommandHandler extends go.CommandHandler {
 		const control = e.control || e.meta;
 		const { key } = e;
 		// Quit on any undo/redo key combination:
-		if (control && ['Z', 'Y', 'X'].includes(key)) {
+		if (control && ['Z', 'Y'].includes(key)) {
+			return;
+		}
+
+		// 剪切
+		if (control && key === 'X') {
+			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+			if (node && node.part && node.part.data) {
+				this._prActionForKeyV = 'ctrl+x';
+				const e: INodeEvent = {
+					eType: HandleEnum.CutNode,
+					node: node.part.data
+				} as INodeEvent;
+				this._doEvent(e);
+			}
 			return;
 		}
 
 		if (control && key === 'C' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
+				this._prActionForKeyV = 'ctrl+c';
 				const e: INodeEvent = {
 					eType: HandleEnum.CopyNode,
 					node: node.part.data
 				} as INodeEvent;
 				this._doEvent(e);
-				return;
 			}
+			return;
 		}
 
 		if (control && key === 'V' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
-				const e: INodeEvent = {
-					eType: HandleEnum.PasteNode,
-					node: node.part.data
-				} as INodeEvent;
-				this._doEvent(e);
-				return;
+				if (this._prActionForKeyV === 'ctrl+x') {
+					const e: INodeEvent = {
+						eType: HandleEnum.Cut2PasteNode,
+						node: node.part.data
+					} as INodeEvent;
+
+					this._doEvent(e);
+					this._prActionForKeyV = '';
+				}
+				if (this._prActionForKeyV === 'ctrl+c') {
+					const e: INodeEvent = {
+						eType: HandleEnum.Copy2PasteNode,
+						node: node.part.data
+					} as INodeEvent;
+					this._doEvent(e);
+				}
 			}
+			return;
 		}
 
 		// 将要删除

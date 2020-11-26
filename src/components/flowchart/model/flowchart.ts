@@ -193,6 +193,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return false;
 	}
 
+	/**
+	 * 移除节点
+	 * @param nodekey 移除的节点ID
+	 */
 	remove8NodeId(nodekey: string): INodeModel | null {
 		let item = this._header.next;
 		let preItem = this._header;
@@ -230,9 +234,16 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return null;
 	}
 
+	/**
+	 * 移动节点
+	 * @param nodekey
+	 * @param toNodekey
+	 */
 	removeNode2Node(nodekey: string, toNodekey: string): boolean {
+		// 先移走
 		const res = this.remove8NodeId(nodekey);
 		if (res) {
+			// 再插入
 			return this.insert8NodeId(toNodekey, res);
 		}
 		return false;
@@ -327,6 +338,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 */
 	private insert8NodeId(nodekey: string, newNode: INodeModel): boolean {
 		let item = this._header.next;
+		debugger;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
 				newNode.group = item.value.group;
