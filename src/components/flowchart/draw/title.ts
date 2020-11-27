@@ -52,7 +52,7 @@ export class DrawTitle {
 					}
 				},
 				// new go.Binding('text', 'isSel', function (s, y) {
-				// 	console.log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  33333333333`);
+				// 	console.log(`>>>>>>>>  33333333333`);
 				// 	if (s || y) return BaseColors.highlight;
 				// 	return BaseColors.backgroud;
 				// 	return s ? BaseColors.highlight : BaseColors.backgroud;
@@ -92,7 +92,7 @@ export class DrawTitle {
 	/**
 	 * 计算名称显示长度， 字母算1个长度，文字算2个长度
 	 */
-	private gbLenght = function(str: string) {
+	private gbLenght = function (str: string) {
 		let len = 0;
 		for (let i = 0; i < str.length; i++) {
 			if (str.charCodeAt(i) > 127 || str.charCodeAt(i) === 94) {

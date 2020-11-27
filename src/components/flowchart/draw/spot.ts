@@ -15,7 +15,7 @@ let spotCss = {
 	alignment: go.Spot.TopRight,
 	cursor: 'pointer',
 	height: 26,
-	width: 50
+	width: 26
 };
 /** 图标基本样式 */
 const baseCss = {
@@ -61,7 +61,8 @@ export default class DrawSpot extends Base {
 				...spotCss,
 				...{ name: 'action_Spot' }
 			},
-			$(go.Panel, 'Horizontal', {}, this.getSet(), this.getSetHover(), this.getMenu(), this.getMenuHover())
+			// $(go.Panel, 'Horizontal', {}, this.getSet(), this.getSetHover(), this.getMenu(), this.getMenuHover())
+			$(go.Panel, 'Horizontal', {}, this.getMenu(), this.getMenuHover())
 		); // end output port
 	}
 

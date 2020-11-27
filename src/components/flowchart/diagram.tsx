@@ -34,7 +34,6 @@ interface FlowchartProps {
 }
 
 class FlowchartDiagram extends React.Component<FlowchartProps> {
-	private isCtrlCopy: boolean = false;
 	/**
 	 * Ref to keep a reference to the Diagram component, which provides access to the GoJS diagram via getDiagram().
 	 */
@@ -247,7 +246,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	 *
 	 */
 	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`)
+		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`);
 		// var dia = this.props.store.diagram;
 		// dia.div.style.height = (dia.documentBounds.height + 24) + "px";
 	};
@@ -256,19 +255,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	 * 流程图画完
 	 */
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ LayoutCompleted 123`)
-		if (this.isCtrlCopy) {
-			// let n = this.props.store.diagram.findNodeForKey(this.props.store.currNodeKey);
-			// if (n && n.part) {
-			// 	//做选中处理   这里可能会多次触发。
-			// 	//console.log(`~ test flowchart ~ LayoutCompleted 456`, this.props.store.callbackFunc);
-			// 	this.props.store.callbackFunc.add(CallbackFuncType.Paste);
-			// 	this.props.store.callbackFunc.add(CallbackFuncType.Click);
-			// 	// console.log(n.location.y)
-			// 	this.props.store._doCallback();
-			// 	this.props.store._reSetSelected();
-			// }
-		}
+		// console.log(`~ test flowchart ~ LayoutCompleted 123`);
 	};
 }
 

@@ -27,7 +27,7 @@ export default class DrawLoop extends Base {
 			cursor: 'pointer',
 			height: 26,
 			width: 25,
-			margin: new Margin(0, 50, 0, 0)
+			margin: new Margin(0, 25, 0, 0)
 		};
 		// 图标基本样式
 		const baseCss = {

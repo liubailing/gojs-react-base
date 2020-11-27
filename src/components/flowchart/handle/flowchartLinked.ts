@@ -16,14 +16,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	// private mapNodeData: Map<string, object>;
 
-	/** 设置选中节点后并触发 click,
+	/**
+	 * 设置选中节点后并触发 click,
 	 * 为false的时候不触发click
-	 *  */
+	 */
 	private setNodeSelected_OnClick = true;
 
-	/** 设置被复制的节点
+	/**
+	 * 设置被复制的节点
 	 * 为false的时候不触发click
-	 *  */
+	 */
 	private _willCopyNodeId = '';
 	/**
 	 * 要剪切的节点
@@ -58,7 +60,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const { name } = e;
-		console.log('handleDiagramEvent.', name);
 		switch (name) {
 			case 'ChangedSelection': {
 				const sel = e.subject.first();
@@ -82,6 +83,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				break;
 			}
 			default:
+				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				break;
 		}
 	}
@@ -92,7 +94,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param obj a JSON-formatted string
 	 */
 	public handleModelChange(obj: go.IncrementalData) {
-		// console.log(`chenged model`);
+		// console.log(`>>>>>>> chenged model`, obj);
 	}
 
 	/**
@@ -108,6 +110,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param e a change event from the checkbox
 	 */
 	public handleRelinkChange(e: any) {
+		// console.log(`>>>>>>> handleRelinkChange`);
 		// this.props.flowchart.handleModelChange(e);
 		// const target = e.target;
 		// const value = target.checked;
@@ -293,9 +296,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onCopyNode(nodekey: string, isCopyOnce: boolean = false) {
 		this._willCopyNodeId = nodekey;
-		// if (res) {
-		// 	this._refresDiagram();
-		// }
 		this._isCopyOnce = isCopyOnce;
 		return true;
 	}
@@ -443,8 +443,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	@action
 	_refresDiagram() {
 		const data = this.getDiagram();
-		this.nodeDataArray = [...data.nodeArray, ...[]];
-		this.linkDataArray = [...data.linkArray, ...[]];
+		this.nodeDataArray = [...data.nodeArray];
+		this.linkDataArray = [...data.linkArray];
+		console.log(`>>>>>>>>> 1`, data);
 	}
 
 	getAll() {

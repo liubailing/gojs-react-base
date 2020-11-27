@@ -8,8 +8,6 @@ export interface IFlowchartHander {
 	 *
 	 ******************************/
 
-	/** 点击节点 */
-	showLineEnmu_Context?: boolean;
 	/**
 	 * 点击信息
 	 * @param node 节点数据

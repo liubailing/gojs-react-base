@@ -121,7 +121,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let preItem = this._header;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
-				// debugger;
 				const newNode = this.getNodeModel8Type(type, item.value.group);
 				if (item.value.type === NodeEnum.SubClose) {
 					// 去判断下一次节点是不是 wfguide;
@@ -338,7 +337,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 */
 	private insert8NodeId(nodekey: string, newNode: INodeModel): boolean {
 		let item = this._header.next;
-		debugger;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
 				newNode.group = item.value.group;

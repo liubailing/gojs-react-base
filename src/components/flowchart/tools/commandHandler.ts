@@ -373,7 +373,6 @@ export default class CommandHandler extends go.CommandHandler {
 
 		// 将要删除
 		if (['Del', 'Backspace'].includes(key) && this._doEvent) {
-			// debugger;
 			/** * 是否为windows系统 * */
 			const isWindows = /windows|win32/i.test(navigator.userAgent);
 			if (key === 'Backspace' && isWindows) {
@@ -403,7 +402,7 @@ export default class CommandHandler extends go.CommandHandler {
 			if (isMac) {
 				this._doEvent(e);
 			}
-			console.log(`~~isMac~~`);
+			// console.log(`~~isMac~~`);
 			return;
 		}
 
