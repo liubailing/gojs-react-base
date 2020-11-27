@@ -27,6 +27,10 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.log(`-click ${node.key}`);
 	}
 
+	handlerDeleteNode(currKey: string, deleteKey: string) {
+		this.log(`-delete ${currKey}, ${deleteKey}`);
+	}
+
 	/**
 	 * 节点增加后 触发事件
 	 */

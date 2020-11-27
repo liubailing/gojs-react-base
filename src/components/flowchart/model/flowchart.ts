@@ -19,6 +19,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	// 复杂的对应关系
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
+
+	/** 节点的前一 */
+	mapNodePreNodeKey: Map<string, string>;
+
 	/** 节点的 子节点 */
 	mapNodeChildKeys: Map<string, Array<string>>;
 
@@ -34,11 +38,19 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 	constructor() {
 		super();
-
 		this.mapNode = new Map();
 		this.mapNodeData = new Map<string, object>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
+		this.mapNodePreNodeKey = new Map<string, string>();
+	}
+
+	init() {
+		this.mapNode = new Map();
+		// this.mapNodeData = new Map<string, object>();s
+		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
+		this.mapNodeChildKeys = new Map<string, Array<string>>();
+		this.mapNodePreNodeKey = new Map<string, string>();
 	}
 
 	toDiagram(): IDiagramModel<INodeModel, ILineModel> {
@@ -70,7 +82,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			if (!this.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
 				item.value.childs = null;
 			}
+			// debugger;
 			this.mapNode.set(item.value.key, item.value);
+			this.mapNodePreNodeKey.set(item.value.key, preItem.value?.key || '');
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -99,11 +113,19 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				this.mapNodeChildKeys.set(k, v);
 			}
 		});
+
 		item.mapNode.forEach((v, k) => {
 			if (k !== '' && k !== null) {
 				this.mapNode.set(k, v);
 			}
 		});
+
+		item.mapNodePreNodeKey.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodePreNodeKey.set(k, v);
+			}
+		});
+
 		item.mapNodeBrotherKeys.forEach((v, k) => {
 			if (k !== '' && k !== null) {
 				this.mapNodeBrotherKeys.set(k, v);

@@ -265,15 +265,42 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 */
 	onRemoveNode(nodekey: string, clearData: boolean = true) {
-		const res = this.remove8NodeId(nodekey);
-		if (res) {
-			this._refresDiagram();
-			// 删除节点缓存数据
-			if (clearData) {
-				this._data.mapNodeData.delete(nodekey);
+		const currNode = this._data.mapNode.get(nodekey);
+		if (currNode) {
+			const res = this.remove8NodeId(nodekey);
+			const pre = this._data.mapNodePreNodeKey.get(nodekey);
+			if (res) {
+				// 删除节点缓存数据
+				if (clearData) {
+					this._data.mapNodeData.delete(nodekey);
+				}
+				let currkey = pre || '';
+				// 说明删除的第一个节点
+				//  如果是第一个条件分支
+				if (pre === '' && currNode.type === NodeEnum.Branch) {
+					currkey = currNode.group;
+				} else if (pre) {
+					const preNode = this._data.mapNode.get(pre);
+					// 如果是循环里面第一个接节点
+					if (preNode && preNode.type === NodeEnum.SubOpen) {
+						currkey = currNode.group;
+					} else if (preNode && preNode.type === NodeEnum.Start) {
+						// 如果是第一个节点
+
+						const brothers = this._data.mapNodeBrotherKeys.get(nodekey);
+						if (brothers && brothers.length > 3) {
+							currkey = brothers[2];
+						} else {
+							currkey = '';
+						}
+					}
+				}
+				// debugger;
+				this._refresDiagram();
+				this.flowchartHander.handlerDeleteNode(currkey, nodekey);
 			}
+			return res;
 		}
-		return res;
 	}
 
 	/**

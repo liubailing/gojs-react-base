@@ -203,6 +203,7 @@ class DobuleList<T> implements IList<T> {
 
 		let indexItem: any = this._header.next;
 		let preItem = this._header;
+		// debugger;
 		while (indexItem !== this._tail) {
 			if (indexItem.next === a) {
 				if (preItem === this._header) {
