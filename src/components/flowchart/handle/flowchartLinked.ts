@@ -193,7 +193,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			case HandleEnum.Cut2PasteNode:
-				if (node && this._willCutNodeId) {
+				if (node && this._willCutNodeId && node.type !== NodeEnum.Branch) {
 					this.onDragNode2Node(this._willCutNodeId, node.key);
 					this._willCutNodeId = '';
 				}
@@ -445,7 +445,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const data = this.getDiagram();
 		this.nodeDataArray = [...data.nodeArray];
 		this.linkDataArray = [...data.linkArray];
-		console.log(`>>>>>>>>> 1`, data);
+		console.log(`>>>>>>>>> 1`, this._data.mapNodeData);
 	}
 
 	getAll() {

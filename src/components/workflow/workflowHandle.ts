@@ -201,7 +201,7 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'get_data':
 				let data1: any = this.flowchart.onGetNodeData('openJD');
 				if (data1) {
-					this.logs.push(`获取 openJD :` + data1.title);
+					this.logs.push(`获取 openJD :` + data1.tip, data1.title);
 				}
 				break;
 			case 'set_data_1':

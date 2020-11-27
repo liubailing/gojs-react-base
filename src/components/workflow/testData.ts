@@ -40,8 +40,13 @@ export default {
 				{
 					key: 'branch1-4',
 					type: ActionNodeType.Branch as string,
+					data: { tip: '这是一个branch1存值111111' },
 					childs: [
-						{ key: 'data16-2', type: ActionNodeType.ExtractData as string },
+						{
+							key: 'data16-2',
+							type: ActionNodeType.ExtractData as string,
+							data: { tip: '这是一个1212121212' }
+						},
 						{ key: 'jd-lingquan', label: '打开优惠券', type: ActionNodeType.Navigate as string },
 						{ key: 'data122-2', type: ActionNodeType.ExtractData as string }
 					]
@@ -53,6 +58,7 @@ export default {
 			key: 'jd-dingdan',
 			label: '打开我的订单',
 			type: ActionNodeType.Navigate as string,
+			data: { tip: '这是一个loop存值111111' },
 			parentKey: 'root'
 		},
 		{ key: 'data44-2', type: ActionNodeType.ExtractData as string, parentKey: 'root' },

@@ -14,6 +14,11 @@ export class TestData {
 	curCount: number = 0;
 
 	/**
+	 * 缓存 nodeKey - 缓存的数据
+	 */
+	static mapNodeData: Map<string, object> = new Map<string, object>();
+
+	/**
 	 * 初始化
 	 * @param node
 	 */
@@ -29,13 +34,21 @@ export class TestData {
 		if (!wfData && data.childs.length > 0) {
 			data.childs.forEach((x) => {
 				let n = this.getNodeModel(x, 'root');
+
+				// 缓存记录data数据
+				if (x.data && Object.keys(x.data).length > 0) {
+					this.mapNodeData.set(n.key, x.data);
+				}
+
 				n.label = x.label || n.label;
 				n.childs = this.doFlowchartData(n, x.childs);
+
 				d.add(n);
 			});
 		}
 
 		d.add(end);
+		d.mapNodeData = this.mapNodeData;
 		// let dd = d.toDiagram();
 		return d;
 	}
@@ -52,14 +65,15 @@ export class TestData {
 					//开始循环分支
 					childs.forEach((x, i) => {
 						let n = this.getNodeModel(x, parent.key);
+						// 缓存记录data数据
+						if (x.data && Object.keys(x.data).length > 0) {
+							this.mapNodeData.set(n.key, x.data);
+						}
+
 						n.label = x.label || n.label;
 						n.sortIndex = i;
 						n.childs = TestData.doFlowchartData(n, x.childs);
 						dlist.add(n);
-						// 缓存数据
-						if (x.data && Object.keys(x.data).length > 0) {
-							dlist.mapNodeData.set(n.key, x.data);
-						}
 					});
 				}
 
@@ -101,8 +115,13 @@ export class TestData {
 				//开始循环数据
 				currChilds.forEach((x, i) => {
 					let n = this.getNodeModel(x, parent.key);
-					n.label = x.label || n.label;
 
+					// 缓存记录data数据
+					if (x.data && Object.keys(x.data).length > 0) {
+						this.mapNodeData.set(n.key, x.data);
+					}
+
+					n.label = x.label || n.label;
 					//如果有子集
 					if (x.childs && x.childs.length > 0) {
 						n.childs = TestData.doFlowchartData(n, x.childs);
