@@ -15,13 +15,6 @@ export interface IFlowchartHander {
 	handlerClickNode(node: INodeModel, isManual?: boolean): void;
 
 	/**
-	 * 删除节点信息
-	 * @param currKey 删除操作后选中的 nodekey
-	 * @param deleteKey 已经删除的 nodekey
-	 */
-	handlerDeleteNode(currKey: string, deleteKey: string): void;
-
-	/**
 	 * 节点增加后 触发事件
 	 */
 	handlerAddNode(node: INodeModel): void;

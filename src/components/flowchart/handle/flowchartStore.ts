@@ -117,6 +117,7 @@ export default class FlowchartStore {
 	}
 
 	getDiagram() {
+		this._data.init();
 		const res = this._data.toDiagram();
 		this.mapNode = this._data.mapNode;
 		this.mapNodeChildKeys = this._data.mapNodeChildKeys;
@@ -124,4 +125,3 @@ export default class FlowchartStore {
 		return res;
 	}
 }
-
