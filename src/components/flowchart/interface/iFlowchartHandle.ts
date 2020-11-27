@@ -12,17 +12,24 @@ export interface IFlowchartHander {
 	 * 点击信息
 	 * @param node 节点数据
 	 */
-	handlerClickNode(node: INodeModel): void;
+	handlerClickNode(node: INodeModel, isManual?: boolean): void;
+
+	/**
+	 * 删除节点信息
+	 * @param currKey 删除操作后选中的 nodekey
+	 * @param deleteKey 已经删除的 nodekey
+	 */
+	handlerDeleteNode(currKey: string, deleteKey: string): void;
 
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNodeCallBack(node: INodeModel): void;
+	handlerAddNode(node: INodeModel): void;
 
 	/**
 	 * 流程改变后 触发事件
 	 */
-	handlerChangedCallBack(): void;
+	handlerChanged(): void;
 
 	/**
 	 * 显示点-设置面板

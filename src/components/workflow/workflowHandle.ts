@@ -30,12 +30,12 @@ export class WorkflowHandle implements IFlowchartHander {
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNodeCallBack(node: INodeModel): void {}
+	handlerAddNode(node: INodeModel): void {}
 
 	/**
 	 * 流程改变后 触发事件
 	 */
-	handlerChangedCallBack(): void {}
+	handlerChanged(): void {}
 
 	/**
 	 * 显示点-设置面板
