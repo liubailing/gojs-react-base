@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import * as go from 'gojs';
-import { HandleEnum, DiagramEnum } from '../enum';
+import { HandleEnum } from '../enum';
 import { INodeEvent } from '../interface';
 
 export default class CommandHandler extends go.CommandHandler {

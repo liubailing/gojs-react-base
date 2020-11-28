@@ -7,7 +7,7 @@ import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
 import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
-import { DiagramEnum } from './enum';
+import { DiagramEnum, HandleEnum } from './enum';
 import { INodeEvent } from './interface';
 import {
 	DrawLink,
@@ -59,6 +59,11 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
+			// debugger;
+			const e: INodeEvent = {
+				eType: HandleEnum.Init
+			} as INodeEvent;
+			this.props.onFlowchartEvent(e);
 		}
 	}
 

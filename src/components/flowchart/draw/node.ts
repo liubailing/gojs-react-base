@@ -1,10 +1,10 @@
 import go, { GraphObject } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
 import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
+import { DiagramSetting, BaseColors } from '../config';
+import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
 

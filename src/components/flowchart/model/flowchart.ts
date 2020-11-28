@@ -133,9 +133,14 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		});
 	}
 
-	add2Next8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Next8NodeId(nodekey: string, type: NodeEnum): string {
 		const newNode = this.getNodeModel8Type(type, '');
-		return this.insert8NodeId(nodekey, newNode);
+		const res = this.insert8NodeId(nodekey, newNode);
+		if (res) {
+			return newNode.key;
+		}
+
+		return '';
 	}
 
 	add2Pre8NodeId(nodekey: string, type: NodeEnum): boolean {
@@ -270,23 +275,27 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return false;
 	}
 
-	copyNode2Node(nodekey: string, toNodekey: string): boolean {
+	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const toNode = this.mapNode.get(toNodekey);
 		if (toNode) {
 			const newM = this.getNode8Copy(nodekey, '');
+			let res = false;
 			if (newM) {
 				if (toNode.type === NodeEnum.Loop || toNode.type === NodeEnum.Branch) {
 					const childs = this.mapNodeChildKeys.get(toNodekey);
 
 					if (childs && childs.length > 2) {
-						return this.insert8NodeId(childs[childs.length - 2], newM);
+						res = this.insert8NodeId(childs[childs.length - 2], newM);
 					}
 				} else {
-					return this.insert8NodeId(toNodekey, newM);
+					res = this.insert8NodeId(toNodekey, newM);
 				}
 			}
+			if (res && newM) {
+				return newM.key;
+			}
 		}
-		return false;
+		return '';
 	}
 
 	private getNode8Copy(nodekey: string, groupId: string): INodeModel | null {

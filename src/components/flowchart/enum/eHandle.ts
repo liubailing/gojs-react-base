@@ -25,6 +25,8 @@ export enum HandleEnum {
 	/** 剪切到黏贴 */
 	Cut2PasteNode = 'cut_paste_Node',
 
+	Init = 'init',
+
 	AddBranchToLeft = 'addBranch_to_before',
 	AddBranchToRight = 'addBranch_to_after',
 
