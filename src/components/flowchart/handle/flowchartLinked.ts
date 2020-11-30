@@ -249,10 +249,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型
 	 */
-	onAdd2Pre8NodeId(nodeId: string, type: NodeEnum): boolean {
+	onAdd2Pre8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this.add2Pre8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
+			const resNode = this._data.mapNode.get(res);
+			if (resNode) {
+				this.flowchartHander.handlerAddNode(resNode, false);
+			}
+			return res;
 		}
 		return res;
 	}
@@ -262,9 +267,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
-	onAdd2InnerTail8NodeId(nodeId: string, type: NodeEnum): boolean {
+	onAdd2InnerTail8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this.add2InnerTail8NodeId(nodeId, type);
-		this._refresDiagram();
+		if (res) {
+			this._refresDiagram();
+			const resNode = this._data.mapNode.get(res);
+			if (resNode) {
+				this.flowchartHander.handlerAddNode(resNode, false);
+			}
+			return res;
+		}
 		return res;
 		// return false;
 	}
@@ -274,7 +286,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
-	onAdd2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
+	onAdd2InnerHeader8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this.add2InnerHeader8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
@@ -282,9 +294,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
-			return true;
+			return res;
 		}
-		return false;
+		return '';
 	}
 
 	/**

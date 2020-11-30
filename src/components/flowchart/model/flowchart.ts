@@ -143,7 +143,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return '';
 	}
 
-	add2Pre8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Pre8NodeId(nodekey: string, type: NodeEnum): string {
 		let item = this._header.next;
 		let preItem = this._header;
 		while (item !== this._tail) {
@@ -155,16 +155,19 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 					// 替换
 					if (preItem.value.type === NodeEnum.WFGuideNode) {
-						return this.replace(preItem.value, newNode);
+						const res = this.replace(preItem.value, newNode);
+						if (res) return newNode.key;
 					}
 				} else if (item.value.type === NodeEnum.WFGuideNode) {
 					// 如果自身就是 wfguide
-					return this.replace(item.value, newNode);
+					const res = this.replace(item.value, newNode);
+					if (res) return newNode.key;
 				} else if (item.value.type === NodeEnum.SubOpen) {
-					return false;
+					return '';
 				}
 
-				return this.insertPre(item.value, newNode);
+				const res = this.insertPre(item.value, newNode);
+				if (res) return newNode.key;
 			}
 
 			if (item.value.childs) {
@@ -185,10 +188,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			item = item.next;
 		}
 
-		return false;
+		return '';
 	}
 
-	add2Inner8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Inner8NodeId(nodekey: string, type: NodeEnum): string {
 		let item = this._header.next;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
@@ -196,13 +199,22 @@ export default class FlowchartModel extends Linked<INodeModel> {
 					const newNode = this.getNodeModel8Type(type, item.value.key);
 					if (type === NodeEnum.Branch) {
 						newNode.sortIndex = item.value.childs.size();
-						return item.value.childs.add(newNode);
+						const res = item.value.childs.add(newNode);
+						if (res) {
+							return newNode.key;
+						}
 					}
 					const tailPre = item.value.childs.tailPre();
 					if (tailPre.type === NodeEnum.WFGuideNode) {
-						return item.value.childs.replace(tailPre, newNode);
+						const res = item.value.childs.replace(tailPre, newNode);
+						if (res) {
+							return newNode.key;
+						}
 					}
-					return item.value.childs.insert(tailPre, newNode);
+					const res = item.value.childs.insert(tailPre, newNode);
+					if (res) {
+						return newNode.key;
+					}
 				}
 			}
 
@@ -216,7 +228,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			item = item.next;
 		}
 
-		return false;
+		return '';
 	}
 
 	/**

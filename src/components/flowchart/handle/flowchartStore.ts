@@ -55,29 +55,29 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2Pre8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2Pre8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Pre8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
 	}
 
 	/**
-	 * 往后追加 一个节点
+	 * 往内部结尾追加 一个节点
 	 * @param nodekey
 	 * @param type
 	 */
-	add2InnerTail8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2InnerTail8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Inner8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
 	}
 
 	/**
-	 * 往后追加 一个节点
+	 * 往内部开头追加 一个节点
 	 * @param nodekey
 	 * @param type
 	 */
@@ -92,15 +92,15 @@ export default class FlowchartStore {
 		return '';
 	}
 
-	remove8NodeId(nodeId: string) {
+	remove8NodeId(nodeId: string): boolean {
 		const res = this._data.remove8NodeId(nodeId);
 		if (res) {
 			return true;
 		}
-		return res;
+		return false;
 	}
 
-	removeNode2Node(nodekey: string, toNodekey: string) {
+	removeNode2Node(nodekey: string, toNodekey: string): boolean {
 		const res = this._data.removeNode2Node(nodekey, toNodekey);
 		if (res) {
 			return true;
