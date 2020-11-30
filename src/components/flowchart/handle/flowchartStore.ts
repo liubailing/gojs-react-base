@@ -42,10 +42,10 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2Next8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Next8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
 		return res;
 	}
@@ -81,15 +81,15 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2InnerHeader8NodeId(nodeId: string, type: NodeEnum): string {
 		const childs = this.mapNodeChildKeys.get(nodeId);
 		if (childs && childs.length > 0) {
 			const res = this._data.add2Next8NodeId(childs[0], type);
 			if (res) {
-				return true;
+				return res;
 			}
 		}
-		return false;
+		return '';
 	}
 
 	remove8NodeId(nodeId: string) {
@@ -108,12 +108,12 @@ export default class FlowchartStore {
 		return res;
 	}
 
-	copyNode2Node(nodekey: string, toNodekey: string) {
+	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const res = this._data.copyNode2Node(nodekey, toNodekey);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
 	}
 
 	getDiagram() {

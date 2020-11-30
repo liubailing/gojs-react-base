@@ -20,6 +20,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 设置选中节点后并触发 click,
 	 * 为false的时候不触发click
 	 */
+	private preClickNodeKey = '';
+
+	/**
+	 * 设置选中节点后并触发 click,
+	 * 为false的时候不触发click
+	 */
 	private setNodeSelected_OnClick = true;
 
 	/**
@@ -67,12 +73,18 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					if (sel instanceof go.Node) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							this.flowchartHander.handlerClickNode(node);
+							if (this.preClickNodeKey !== node.key) {
+								this.flowchartHander.handlerClickNode(node);
+								this.preClickNodeKey = node.key;
+							}
 						}
 					} else if (sel instanceof go.Group) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							this.flowchartHander.handlerClickNode(node);
+							if (this.preClickNodeKey !== node.key) {
+								this.flowchartHander.handlerClickNode(node);
+								this.preClickNodeKey = node.key;
+							}
 						}
 					}
 				} else {
@@ -132,6 +144,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
 		let pos;
 		switch (e.eType) {
+			case HandleEnum.Init:
+				this.flowchartHander.handlerInit();
+				break;
 			/** 打开点菜单 */
 			case HandleEnum.ShowNodeMenu:
 				pos = this._getPostion;
@@ -199,6 +214,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			default:
+				console.log(`--------- 操作不明确`, e.eType);
 				break;
 		}
 		// console.log(`---------,`, e);
@@ -219,8 +235,13 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2Next8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
+			const resNode = this._data.mapNode.get(res);
+			if (resNode) {
+				this.flowchartHander.handlerAddNode(resNode, false);
+			}
+			return true;
 		}
-		return res;
+		return false;
 	}
 
 	/**
@@ -255,9 +276,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onAdd2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
 		const res = this.add2InnerHeader8NodeId(nodeId, type);
-		this._refresDiagram();
-		return res;
-		// return false;
+		if (res) {
+			this._refresDiagram();
+			const resNode = this._data.mapNode.get(res);
+			if (resNode) {
+				this.flowchartHander.handlerAddNode(resNode, false);
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -312,6 +339,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.removeNode2Node(nodekey, toNodekey);
 		if (res) {
 			this._refresDiagram();
+			this.flowchartHander.handlerDrag(nodekey);
 		}
 		return res;
 	}
@@ -344,16 +372,17 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	onPaste2Node(toNodekey: string) {
 		if (!this._willCopyNodeId) return;
 
-		const res = this.copyNode2Node(this._willCopyNodeId, toNodekey);
-		if (res) {
+		const resNodekey = this.copyNode2Node(this._willCopyNodeId, toNodekey);
+		if (resNodekey) {
 			this._refresDiagram();
+			this.flowchartHander.handlerPaste(resNodekey);
 		}
 
 		// 如果只复制一次
 		if (this._isCopyOnce) {
 			this._willCopyNodeId = '';
 		}
-		return res;
+		return resNodekey;
 	}
 
 	/**
@@ -363,25 +392,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param toNodekey
 	 */
 	onCopyNode2PasteNode(nodekey: string, toNodekey: string) {
-		const res = this.copyNode2Node(nodekey, toNodekey);
-		if (res) {
+		const resNodekey = this.copyNode2Node(nodekey, toNodekey);
+		if (resNodekey) {
 			this._refresDiagram();
+			this.flowchartHander.handlerPaste(resNodekey);
 		}
-		return res;
-	}
-
-	private get _getPostion(): { x: number; y: number } {
-		if (this.flowchartDiagram) {
-			const offset = this.flowchartDiagram.lastInput.viewPoint;
-			return {
-				x: offset.x,
-				y: offset.y
-			};
-		}
-		return {
-			x: 0,
-			y: 0
-		};
+		return resNodekey;
 	}
 
 	_hideContextMenu() {
@@ -413,10 +429,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (nodekey) {
 			const data = this._data.mapNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
+				this.flowchartHander.handlerGetNodeData(data);
 				return data;
 			}
 		}
-
+		this.flowchartHander.handlerGetNodeData(null);
 		return null;
 	}
 
@@ -450,11 +467,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			// let obj = this.flowchartDiagram.findNodeForKey(nodekey);
 			// this.flowchartDiagram.(obj);
 			this._refresDiagram();
+			this.flowchartHander.handlerSaveNodeName(newName);
 		}
 	}
 
 	/**
-	 * 重新命名
+	 * 得到节点
 	 * @param nodekey
 	 * @param newName
 	 */
@@ -467,18 +485,61 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return undefined;
 	}
 
+	/**
+	 * 得到节点的子节点
+	 * @param nodekey
+	 * @param newName
+	 */
 	@action
-	_refresDiagram() {
-		const data = this.getDiagram();
-		this.nodeDataArray = [...data.nodeArray];
-		this.linkDataArray = [...data.linkArray];
-		console.log(`>>>>>>>>> 1`, this._data.mapNodeData);
+	onGetNodeChildKeys(nodekey: string): string[] {
+		const data = this.mapNodeChildKeys.get(nodekey);
+		if (data) {
+			return data;
+		}
+		return [];
+	}
+
+	/**
+	 * 得到节点兄弟节点
+	 * @param nodekey
+	 * @param newName
+	 */
+	@action
+	onGetNodeBrotherKeys(nodekey: string): string[] {
+		const data = this.mapNodeBrotherKeys.get(nodekey);
+		if (data) {
+			return data;
+		}
+		return [];
 	}
 
 	getAll() {
 		return {
 			nodes: this.nodeDataArray,
 			lines: this.linkDataArray
+		};
+	}
+
+	@action
+	private _refresDiagram() {
+		const data = this.getDiagram();
+		this.nodeDataArray = [...data.nodeArray];
+		this.linkDataArray = [...data.linkArray];
+		this.flowchartHander.handlerChanged();
+		console.log(`>>>>>>>>> 1`, this._data.mapNodeData);
+	}
+
+	private get _getPostion(): { x: number; y: number } {
+		if (this.flowchartDiagram) {
+			const offset = this.flowchartDiagram.lastInput.viewPoint;
+			return {
+				x: offset.x,
+				y: offset.y
+			};
+		}
+		return {
+			x: 0,
+			y: 0
 		};
 	}
 }

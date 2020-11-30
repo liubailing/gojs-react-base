@@ -3,9 +3,12 @@
 import { INodeModel } from './iNodeModel';
 import { ILineModel } from './iLineModel';
 
+/**
+ * 流程图回调接口
+ */
 export interface IFlowchartHander {
 	/******************************
-	 *
+	 * 同步之前的老接口
 	 ******************************/
 
 	/**
@@ -24,7 +27,25 @@ export interface IFlowchartHander {
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNode(node: INodeModel): void;
+	handlerAddNode(node: INodeModel, isDrag: boolean): void;
+
+	/**
+	 * 优化掉
+	 * 流程图对外回调接口，
+	 * 显示节点编辑页面
+	 */
+	onShowEditPage: () => void;
+
+	/**
+	 * 修改名称前准备操作 ，
+	 * 修改名称
+	 */
+	handlerShowEditNodeName: (currName: string, currNodeKey: string) => void;
+
+	/**
+	 * 修改名称后的操作
+	 */
+	handlerSaveNodeName: (newName: string) => void;
 
 	/**
 	 * 流程改变后 触发事件
@@ -32,10 +53,58 @@ export interface IFlowchartHander {
 	handlerChanged(): void;
 
 	/**
+	 * 流程节点准备复制
+	 * todo
+	 */
+	handlerWillCopy(mapData: Map<string, string>): void;
+
+	/**
+	 * 流程黏贴
+	 */
+	handlerPaste(currNodeKey: string): void;
+
+	/**
+	 * 流程节点被拖拽
+	 */
+	handlerDrag(currNodeKey: string): void;
+
+	/**
+	 * 流程节操作相关提示
+	 */
+	handlerTip(tipType: string): void;
+
+	/**
+	 * 流程节初始化完成
+	 */
+	handlerInit(): void;
+
+	/**
+	 * 去显示流程节点
+	 * todo 将弃用
+	 */
+	handlerHoverNodeInfo(nodedata: any): void;
+
+	/**
+	 * 获取完流程节点
+	 */
+	handlerGetNodeData(nodedata: any): void;
+
+	/**
+	 * 获取完流程节点
+	 * todo 将弃用 替代 handlerShowNodeInfo
+	 */
+	handlerShowLoopInfo(nodedata: any, value: any, option: any): void;
+
+	/******************************
+	 * 新增的对外接口
+	 ******************************/
+
+	/**
 	 * 显示点-设置面板
 	 * @param node 节点数据
 	 * @param posX x 坐标
 	 * @param posY y 坐标
+	 * 暂时不用
 	 */
 	handlerShowNodeSetting(node: INodeModel, posX: number, posY: number): void;
 
@@ -47,7 +116,9 @@ export interface IFlowchartHander {
 	 */
 	handlerShowNodeMenu(node: INodeModel, posX: number, posY: number): void;
 
-	/** 隐藏菜单面板 */
+	/**
+	 * 隐藏菜单面板
+	 * */
 	handlerHideNodeMenu(): void;
 
 	/**
@@ -58,7 +129,9 @@ export interface IFlowchartHander {
 	 */
 	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void;
 
-	/** 隐藏信息面板 */
+	/**
+	 * 隐藏信息面板
+	 */
 	handlerHideNodeInfo(): void;
 
 	/**
@@ -69,9 +142,13 @@ export interface IFlowchartHander {
 	 */
 	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void;
 
-	/** 隐藏线面板 */
+	/**
+	 * 隐藏线面板
+	 * */
 	handlerHideLineMenu(): void;
 
-	/** 隐藏 右键菜单 */
+	/**
+	 * 隐藏 右键菜单
+	 * */
 	handlerHideContextMenu(): void;
 }

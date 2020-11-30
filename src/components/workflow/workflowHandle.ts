@@ -17,29 +17,75 @@ export class WorkflowHandle implements IFlowchartHander {
 	/******************************
 	 *
 	 ******************************/
-	/** 点击节点 */
 
 	/**
-	 * 点击信息
+	 * 点击节点
 	 * @param node 节点数据
 	 */
 	handlerClickNode(node: INodeModel): void {
-		this.log(`-click ${node.key}`);
+		this.log(`handler -click ${node.key}`);
 	}
 
 	handlerDeleteNode(currKey: string, deleteKey: string) {
-		this.log(`-delete ${currKey}, ${deleteKey}`);
+		this.log(`handler -delete ${currKey}, ${deleteKey}`);
 	}
 
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNode(node: INodeModel): void {}
+	handlerAddNode(node: INodeModel, isDrag: boolean) {
+		this.log(`handler -add ${node.key}, ${isDrag}`);
+	}
+
+	handlerShowEditNodeName(currName: string, currNodeKey: string) {
+		this.log(`handler -show edit name ${currName}, ${currNodeKey}`);
+	}
+
+	handlerSaveNodeName(newName: string) {
+		this.log(`handler -save name ${newName}`);
+	}
+
+	handlerShowLoopInfo(nodedata: any, value: any, option: any) {
+		this.log(`handler -show loop info ${option}`);
+	}
 
 	/**
 	 * 流程改变后 触发事件
+	 * todo 还需完善
 	 */
-	handlerChanged(): void {}
+	handlerChanged(): void {
+		this.log(`handler -change`);
+	}
+
+	handlerWillCopy(mapData: Map<string, string>): void {
+		this.log(`handler -will copy`);
+	}
+
+	handlerPaste(currNodeKey: string): void {
+		this.log(`handler -Paste ${currNodeKey}`);
+	}
+
+	handlerDrag(currNodeKey: string): void {
+		this.log(`handler -Drag ${currNodeKey}`);
+	}
+
+	handlerTip(tipType: string): void {
+		this.log(`handler -Error ${tipType}`);
+	}
+
+	handlerInit() {
+		this.log(`handler -init `);
+	}
+
+	handlerHoverNodeInfo(nodedata: any) {
+		this.log(`handler -弃用 nodeinfo `);
+	}
+
+	handlerGetNodeData() {
+		this.log(`handler -getNodeData `);
+	}
+
+	// --------------
 
 	/**
 	 * 显示点-设置面板
@@ -97,8 +143,8 @@ export class WorkflowHandle implements IFlowchartHander {
 
 	/** 隐藏线面板 */
 	handlerHideLineMenu(): void {
-		this.log(`hide Line`);
 		this.HideContent();
+		this.log(`handler hide Line`);
 	}
 
 	/**
@@ -108,6 +154,15 @@ export class WorkflowHandle implements IFlowchartHander {
 	handlerHideContextMenu(): void {
 		this.HideContent();
 		this.log(`hide ContextMenu`);
+	}
+
+	/**
+	 * 优化掉
+	 * 流程图对外回调接口，
+	 * 显示节点编辑页面
+	 */
+	onShowEditPage() {
+		this.log(`handler -onShowEditPage`);
 	}
 
 	@action
@@ -164,7 +219,6 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'add_condition':
 				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Condition);
 				break;
-
 			case 'add_pre':
 				this.flowchart.onAdd2Pre8NodeId('openJD', NodeEnum.EnterText);
 				break;
