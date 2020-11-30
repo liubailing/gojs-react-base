@@ -241,6 +241,15 @@ class WorkflowTest extends React.Component<{}> {
 										追加到循环
 									</button>
 								</div>
+								<div>
+									<button
+										onClick={() => {
+											Workflow.test('add_cond_loop');
+										}}
+									>
+										套入循环
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>

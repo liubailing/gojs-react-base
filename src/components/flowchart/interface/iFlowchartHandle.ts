@@ -15,7 +15,7 @@ export interface IFlowchartHander {
 	 * 点击信息
 	 * @param node 节点数据
 	 */
-	handlerClickNode(node: INodeModel, isManual?: boolean): void;
+	handlerClickNode(node: any | INodeModel, isManual?: boolean): void;
 
 	/**
 	 * 删除节点信息
@@ -27,7 +27,7 @@ export interface IFlowchartHander {
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNode(node: INodeModel, isDrag: boolean): void;
+	handlerAddNode(node: any | INodeModel, isDrag: boolean): void;
 
 	/**
 	 * 优化掉

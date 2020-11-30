@@ -156,18 +156,24 @@ export default class FlowchartModel extends Linked<INodeModel> {
 					// 替换
 					if (preItem.value.type === NodeEnum.WFGuideNode) {
 						const res = this.replace(preItem.value, newNode);
-						if (res) return newNode.key;
+						if (res) {
+							return newNode.key;
+						}
 					}
 				} else if (item.value.type === NodeEnum.WFGuideNode) {
 					// 如果自身就是 wfguide
 					const res = this.replace(item.value, newNode);
-					if (res) return newNode.key;
+					if (res) {
+						return newNode.key;
+					}
 				} else if (item.value.type === NodeEnum.SubOpen) {
 					return '';
 				}
 
 				const res = this.insertPre(item.value, newNode);
-				if (res) return newNode.key;
+				if (res) {
+					return newNode.key;
+				}
 			}
 
 			if (item.value.childs) {
@@ -220,6 +226,34 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 			if (item.value.childs) {
 				const res = item.value.childs.add2Inner8NodeId(nodekey, type);
+				if (res) {
+					return res;
+				}
+			}
+
+			item = item.next;
+		}
+
+		return '';
+	}
+
+	add2InnerLoop8NodeId(nodekey: string): string {
+		let item = this._header.next;
+		while (item !== this._tail) {
+			if (item.value.key === nodekey && item.value.type !== NodeEnum.Branch) {
+				// 新建一个loop
+
+				const newLoop = NodeStore.getNode(NodeEnum.Loop, item.value.group);
+				newLoop.childs = new FlowchartModel();
+				newLoop.childs.add(NodeStore.getNode(NodeEnum.SubOpen, newLoop.key));
+				newLoop.childs.add({ ...item.value, ...{ group: newLoop.key } });
+				newLoop.childs.add(NodeStore.getNode(NodeEnum.SubClose, newLoop.key));
+				item.value = newLoop;
+				return newLoop.key;
+			}
+
+			if (item.value.childs) {
+				const res = item.value.childs.add2InnerLoop8NodeId(nodekey);
 				if (res) {
 					return res;
 				}

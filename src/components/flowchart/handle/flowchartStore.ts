@@ -77,6 +77,19 @@ export default class FlowchartStore {
 	}
 
 	/**
+	 * 在一个节点外面追加一个循环
+	 * *注意* 不能是分支节点
+	 * @param nodekey
+	 */
+	add2InnerLoop8NodeId(nodeId: string): string {
+		const res = this._data.add2InnerLoop8NodeId(nodeId);
+		if (res) {
+			return res;
+		}
+		return '';
+	}
+
+	/**
 	 * 往内部开头追加 一个节点
 	 * @param nodekey
 	 * @param type

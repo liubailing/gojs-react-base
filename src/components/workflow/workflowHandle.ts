@@ -240,6 +240,9 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'add_inner_cond_header':
 				this.flowchart.onAdd2InnerHeader8NodeId('cond', NodeEnum.Branch);
 				break;
+			case 'add_cond_loop':
+				this.flowchart.onAdd2InnerLoop8NodeId('openJD');
+				break;
 			case 'delete_loop2':
 				this.flowchart.onRemoveNode('loop2');
 				break;

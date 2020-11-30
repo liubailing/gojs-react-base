@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import go from 'gojs';
 import { observable, action } from 'mobx';
 import flowchartStore from './flowchartStore';
@@ -181,7 +182,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case HandleEnum.DeleteNode:
 				if (node && node.type === NodeEnum.Branch) {
 					// 如果就一个分支 则不删除该分支
-					let brother = this._data.mapNodeBrotherKeys.get(node.key);
+					const brother = this._data.mapNodeBrotherKeys.get(node.key);
 					if (brother && brother.length === 1) {
 						return false;
 					}
@@ -300,6 +301,24 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	/**
+	 * 在一个节点外面追加一个循环
+	 * *注意* 不能是分支节点
+	 * @param nodekey
+	 */
+	onAdd2InnerLoop8NodeId(nodeId: string): string {
+		const res = this.add2InnerLoop8NodeId(nodeId);
+		if (res) {
+			this._refresDiagram();
+			const resNode = this._data.mapNode.get(res);
+			if (resNode) {
+				this.flowchartHander.handlerAddNode(resNode, false);
+			}
+			return res;
+		}
+		return '';
+	}
+
+	/**
 	 * 移除
 	 * @param nodekey
 	 */
@@ -382,7 +401,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param toNodekey 要黏贴到的nodeId
 	 */
 	onPaste2Node(toNodekey: string) {
-		if (!this._willCopyNodeId) return;
+		if (!this._willCopyNodeId) {
+			return;
+		}
 
 		const resNodekey = this.copyNode2Node(this._willCopyNodeId, toNodekey);
 		if (resNodekey) {
