@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 import go from 'gojs';
-import { observable, action } from 'mobx';
+import { observable } from 'mobx';
 import flowchartStore from './flowchartStore';
 import { IDiagramHander, IFlowchartHander, IDiagramModel, INodeModel, ILineModel, INodeEvent } from '../interface';
 import { HandleEnum, NodeEnum } from '../enum';
@@ -11,11 +11,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	/** 调用 对外的暴露的接口方法 */
 	flowchartHander: IFlowchartHander;
 	flowchartDiagram: go.Diagram | null = null;
-
-	/**
-	 * 缓存 nodeKey - 缓存的数据
-	 */
-	// private mapNodeData: Map<string, object>;
 
 	/**
 	 * 设置选中节点后并触发 click,
