@@ -120,32 +120,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			// 完善缓存 6
 			this.mapNodeType.set(item.value.key, item.value.type);
 
-			// {
-			// 	let NavigateKey = '';
-			// 	if (item.value.type === NodeEnum.Navigate) {
-			// 		NavigateKey = item.value.key;
-			// 		this.mapNodeParentKey.set(item.value.key, NavigateKey);
-			// 	}
-
-			// 	if (!NavigateKey && preItem && preItem.value) {
-			// 		if (preItem.value.type === NodeEnum.Navigate) {
-			// 			NavigateKey = preItem.value.key;
-			// 		} else {
-			// 			NavigateKey = this.mapNodeParentKey.get(preItem.value.key) || '';
-			// 		}
-			// 		if (NavigateKey) {
-			// 			this.mapNodeParentKey.set(item.value.key, NavigateKey);
-			// 		}
-			// 	}
-
-			// 	if (!NavigateKey && item.value.group && item.value.group !== 'root') {
-			// 		debugger;
-			// 		NavigateKey = this.mapNodeParentKey.get(item.value.group) || '';
-
-			// 		this.mapNodeParentKey.set(item.value.key, NavigateKey);
-			// 	}
-			// }
-
 			// 处理子节点
 			if (item.value.childs) {
 				const curData = item.value.childs.toDiagram();

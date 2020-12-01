@@ -130,7 +130,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		// this.setState({ modelData: { canRelink: value }, skipsDiagramUpdate: false });
 	}
 
-	@action
 	init(fcdata: FlowchartModel) {
 		// this.selectedData = this.nodeDataArray.filter((x) => x.label == '提取数据');
 		super.refresData(fcdata);
@@ -353,7 +352,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 						}
 					}
 				}
-				// debugger;
 				this._refresDiagram();
 				this.flowchartHander.handlerDeleteNode(currkey, nodekey);
 			}
@@ -491,7 +489,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param newName
 	 */
-	@action
 	onRename(nodekey: string, newName: string) {
 		const node = this.mapNode.get(nodekey);
 		if (node && this.flowchartDiagram) {
@@ -509,7 +506,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param newName
 	 */
-	@action
 	onGetNode(nodekey: string): INodeModel | undefined {
 		const data = this.mapNode.get(nodekey);
 		if (data) {
@@ -523,7 +519,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param newName
 	 */
-	@action
 	onGetNodeChildKeys(nodekey: string): string[] {
 		const data = this.mapNodeChildKeys.get(nodekey);
 		if (data) {
@@ -537,13 +532,20 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param newName
 	 */
-	@action
 	onGetNodeBrotherKeys(nodekey: string): string[] {
 		const data = this.mapNodeBrotherKeys.get(nodekey);
 		if (data) {
 			return data;
 		}
 		return [];
+	}
+
+	onGetNodeNavigateKey(nodekey: string): string {
+		const data = this.mapNodeNativeKey.get(nodekey);
+		if (data) {
+			return data;
+		}
+		return '';
 	}
 
 	getAll() {
@@ -553,7 +555,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		};
 	}
 
-	@action
+	// @action
 	private _refresDiagram() {
 		const data = this.getDiagram();
 		this.nodeDataArray = [...data.nodeArray];

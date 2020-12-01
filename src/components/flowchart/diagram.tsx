@@ -59,7 +59,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
-			// debugger;
 			const e: INodeEvent = {
 				eType: HandleEnum.Init
 			} as INodeEvent;

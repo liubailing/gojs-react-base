@@ -32,8 +32,9 @@ export default class FlowchartStore {
 	/** 节点对应父级节点 */
 	mapNodeParentKey = new Map<string, string>();
 
-	/** 节点对应父级节点 */
-	private mapNodeType = new Map<string, string>();
+	mapNodeNativeKey = new Map<string, string>();
+
+	tempNodeNativeKey = new Map<string, string>();
 
 	constructor() {
 		this.mapNodeData = new Map<string, object>();
@@ -157,11 +158,55 @@ export default class FlowchartStore {
 		this.mapNodePreNodeKey = this._data.mapNodePreNodeKey;
 		this.mapNodeData = this._data.cacheNodeData;
 		this.mapNodeParentKey = this._data.mapNodeParentKey;
-		this.mapNodeType = this._data.mapNodeType;
-		debugger;
 
-		// this._data.f
+		/** 特殊逻辑处理 */
+		this.resetData(this._data);
 		return res;
+	}
+
+	resetData(thisItme: FlowchartModel) {
+		// const that = this;
+
+		let item = thisItme._header.next;
+		let preItem = thisItme._header;
+
+		while (item !== thisItme._tail) {
+			if (!thisItme.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
+				item.value.childs = null;
+			}
+
+			{
+				let NavigateKey = '';
+				if (item.value.type === NodeEnum.Navigate) {
+					NavigateKey = item.value.key;
+					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+				} else if (!NavigateKey && preItem && preItem.value) {
+					if (preItem.value.type === NodeEnum.Navigate) {
+						NavigateKey = preItem.value.key;
+					} else {
+						NavigateKey = this.mapNodeNativeKey.get(preItem.value.key) || '';
+					}
+					if (NavigateKey) {
+						this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+					}
+				}
+
+				if (!NavigateKey && item.value.group && item.value.group !== 'root') {
+					// debugger;
+					NavigateKey = this.mapNodeNativeKey.get(item.value.group) || '';
+
+					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+				}
+			}
+
+			if (item.value.childs) {
+				this.resetData(item.value.childs);
+			}
+
+			// 下一轮循环
+			preItem = item;
+			item = item.next;
+		}
 	}
 }
 
