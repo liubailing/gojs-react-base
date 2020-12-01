@@ -48,7 +48,7 @@ export class TestData {
 		}
 
 		d.add(end);
-		d.mapNodeData = this.mapNodeData;
+		d.cacheNodeData = this.mapNodeData;
 		// let dd = d.toDiagram();
 		return d;
 	}

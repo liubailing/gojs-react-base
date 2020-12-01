@@ -6,7 +6,12 @@ import { FlowchartModel } from '../model';
  * 处理数据
  */
 export default class FlowchartStore {
-	_data: FlowchartModel;
+	private _data: FlowchartModel;
+
+	/**
+	 * 缓存 nodeKey - 缓存的数据
+	 */
+	mapNodeData: Map<string, object>;
 
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
@@ -15,17 +20,30 @@ export default class FlowchartStore {
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
 
-	/** 节点的 子节点 */
+	/** 节点的前-节点 */
+	mapNodePreNodeKey: Map<string, string>;
+
+	/** 节点类型-节点 */
+	mapNodeTypeKeys: Map<string, Set<string>>;
+
+	/** 节点的-子节点 */
 	mapNodeChildKeys: Map<string, Array<string>>;
 
+	/** 节点对应父级节点 */
+	mapNodeParentKey = new Map<string, string>();
+
+	/** 节点对应父级节点 */
+	private mapNodeType = new Map<string, string>();
+
 	constructor() {
+		this.mapNodeData = new Map<string, object>();
 		// this
 		this._data = new FlowchartModel();
-
 		this.mapNode = new Map();
-
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
+		this.mapNodePreNodeKey = new Map<string, string>();
 	}
 
 	/**
@@ -135,6 +153,14 @@ export default class FlowchartStore {
 		this.mapNode = this._data.mapNode;
 		this.mapNodeChildKeys = this._data.mapNodeChildKeys;
 		this.mapNodeBrotherKeys = this._data.mapNodeBrotherKeys;
+		this.mapNodeTypeKeys = this._data.mapNodeTypeKeys;
+		this.mapNodePreNodeKey = this._data.mapNodePreNodeKey;
+		this.mapNodeData = this._data.cacheNodeData;
+		this.mapNodeParentKey = this._data.mapNodeParentKey;
+		this.mapNodeType = this._data.mapNodeType;
+		debugger;
+
+		// this._data.f
 		return res;
 	}
 }

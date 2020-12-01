@@ -24,6 +24,10 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerClickNode(node: INodeModel): void {
 		this.log(`handler -click ${node.key}`);
+
+		debugger;
+		const data = this.flowchart.onGetNodeData(node.key) || '';
+		console.log(`handler -click data ${node.key}`, data);
 	}
 
 	handlerDeleteNode(currKey: string, deleteKey: string) {

@@ -12,7 +12,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 缓存 nodeKey - 缓存的数据
 	 */
-	mapNodeData: Map<string, object>;
+	cacheNodeData: Map<string, object>;
+
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
 
@@ -20,11 +21,19 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
 
-	/** 节点的前一 */
+	mapNodeTypeKeys: Map<string, Set<string>>;
+
+	/** 节点的前-节点 */
 	mapNodePreNodeKey: Map<string, string>;
 
 	/** 节点的 子节点 */
 	mapNodeChildKeys: Map<string, Array<string>>;
+
+	/** 节点对应父级节点 */
+	mapNodeParentKey = new Map<string, string>();
+
+	/** 节点对应类型 */
+	mapNodeType = new Map<string, string>();
 
 	guidNodeType: Array<NodeEnum> = [
 		NodeEnum.Start,
@@ -39,21 +48,30 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	constructor() {
 		super();
 		this.mapNode = new Map();
-		this.mapNodeData = new Map<string, object>();
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		this.mapNodeType = new Map<string, string>();
+
+		// 这个不要在init()里面
+		this.cacheNodeData = new Map<string, object>();
 	}
 
 	init() {
 		this.mapNode = new Map();
-		// this.mapNodeData = new Map<string, object>();s
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		/** 节点对应父级节点 */
+		this.mapNodeType = new Map<string, string>();
 	}
 
 	toDiagram(): IDiagramModel<INodeModel, ILineModel> {
+		// const that = this;
 		let data: IDiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
 
 		let item = this._header.next;
@@ -77,14 +95,56 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				data.linkArray.push(l);
 			}
 
-			// 完善缓存
-			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
 			if (!this.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
 				item.value.childs = null;
 			}
-			// debugger;
+
+			// 完善缓存 1
 			this.mapNode.set(item.value.key, item.value);
+			// 完善缓存 2
+			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
+			// 完善缓存 3
 			this.mapNodePreNodeKey.set(item.value.key, preItem.value?.key || '');
+			// 完善缓存 4
+			if (this.mapNodeTypeKeys.has(item.value.type)) {
+				// 如果存在该类型
+				const v = this.mapNodeTypeKeys.get(item.value.type) || new Set();
+				this.mapNodeTypeKeys.set(item.value.type, v.add(item.value.key));
+			} else {
+				// 如果存在该类型
+				this.mapNodeTypeKeys.set(item.value.type, new Set([item.value.key]));
+			}
+			// 完善缓存 5
+			this.mapNodeParentKey.set(item.value.key, item.value.group);
+
+			// 完善缓存 6
+			this.mapNodeType.set(item.value.key, item.value.type);
+
+			// {
+			// 	let NavigateKey = '';
+			// 	if (item.value.type === NodeEnum.Navigate) {
+			// 		NavigateKey = item.value.key;
+			// 		this.mapNodeParentKey.set(item.value.key, NavigateKey);
+			// 	}
+
+			// 	if (!NavigateKey && preItem && preItem.value) {
+			// 		if (preItem.value.type === NodeEnum.Navigate) {
+			// 			NavigateKey = preItem.value.key;
+			// 		} else {
+			// 			NavigateKey = this.mapNodeParentKey.get(preItem.value.key) || '';
+			// 		}
+			// 		if (NavigateKey) {
+			// 			this.mapNodeParentKey.set(item.value.key, NavigateKey);
+			// 		}
+			// 	}
+
+			// 	if (!NavigateKey && item.value.group && item.value.group !== 'root') {
+			// 		debugger;
+			// 		NavigateKey = this.mapNodeParentKey.get(item.value.group) || '';
+
+			// 		this.mapNodeParentKey.set(item.value.key, NavigateKey);
+			// 	}
+			// }
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -129,6 +189,32 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		item.mapNodeBrotherKeys.forEach((v, k) => {
 			if (k !== '' && k !== null) {
 				this.mapNodeBrotherKeys.set(k, v);
+			}
+		});
+
+		item.mapNodeTypeKeys.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				if (this.mapNodeTypeKeys.has(k)) {
+					const v1 = this.mapNodeTypeKeys.get(k) || new Set();
+
+					this.mapNodeTypeKeys.set(k, new Set([...[...v], ...[...v1]]));
+				} else {
+					this.mapNodeTypeKeys.set(k, v);
+				}
+
+				// this.mapNodeTypeKeys.set(k, v);
+			}
+		});
+
+		item.mapNodeParentKey.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodeParentKey.set(k, v);
+			}
+		});
+
+		item.mapNodeType.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodeType.set(k, v);
 			}
 		});
 	}
@@ -347,7 +433,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	private getNode8Copy(nodekey: string, groupId: string): INodeModel | null {
 		const newM = this.mapNode.get(nodekey);
 		let newC: FlowchartModel | null = null;
-
+		const data = this.cacheNodeData.get(nodekey);
 		if (newM) {
 			// 将要扥到的结果
 			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
@@ -369,6 +455,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				if (newC) {
 					res.childs = newC;
 				}
+			}
+			// 数据复制
+			if (data && Object.keys(data).length > 0) {
+				this.cacheNodeData.set(res.key, { ...data });
 			}
 			return res;
 		}

@@ -182,7 +182,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case HandleEnum.DeleteNode:
 				if (node && node.type === NodeEnum.Branch) {
 					// 如果就一个分支 则不删除该分支
-					const brother = this._data.mapNodeBrotherKeys.get(node.key);
+					const brother = this.mapNodeBrotherKeys.get(node.key);
 					if (brother && brother.length === 1) {
 						return false;
 					}
@@ -236,7 +236,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2Next8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
-			const resNode = this._data.mapNode.get(res);
+			const resNode = this.mapNode.get(res);
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
@@ -254,7 +254,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2Pre8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
-			const resNode = this._data.mapNode.get(res);
+			const resNode = this.mapNode.get(res);
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
@@ -272,7 +272,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2InnerTail8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
-			const resNode = this._data.mapNode.get(res);
+			const resNode = this.mapNode.get(res);
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
@@ -291,7 +291,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2InnerHeader8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
-			const resNode = this._data.mapNode.get(res);
+			const resNode = this.mapNode.get(res);
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
@@ -309,7 +309,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const res = this.add2InnerLoop8NodeId(nodeId);
 		if (res) {
 			this._refresDiagram();
-			const resNode = this._data.mapNode.get(res);
+			const resNode = this.mapNode.get(res);
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
@@ -323,14 +323,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 */
 	onRemoveNode(nodekey: string, clearData: boolean = true) {
-		const currNode = this._data.mapNode.get(nodekey);
+		const currNode = this.mapNode.get(nodekey);
 		if (currNode) {
 			const res = this.remove8NodeId(nodekey);
-			const pre = this._data.mapNodePreNodeKey.get(nodekey);
+			const pre = this.mapNodePreNodeKey.get(nodekey);
 			if (res) {
 				// 删除节点缓存数据
 				if (clearData) {
-					this._data.mapNodeData.delete(nodekey);
+					this.mapNodeData.delete(nodekey);
 				}
 				let currkey = pre || '';
 				// 说明删除的第一个节点
@@ -338,14 +338,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				if (pre === '' && currNode.type === NodeEnum.Branch) {
 					currkey = currNode.group;
 				} else if (pre) {
-					const preNode = this._data.mapNode.get(pre);
+					const preNode = this.mapNode.get(pre);
 					// 如果是循环里面第一个接节点
 					if (preNode && preNode.type === NodeEnum.SubOpen) {
 						currkey = currNode.group;
 					} else if (preNode && preNode.type === NodeEnum.Start) {
 						// 如果是第一个节点
 
-						const brothers = this._data.mapNodeBrotherKeys.get(nodekey);
+						const brothers = this.mapNodeBrotherKeys.get(nodekey);
 						if (brothers && brothers.length > 3) {
 							currkey = brothers[2];
 						} else {
@@ -449,7 +449,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onSetNodeData(nodekey: string, data: object) {
 		if (data && Object.keys(data).length > 0) {
-			this._data.mapNodeData.set(nodekey, data);
+			this.mapNodeData.set(nodekey, data);
 		}
 	}
 
@@ -460,7 +460,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onGetNodeData(nodekey: string): object | null {
 		if (nodekey) {
-			const data = this._data.mapNodeData.get(nodekey);
+			const data = this.mapNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
 				this.flowchartHander.handlerGetNodeData(data);
 				return data;
@@ -559,7 +559,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		this.nodeDataArray = [...data.nodeArray];
 		this.linkDataArray = [...data.linkArray];
 		this.flowchartHander.handlerChanged();
-		console.log(`>>>>>>>>> 1`, this._data.mapNodeData);
+		console.log(`>>>>>>>>> 1`, this.mapNodeData);
 	}
 
 	private get _getPostion(): { x: number; y: number } {
