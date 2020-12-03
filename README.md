@@ -1,5 +1,8 @@
 # gojs-react-basic
 
+### 在线效果演示
+[在线效果](http://47.110.49.33:3088/)
+
 ### By Northwoods Software for [GoJS 2.1](https://gojs.net)
 
 This project provides a basic example of using GoJS in a React app.
