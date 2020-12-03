@@ -1,9 +1,10 @@
 import { IFlowchartHander, INodeModel, ILineModel } from '../flowchart/interface';
 import { HanderFlowchart } from '../flowchart/handle';
-import { observable, action } from 'mobx';
+import { observable } from 'mobx';
 import { NodeEnum } from '../flowchart/enum';
-import { TestData } from './index';
-
+import { WorkflowHelper } from './index';
+import { FlowchartModel } from '../flowchart/model';
+import TestDataJson from './testData';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -199,15 +200,74 @@ export class WorkflowHandle implements IFlowchartHander {
 		}
 	}
 
-	isSimpleData: boolean = true;
+	private resetData(thisItme: FlowchartModel, parentNode: INodeModel | null = null): any {
+		let parentKey = 'root';
+		if (parentNode !== null && Object.keys(parentNode).length > 2) {
+			parentKey = parentNode.key;
+		}
+
+		let resData = {
+			...{
+				type: parentNode ? parentNode.type : '',
+				parentKey: parentNode ? parentNode.group : ''
+			},
+			...{
+				key: parentKey,
+				data: this.flowchart.onGetNodeData(parentKey, false),
+				childKeys: this.flowchart.onGetNodeChildKeys(parentKey),
+				childs: []
+			}
+		};
+
+		let item = thisItme._header.next;
+
+		while (item !== thisItme._tail) {
+			let res = {
+				key: item.value.key,
+				type: item.value.type,
+				parentKey: item.value.group,
+				data: null,
+				childKeys: null,
+				childs: null
+			};
+
+			if (thisItme.hasChildsNodeType.includes(item.value.type as NodeEnum) && item.value.childs) {
+				res = this.resetData(item.value.childs, item.value);
+			}
+
+			if (!thisItme.guidNodeType.includes(item.value.type as NodeEnum)) {
+				res.data = this.flowchart.onGetNodeData(item.value.key, false) as any;
+				resData.childs.push(res as never);
+			}
+			// 下一轮循环
+			item = item.next;
+		}
+
+		return resData;
+	}
+
+	tempActionData: any = null;
 	test = (action: string) => {
 		switch (action) {
+			case 'render':
+				const redata = WorkflowHelper.getFlowchartData(TestDataJson);
+				this.flowchart.init(redata);
+				break;
 			case 'init':
-				this.isSimpleData = !this.isSimpleData;
-				const data = TestData.getFlowchartData(this.isSimpleData);
+				const data = WorkflowHelper.getFlowchartData({});
 				this.flowchart.init(data);
 				break;
+			case 'rerender':
+				debugger;
+				const newdata = WorkflowHelper.getFlowchartData(this.tempActionData);
+				this.flowchart.init(newdata);
+				debugger;
+				break;
 			case 'getall':
+				const flData = this.flowchart.getAll();
+				this.tempActionData = this.resetData(flData);
+				console.log(`>>>>>`, this.tempActionData);
+				debugger;
 				break;
 			case 'hide_contextMenu':
 				this.flowchart._hideContextMenu();

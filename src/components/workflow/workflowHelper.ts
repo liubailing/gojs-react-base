@@ -2,13 +2,12 @@ import { INodeModel } from '../flowchart/interface';
 import { NodeStore } from '../flowchart/store';
 import { FlowchartModel } from '../flowchart/model';
 import { NodeEnum } from '../flowchart/enum';
-import { ActionNode, ActionNodeType } from '../workflow/entity';
-import TestDataJson from './testData';
+import { ActionNode, ActionNodeType } from './entity';
 
 /**
  * @class 自定义模式业务
  */
-export class TestData {
+export class WorkflowHelper {
 	currKey: string = '';
 
 	curCount: number = 0;
@@ -22,17 +21,16 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowchartData(wfData: boolean = false): FlowchartModel {
+	static getFlowchartData(data: any): FlowchartModel {
 		let d: FlowchartModel = new FlowchartModel();
 
 		let start = NodeStore.getNode(NodeEnum.Start);
 		let end = NodeStore.getNode(NodeEnum.End);
-		let data = TestDataJson;
 
 		d.add(start);
 
-		if (!wfData && data.childs.length > 0) {
-			data.childs.forEach((x) => {
+		if (data && data.childs && data.childs.length > 0) {
+			data.childs.forEach((x: any) => {
 				let n = this.getNodeModel(x, 'root');
 
 				// 缓存记录data数据
@@ -72,7 +70,7 @@ export class TestData {
 
 						n.label = x.label || n.label;
 						n.sortIndex = i;
-						n.childs = TestData.doFlowchartData(n, x.childs);
+						n.childs = WorkflowHelper.doFlowchartData(n, x.childs);
 						dlist.add(n);
 					});
 				}
@@ -124,7 +122,7 @@ export class TestData {
 					n.label = x.label || n.label;
 					//如果有子集
 					if (x.childs && x.childs.length > 0) {
-						n.childs = TestData.doFlowchartData(n, x.childs);
+						n.childs = WorkflowHelper.doFlowchartData(n, x.childs);
 					}
 					dlist.add(n);
 				});

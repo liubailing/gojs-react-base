@@ -30,11 +30,12 @@ export default class FlowchartStore {
 	mapNodeChildKeys: Map<string, Array<string>>;
 
 	/** 节点对应父级节点 */
-	mapNodeParentKey = new Map<string, string>();
+	mapNodeParentKey: Map<string, string>;
 
-	mapNodeNativeKey = new Map<string, string>();
+	/** 节点对应类型 */
+	mapNodeType: Map<string, string>;
 
-	tempNodeNativeKey = new Map<string, string>();
+	mapNodeNativeKey: Map<string, string>;
 
 	constructor() {
 		this.mapNodeData = new Map<string, object>();
@@ -45,6 +46,9 @@ export default class FlowchartStore {
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		this.mapNodeType = new Map<string, string>();
+		this.mapNodeNativeKey = new Map<string, string>();
 	}
 
 	/**
@@ -148,6 +152,10 @@ export default class FlowchartStore {
 		return '';
 	}
 
+	getData(): FlowchartModel {
+		return this._data;
+	}
+
 	getDiagram() {
 		this._data.init();
 		const res = this._data.toDiagram();
@@ -158,7 +166,7 @@ export default class FlowchartStore {
 		this.mapNodePreNodeKey = this._data.mapNodePreNodeKey;
 		this.mapNodeData = this._data.cacheNodeData;
 		this.mapNodeParentKey = this._data.mapNodeParentKey;
-
+		this.mapNodeType = this._data.mapNodeType;
 		/** 特殊逻辑处理 */
 		this.resetData(this._data);
 		return res;

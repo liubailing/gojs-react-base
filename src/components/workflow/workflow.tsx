@@ -15,7 +15,7 @@ import './base.css';
 @observer
 class WorkflowTest extends React.Component<{}> {
 	componentDidMount() {
-		Workflow.test('init');
+		Workflow.test('render');
 	}
 
 	render() {
@@ -46,6 +46,15 @@ class WorkflowTest extends React.Component<{}> {
 						<div>
 							<button
 								onClick={() => {
+									Workflow.test('render');
+								}}
+							>
+								复杂模型
+							</button>
+						</div>
+						<div>
+							<button
+								onClick={() => {
 									Workflow.test('init');
 								}}
 							>
@@ -58,27 +67,19 @@ class WorkflowTest extends React.Component<{}> {
 									Workflow.test('getall');
 								}}
 							>
-								得到全部
+								保存当前
 							</button>
 						</div>
 						<div>
 							<button
 								onClick={() => {
-									Workflow.test('');
+									Workflow.test('rerender');
 								}}
 							>
-								重新渲染
+								恢复保存
 							</button>
 						</div>
-						<div>
-							<button
-								onClick={() => {
-									Workflow.test('');
-								}}
-							>
-								复杂模型
-							</button>
-						</div>
+
 						<div>
 							<button
 								onClick={() => {

@@ -227,7 +227,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param type 添加的节点类型
 	 */
 	onAdd2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
-		const res = this.add2Next8NodeId(nodeId, type);
+		debugger;
+		const res = this.add2Next8NodeId(nodeId || 'start', type);
 		if (res) {
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
@@ -263,6 +264,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
 	onAdd2InnerTail8NodeId(nodeId: string, type: NodeEnum): string {
+		debugger;
 		const res = this.add2InnerTail8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
@@ -451,15 +453,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param data
 	 */
-	onGetNodeData(nodekey: string): object | null {
+	onGetNodeData(nodekey: string, shouldHander: boolean = true): object | null {
 		if (nodekey) {
 			const data = this.mapNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
-				this.flowchartHander.handlerGetNodeData(data);
+				if (shouldHander) {
+					this.flowchartHander.handlerGetNodeData(data);
+				}
 				return data;
 			}
 		}
-		this.flowchartHander.handlerGetNodeData(null);
 		return null;
 	}
 
@@ -516,10 +519,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onGetNodeChildKeys(nodekey: string): string[] {
 		const data = this.mapNodeChildKeys.get(nodekey);
-		if (data) {
-			return data;
+		const currNodeType = this.mapNodeType.get(nodekey);
+		if (
+			(currNodeType === NodeEnum.Loop || currNodeType === NodeEnum.Branch || nodekey === 'root') &&
+			data &&
+			data.length > 2
+		) {
+			return data.slice(1, data.length - 1);
 		}
-		return [];
+		return data || [];
 	}
 
 	/**
@@ -535,6 +543,23 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return [];
 	}
 
+	/**
+	 * 得到某一类型的全部节点
+	 * @param nodekey
+	 * @param newName
+	 */
+	onGetNodeByType(nodekey: string): string[] {
+		const data = this.mapNodeTypeKeys.get(nodekey);
+		if (data && data.size > 0) {
+			return [...data];
+		}
+		return [];
+	}
+
+	/**
+	 *
+	 * @param nodekey
+	 */
 	onGetNodeNavigateKey(nodekey: string): string {
 		const data = this.mapNodeNativeKey.get(nodekey);
 		if (data) {
@@ -543,11 +568,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return '';
 	}
 
-	getAll() {
-		return {
-			nodes: this.nodeDataArray,
-			lines: this.linkDataArray
-		};
+	getAll(): FlowchartModel {
+		const res = this.getData();
+		return res;
 	}
 
 	// @action

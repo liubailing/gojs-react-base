@@ -21,7 +21,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
 
-	/** 类型对应的节点 */
+	/** 类型 对应的子节点 */
 	mapNodeTypeKeys: Map<string, Set<string>>;
 
 	/** 节点的前-节点 */
@@ -32,6 +32,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 	/** 节点对应父级节点 */
 	mapNodeParentKey = new Map<string, string>();
+
+	/** 节点对应类型 */
+	mapNodeType = new Map<string, string>();
 
 	guidNodeType: Array<NodeEnum> = [
 		NodeEnum.Start,
@@ -51,6 +54,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
 		this.mapNodeParentKey = new Map<string, string>();
+		this.mapNodeType = new Map<string, string>();
 
 		// 这个不要在init()里面
 		this.cacheNodeData = new Map<string, object>();
@@ -63,6 +67,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
 		this.mapNodeParentKey = new Map<string, string>();
+		/** 节点对应父级节点 */
+		this.mapNodeType = new Map<string, string>();
 	}
 
 	toDiagram(): IDiagramModel<INodeModel, ILineModel> {
@@ -99,7 +105,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			// 完善缓存 2
 			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
 			// 完善缓存 3
-			this.mapNodePreNodeKey.set(item.value.key, preItem.value?.key || '');
+			this.mapNodePreNodeKey.set(item.value.key, preItem.value ? preItem.value.key : '');
 			// 完善缓存 4
 			if (this.mapNodeTypeKeys.has(item.value.type)) {
 				// 如果存在该类型
@@ -111,6 +117,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 			// 完善缓存 5
 			this.mapNodeParentKey.set(item.value.key, item.value.group);
+
+			// 完善缓存 6
+			this.mapNodeType.set(item.value.key, item.value.type);
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -175,6 +184,12 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		item.mapNodeParentKey.forEach((v, k) => {
 			if (k !== '' && k !== null) {
 				this.mapNodeParentKey.set(k, v);
+			}
+		});
+
+		item.mapNodeType.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodeType.set(k, v);
 			}
 		});
 	}
