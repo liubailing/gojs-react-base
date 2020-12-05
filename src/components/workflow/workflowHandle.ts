@@ -268,7 +268,7 @@ export class WorkflowHandle implements IFlowchartHander {
 				debugger;
 				break;
 			case 'getall':
-				const flData = this.flowchart.getAll();
+				const flData = this.flowchart.onGetAll();
 				this.tempActionData = this.resetData(flData);
 				console.log(`>>>>>`, this.tempActionData);
 				debugger;
