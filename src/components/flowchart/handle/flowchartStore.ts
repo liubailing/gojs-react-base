@@ -153,6 +153,7 @@ export default class FlowchartStore {
 	}
 
 	getData(): FlowchartModel {
+		this.getDiagram();
 		return this._data;
 	}
 

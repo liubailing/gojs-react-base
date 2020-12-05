@@ -226,8 +226,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型
 	 */
-	onAdd2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
-		debugger;
+	onAdd2Next8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this.add2Next8NodeId(nodeId || 'start', type);
 		if (res) {
 			this._refresDiagram();
@@ -235,9 +234,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode, false);
 			}
-			return true;
+			return res;
 		}
-		return false;
+		return '';
 	}
 
 	/**
@@ -264,7 +263,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param type 添加的节点类型, 必须是 nodeId属于 条件，循环，分支
 	 */
 	onAdd2InnerTail8NodeId(nodeId: string, type: NodeEnum): string {
-		debugger;
 		const res = this.add2InnerTail8NodeId(nodeId, type);
 		if (res) {
 			this._refresDiagram();
@@ -523,7 +521,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (
 			(currNodeType === NodeEnum.Loop || currNodeType === NodeEnum.Branch || nodekey === 'root') &&
 			data &&
-			data.length > 2
+			data.length > 1
 		) {
 			return data.slice(1, data.length - 1);
 		}
@@ -568,7 +566,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return '';
 	}
 
-	getAll(): FlowchartModel {
+	onGetAll(): FlowchartModel {
 		const res = this.getData();
 		return res;
 	}

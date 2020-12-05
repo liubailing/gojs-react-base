@@ -11,9 +11,13 @@ import TestDataJson from './testData';
  * both are optional props in ReactDiagram.
  */
 export class WorkflowHandle implements IFlowchartHander {
+	flowchart: HanderFlowchart;
+	constructor(taskId: string) {
+		this.taskId = taskId;
+		this.flowchart = new HanderFlowchart(this);
+	}
 	@observable logs: string[] = [];
-	taskId = 'cCDWC12344';
-	flowchart: HanderFlowchart = new HanderFlowchart(this);
+	@observable taskId = '';
 
 	/******************************
 	 *
@@ -273,7 +277,12 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.flowchart._hideContextMenu();
 				break;
 			case 'add_smiple':
-				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);
+				let openJD = this.flowchart.onGetNode(`openJD`);
+				if (openJD && openJD.key) {
+					this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);
+				} else {
+					this.flowchart.onAdd2Next8NodeId('', NodeEnum.ExtractData);
+				}
 				break;
 			case 'add_loop':
 				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Loop);
@@ -389,5 +398,4 @@ export class WorkflowHandle implements IFlowchartHander {
 	};
 }
 
-const w = new WorkflowHandle();
-export default w;
+export default WorkflowHandle;

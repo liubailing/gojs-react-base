@@ -16,7 +16,10 @@ class App extends React.Component<{}> {
 	public render() {
 		return (
 			<>
-				<Workflow></Workflow>
+				<Workflow key="1sdsds" taskId="sdasdawwcc"></Workflow>
+				<br />
+				<br />
+				<Workflow key="3333d" taskId="sss12121444"></Workflow>
 			</>
 		);
 	}
