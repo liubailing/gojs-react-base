@@ -1,0 +1,105 @@
+.flow-chart-helper {
+	z-index: 10;
+	background-color: #fff;
+}
+/* 菜单 */
+.flow-chart-helper .more-menu {
+	z-index: 10;
+	position: absolute;
+	display: block;
+	opacity: 1;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	font-size: 14px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+.flow-chart-helper .more-menu ul {
+	text-align: center;
+	list-style: none;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+.flow-chart-helper .more-menu li {
+	width: 100px;
+	color: #333;
+	display: inline-block;
+	padding: 6px;
+	cursor: pointer;
+	text-decoration: none;
+}
+.flow-chart-helper .more-menu li:hover {
+	background: #e6f0ff;
+	color: #666;
+}
+
+.flow-chart-helper .add-node-menu {
+	z-index: 10;
+	position: absolute;
+	display: block;
+	opacity: 1;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	font-size: 14px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+.flow-chart-helper .add-node-menu ul {
+	text-align: center;
+	list-style: none;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 0;
+}
+.flow-chart-helper .add-node-menu li {
+	width: 150px;
+	padding: 6px;
+	cursor: pointer;
+	color: #333;
+}
+.flow-chart-helper .add-node-menu li:hover {
+	background: #e6f0ff;
+	color: #666;
+}
+.flow-chart-helper .add-node-menu li:hover .anticon-double-right {
+	color: #fa1234;
+}
+
+.flow-chart-helper .node-info {
+	z-index: 10;
+	position: absolute;
+	display: block;
+	opacity: 1; /*box-shadow: 0 0 10px rgba(0, 0, 0, .4);*/
+	font-size: 14px;
+	border-radius: 3px;
+	background-color: #fff;
+	width: 268px;
+	min-height: 100px;
+	padding: 10px;
+	border: 1px solid #333;
+}
+.flow-chart-helper .node-info .node-info-arrow {
+	width: 15px;
+	height: 15px;
+	display: block;
+	position: absolute;
+	transform: rotate(45deg);
+	border-left: 1px solid #333;
+	border-top: 1px solid #333;
+	background: #fff;
+	top: -8px;
+}
+
+.flow-chart-helper .node-info .loop-info {
+	z-index: 10;
+	position: absolute;
+	left: 99999px;
+}
+.flow-chart-helper .node-info .ant-select-selection--single {
+	display: none;
+}
+.flow-chart-helper .node-info .ant-select-dropdown-menu-item-selected,
+.flow-chart-helper .node-info .ant-select-dropdown-menu-item-selected:hover {
+	background: #e6f4ff;
+}

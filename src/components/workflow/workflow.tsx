@@ -7,6 +7,7 @@ import { observer } from 'mobx-react';
 import Flowchart from '../flowchart/flowchartDiagram';
 import workflowHandle from './workflowHandle';
 import './base.css';
+import FlowChartMenu from './components';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -34,6 +35,13 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 			<>
 				<div className="div-flowchart-main" id={`div-Main${this.props.taskId}`}>
 					<div className="div-flowchart">
+						<div
+							style={{
+								position: `relative`
+							}}
+						>
+							<FlowChartMenu store={this.Workflow} />
+						</div>
 						<Flowchart taskId={this.props.taskId} flowchart={this.Workflow.flowchart}></Flowchart>
 					</div>
 					<div className="div-logs">

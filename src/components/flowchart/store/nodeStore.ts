@@ -1,30 +1,28 @@
 import { NodeEnum, DiagramEnum } from '../enum';
 import { INodeModel } from '../interface';
 import { DiagramSetting } from '../config';
+import lang from '../../../locales/index';
 
 /**
  * 得到节点展示的类型
  * @param fcType
  */
 export class NodeStore {
-	static strCondition = '判断条件'; // lang.FCEntities.Condition;
-	static strExtractData = '提取数据'; // lang.FCEntities.ExtractData;
-	static strComplete = '结束流程'; // lang.FCEntities.Complete;
-	static strEnterText = '输入文本'; // lang.FCEntities.EnterText;
-	static strLoop = '循环'; // lang.FCEntities.Loop;
-	static strBreakActivity = '结束循环'; // lang.FCEntities.BreakActivity;
-	static strClick = '点击元素'; // lang.FCEntities.Click;
-	static strMouseOver = '移动鼠标到元素上'; // lang.FCEntities.MouseOver;
-	static strNavigate = '打开网页'; // lang.FCEntities.Navigate;
-	static strSwitchCombo = '切换下拉选项'; // lang.FCEntities.SwitchCombo;
-	static strEnterCapacha = '识别验证码'; // lang.FCEntities.EnterCapacha;
-	static strBranch = '条件分支'; // lang.FCEntities.Branch;
-	static strWFGuideNode = '将要执行的流程拖放在此'; // lang.FCEntities.WFGuideNode;
+	static strCondition = lang.FCEntities.ExtractData;
+	static strExtractData = lang.FCEntities.ExtractData;
+	static strComplete = lang.FCEntities.Complete;
+	static strEnterText = lang.FCEntities.EnterText;
+	static strLoop = lang.FCEntities.Loop;
+	static strBreakActivity = lang.FCEntities.BreakActivity;
+	static strClick = lang.FCEntities.Click;
+	static strMouseOver = lang.FCEntities.MouseOver;
+	static strNavigate = lang.FCEntities.Navigate;
+	static strSwitchCombo = lang.FCEntities.SwitchCombo;
+	static strEnterCapacha = lang.FCEntities.EnterCapacha;
+	static strBranch = lang.FCEntities.Branch;
+	static strWFGuideNode = lang.FCEntities.WFGuideNode;
 
-	static getRandomKey = (): string =>
-		Math.random()
-			.toString(36)
-			.substring(2);
+	static getRandomKey = (): string => Math.random().toString(36).substring(2);
 
 	static get baseModel(): INodeModel {
 		const n: INodeModel = {
@@ -42,70 +40,67 @@ export class NodeStore {
 
 	static getNode = (fcType: string, group: string = ''): INodeModel => {
 		const node: INodeModel = NodeStore.baseModel;
-		// this.fcType = type;
 		let title = '';
-		// let src = '';
 		let isGroup = false;
 		switch (fcType as string) {
 			case NodeEnum.Condition:
-				title = NodeStore.strCondition; // lang.FCEntities.Condition;
+				title = NodeStore.strCondition;
 				// src = 'condition';
 				isGroup = true;
 				break;
 			case NodeEnum.ExtractData:
-				title = NodeStore.strExtractData; // lang.FCEntities.ExtractData;
+				title = NodeStore.strExtractData;
 				// src = 'data';
 				break;
 			case NodeEnum.Complete:
-				title = NodeStore.strComplete; // lang.FCEntities.Complete;
+				title = NodeStore.strComplete;
 				// src = 'subend';
 				break;
 			case NodeEnum.EnterText:
-				title = NodeStore.strEnterText; // lang.FCEntities.EnterText;
+				title = NodeStore.strEnterText;
 				// src = 'input';
 				break;
 			case NodeEnum.Loop:
-				title = NodeStore.strLoop; // lang.FCEntities.Loop;
+				title = NodeStore.strLoop;
 				// src = 'loop';
 				isGroup = true;
 				break;
 			case NodeEnum.BreakActivity:
-				title = NodeStore.strBreakActivity; // lang.FCEntities.BreakActivity;
+				title = NodeStore.strBreakActivity;
 				// src = 'loopbreak';
 				break;
 			case NodeEnum.Click:
-				title = NodeStore.strClick; // lang.FCEntities.Click;
+				title = NodeStore.strClick;
 				// src = 'mouseclick';
 				break;
 			case NodeEnum.MouseOver:
-				title = NodeStore.strMouseOver; // lang.FCEntities.MouseOver;
+				title = NodeStore.strMouseOver;
 				// src = 'mousehover';
 				break;
 			case NodeEnum.Navigate:
-				title = NodeStore.strNavigate; // lang.FCEntities.Navigate;
+				title = NodeStore.strNavigate;
 				// src = 'openweb';
 				break;
 			case NodeEnum.SwitchCombo:
-				title = NodeStore.strSwitchCombo; // lang.FCEntities.SwitchCombo;
+				title = NodeStore.strSwitchCombo;
 				// src = 'switch';
 				break;
 			case NodeEnum.EnterCapacha:
-				title = NodeStore.strEnterCapacha; // lang.FCEntities.EnterCapacha;
+				title = NodeStore.strEnterCapacha;
 				// src = 'verify';
 				break;
 			case NodeEnum.Branch:
-				title = NodeStore.strBranch; // lang.FCEntities.Branch;
+				title = NodeStore.strBranch;
 				isGroup = true;
 				break;
 			case NodeEnum.WFGuideNode:
-				title = NodeStore.strWFGuideNode; // lang.FCEntities.WFGuideNode;
+				title = NodeStore.strWFGuideNode;
 				break;
 			default:
 				break;
 		}
 
 		node.label = title;
-		// node.src = src;
 		node.isGroup = isGroup;
 		node.sortIndex = 0;
 

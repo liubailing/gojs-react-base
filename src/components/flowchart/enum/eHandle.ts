@@ -24,6 +24,8 @@ export enum HandleEnum {
 	CutNode = 'cut_Node',
 	/** 剪切到黏贴 */
 	Cut2PasteNode = 'cut_paste_Node',
+	/** 黏贴 */
+	PasteNode = 'paste_Node',
 
 	Init = 'init',
 

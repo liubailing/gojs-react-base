@@ -19,6 +19,24 @@ export class WorkflowHandle implements IFlowchartHander {
 	@observable logs: string[] = [];
 	@observable taskId = '';
 
+	/**
+	 * 流程图上当前操作操作的key
+	 * 目前的三种情况
+	 * 1，显示线上添加流程图菜单时preNodekey
+	 * 2，点菜单时候nodekey
+	 * 3，循环详情时候nodekey
+	 */
+	currentActionNodeKey: string = '';
+	/** 0：关闭不显示 1：显示添加节点 2：点操作 3：loopInfo */
+	@observable currentNodeMenuShowType: number = 0;
+	/** X坐标 */
+	@observable currentNodeMenuPosX: number = 0;
+	/** Y坐标 */
+	@observable currentNodeMenuPosY: number = 0;
+
+	/** 流程图完成第一次加载 */
+	@observable flowChartHasInited: boolean = false;
+
 	/******************************
 	 *
 	 ******************************/
@@ -111,12 +129,19 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posY y 坐标
 	 */
 	handlerShowNodeMenu(node: INodeModel, posX: number, posY: number): void {
-		this.showContent('div-actions', posX, posY);
+		this.currentActionNodeKey = node.key;
+		this.currentNodeMenuPosX = posX - 100;
+		this.currentNodeMenuPosY = posY;
+		this.currentNodeMenuShowType = 2;
 		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
 	}
 
 	/** 隐藏节点菜单 */
 	handlerHideNodeMenu(): void {
+		this.currentActionNodeKey = '';
+		this.currentNodeMenuPosX = 0;
+		this.currentNodeMenuPosY = 0;
+		this.currentNodeMenuShowType = 0;
 		this.log(`hide NodeSetting`);
 	}
 
@@ -127,13 +152,16 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posY y 坐标
 	 */
 	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void {
-		this.showContent('div-actions', posX, posY);
+		this.currentActionNodeKey = node.key;
 		this.log(`Show NodeInfo,${posX},${posY},${node.label}`);
 	}
 
 	/** 隐藏信息面板 */
 	handlerHideNodeInfo(): void {
-		this.HideContent();
+		this.currentActionNodeKey = '';
+		this.currentNodeMenuPosX = 0;
+		this.currentNodeMenuPosY = 0;
+		this.currentNodeMenuShowType = 0;
 		this.log(`hide NodeInfo`);
 	}
 
@@ -144,13 +172,17 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * @param posY y 坐标
 	 */
 	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void {
-		this.showContent('div-actions', posX, posY);
+		this.currentActionNodeKey = line.to;
+		this.currentNodeMenuPosX = posX - 70;
+		debugger;
+		this.currentNodeMenuPosY = posY;
+		this.currentNodeMenuShowType = 1;
 		this.log(`Show LineMenu,${posX},${posY},${line.from}`);
 	}
 
 	/** 隐藏线面板 */
 	handlerHideLineMenu(): void {
-		this.HideContent();
+		this.currentNodeMenuShowType = 0;
 		this.log(`handler hide Line`);
 	}
 
@@ -159,7 +191,10 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * 已经是回调函数，不要去调用 onHideContextMenu
 	 * */
 	handlerHideContextMenu(): void {
-		this.HideContent();
+		this.currentActionNodeKey = '';
+		this.currentNodeMenuPosX = 0;
+		this.currentNodeMenuPosY = 0;
+		this.currentNodeMenuShowType = 0;
 		this.log(`hide ContextMenu`);
 	}
 

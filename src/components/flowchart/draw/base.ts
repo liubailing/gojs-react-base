@@ -4,9 +4,6 @@ import { INodeEvent } from '../interface';
 import BaseChanges from './baseChanges';
 
 export default class Base {
-	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowchartDiagram.SwitchingLoopTerm
-	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowchartDiagram.OpenStepSet
-	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; // lang.FlowchartDiagram.ForMoreMenus
 	static nodeEvent: INodeEvent;
 
 	doFlowchartEvent(e: go.InputEvent, _obj: GraphObject, eType: HandleEnum, flowchartcallBack: Function) {
