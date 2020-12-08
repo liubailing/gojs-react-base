@@ -373,9 +373,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey 要复制的nodeId
 	 * @param isCopyOnce 是否只复制一次，
 	 */
-	onCopyNode(nodekey: string, isCopyOnce: boolean = false) {
+	onCopyNode(nodekey: string, setHight: boolean = false, isCopyOnce: boolean = false) {
 		this._willCopyNodeId = nodekey;
 		this._isCopyOnce = isCopyOnce;
+		if (setHight && this.flowchartDiagram) {
+			const node = this.flowchartDiagram.findNodeForKey(nodekey);
+			if (node && node.part && node.part.data) {
+				node.opacity = 0.7;
+			}
+		}
 		return true;
 	}
 
@@ -384,8 +390,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey 要复制的nodeId
 	 * @param isCopyOnce 是否只复制一次，
 	 */
-	onCutNode(nodekey: string) {
+	onCutNode(nodekey: string, setHight: boolean = false) {
 		this._willCutNodeId = nodekey;
+		if (setHight && this.flowchartDiagram) {
+			const node = this.flowchartDiagram.findNodeForKey(nodekey);
+			if (node && node.part && node.part.data) {
+				node.opacity = 0.7;
+			}
+		}
 		return true;
 	}
 
@@ -424,6 +436,20 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this.flowchartHander.handlerPaste(resNodekey);
 		}
 		return resNodekey;
+	}
+
+	/**
+	 * 复制 和 黏贴
+	 * 重点注意 *当复制到循环时候，默认追加到循环的内部
+	 * @param nodekey
+	 * @param toNodekey
+	 */
+	onCutNode2PasteNode(toNodekey: string) {
+		const node = this.onGetNode(toNodekey);
+		if (node && this._willCutNodeId && node.type !== NodeEnum.Branch) {
+			this.onDragNode2Node(this._willCutNodeId, node.key);
+			this._willCutNodeId = '';
+		}
 	}
 
 	_hideContextMenu() {
@@ -572,11 +598,13 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	get canCopy(): boolean {
-		return true;
+		if (this._willCopyNodeId && this._willCopyNodeId.length > 2) return true;
+		return false;
 	}
 
 	get canCut(): boolean {
-		return true;
+		if (this._willCutNodeId && this._willCutNodeId.length > 2) return true;
+		return false;
 	}
 
 	// @action

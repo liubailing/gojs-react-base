@@ -28,7 +28,7 @@ export class FlowChartNodeMenu extends Component<FlowChartNodeMenuProps> {
 			case HandleEnum.CopyNode:
 				this._currCopyKey = nodekey;
 				this._currCutKey = '';
-				this.props.store.flowchart.onCopyNode(nodekey);
+				this.props.store.flowchart.onCopyNode(nodekey, true);
 				break;
 			case HandleEnum.DeleteNode:
 				this.props.store.flowchart.onRemoveNode(nodekey);
@@ -39,14 +39,14 @@ export class FlowChartNodeMenu extends Component<FlowChartNodeMenuProps> {
 					this.props.store.flowchart.onPaste2Node(nodekey);
 				}
 				if (this.props.store.flowchart.canCut) {
-					this.props.store.flowchart.onPaste2Node(nodekey);
+					this.props.store.flowchart.onCutNode2PasteNode(nodekey);
 					this._currCutKey = '';
 				}
 				break;
 			case HandleEnum.CutNode:
 				this._currCopyKey = '';
 				this._currCutKey = nodekey;
-				this.props.store.flowchart.onCutNode(nodekey);
+				this.props.store.flowchart.onCutNode(nodekey, true);
 				break;
 		}
 		this.props.store.handlerHideContextMenu();

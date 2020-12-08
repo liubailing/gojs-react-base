@@ -325,6 +325,7 @@ export default class CommandHandler extends go.CommandHandler {
 		if (control && key === 'X') {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
+				node.opacity = 0.8;
 				this._prActionForKeyV = 'ctrl+x';
 				const e: INodeEvent = {
 					eType: HandleEnum.CutNode,
@@ -338,6 +339,7 @@ export default class CommandHandler extends go.CommandHandler {
 		if (control && key === 'C' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
+				node.opacity = 0.8;
 				this._prActionForKeyV = 'ctrl+c';
 				const e: INodeEvent = {
 					eType: HandleEnum.CopyNode,
