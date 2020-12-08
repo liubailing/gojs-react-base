@@ -174,7 +174,6 @@ export class WorkflowHandle implements IFlowchartHander {
 	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void {
 		this.currentActionNodeKey = line.to;
 		this.currentNodeMenuPosX = posX - 70;
-		debugger;
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 1;
 		this.log(`Show LineMenu,${posX},${posY},${line.from}`);
@@ -195,6 +194,8 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosX = 0;
 		this.currentNodeMenuPosY = 0;
 		this.currentNodeMenuShowType = 0;
+
+		// this.flowchart.flowchartDiagram?.click;
 		this.log(`hide ContextMenu`);
 	}
 
@@ -297,16 +298,13 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.flowchart.init(data);
 				break;
 			case 'rerender':
-				debugger;
 				const newdata = WorkflowHelper.getFlowchartData(this.tempActionData);
 				this.flowchart.init(newdata);
-				debugger;
 				break;
 			case 'getall':
 				const flData = this.flowchart.onGetAll();
 				this.tempActionData = this.resetData(flData);
 				console.log(`>>>>>`, this.tempActionData);
-				debugger;
 				break;
 			case 'hide_contextMenu':
 				this.flowchart._hideContextMenu();

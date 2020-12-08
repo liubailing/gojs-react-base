@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable @typescript-eslint/no-useless-constructor */
 /* eslint-disable accessor-pairs */
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { NodeEnum } from '../../flowchart/enum';
 import lang from '../../../locales';

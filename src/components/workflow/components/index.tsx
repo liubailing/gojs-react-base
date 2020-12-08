@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable accessor-pairs */
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { WorkflowHandle } from '../workflowHandle';
 import { FlowChartLineMenu } from './lineMeun';
 import { FlowChartLoopInfo } from './loopInfo';

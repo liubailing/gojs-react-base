@@ -12,7 +12,7 @@ export default class baseChanges {
 		const group_main = node.findObject('group_main');
 		const group_Top = node.findObject('group_Top');
 		const group_Title = node.findObject('group_Title');
-
+		node.opacity = 1;
 		if (isShow) {
 			if (group_main) {
 				(group_main as any).fill = HoverColors.group_bg;
@@ -116,7 +116,7 @@ export default class baseChanges {
 	 */
 	static setNodeCss(node: go.Part, isShow: boolean) {
 		const node_Body = node.findObject('node_Body');
-
+		node.opacity = 1;
 		if (isShow) {
 			if (node_Body) {
 				(node_Body as any).fill = BaseColors.highlight;

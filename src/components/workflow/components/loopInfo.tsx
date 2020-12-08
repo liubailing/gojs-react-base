@@ -1,10 +1,10 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable @typescript-eslint/no-useless-constructor */
 /* eslint-disable accessor-pairs */
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
-import lang from '../../../locales';
-import { HandleEnum } from '../../flowchart/enum';
+// import lang from '../../../locales';
+// import { HandleEnum } from '../../flowchart/enum';
 import { WorkflowHandle } from '../workflowHandle';
 import { INodeModel } from '../../flowchart/interface';
 
@@ -13,7 +13,6 @@ interface FlowChartLoopInfoProps {
 	store: WorkflowHandle;
 }
 
-@inject('customTaskStore', 'customFlowChartStore')
 @observer
 export class FlowChartLoopInfo extends Component<FlowChartLoopInfoProps> {
 	loopInfoData: any;

@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable @typescript-eslint/no-useless-constructor */
 /* eslint-disable accessor-pairs */
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import lang from '../../../locales';
 import { HandleEnum } from '../../flowchart/enum';
@@ -35,10 +35,10 @@ export class FlowChartNodeMenu extends Component<FlowChartNodeMenuProps> {
 
 				break;
 			case HandleEnum.PasteNode:
-				if (this._currCopyKey) {
+				if (this.props.store.flowchart.canCopy) {
 					this.props.store.flowchart.onPaste2Node(nodekey);
 				}
-				if (this._currCutKey) {
+				if (this.props.store.flowchart.canCut) {
 					this.props.store.flowchart.onPaste2Node(nodekey);
 					this._currCutKey = '';
 				}
@@ -61,7 +61,7 @@ export class FlowChartNodeMenu extends Component<FlowChartNodeMenuProps> {
 				>
 					<ul>
 						<li onClick={() => this.onDoNode(HandleEnum.CopyNode)}>{lang.Flowchart.Copy}</li>
-						<li onClick={() => this.onDoNode(HandleEnum.Copy2PasteNode)}>{lang.Flowchart.Paste}</li>
+						<li onClick={() => this.onDoNode(HandleEnum.PasteNode)}>{lang.Flowchart.Paste}</li>
 						<li onClick={() => this.onDoNode(HandleEnum.DeleteNode)}>{lang.Flowchart.Delete}</li>
 						<li onClick={() => this.onDoNode(HandleEnum.CutNode)}>{lang.Flowchart.Cut}</li>
 					</ul>

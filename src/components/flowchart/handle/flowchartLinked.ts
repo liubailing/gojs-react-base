@@ -571,6 +571,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return res;
 	}
 
+	get canCopy(): boolean {
+		return true;
+	}
+
+	get canCut(): boolean {
+		return true;
+	}
+
 	// @action
 	private _refresDiagram() {
 		const data = this.getDiagram();

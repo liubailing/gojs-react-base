@@ -201,7 +201,6 @@ export default class FlowchartStore {
 				}
 
 				if (!NavigateKey && item.value.group && item.value.group !== 'root') {
-					// debugger;
 					NavigateKey = this.mapNodeNativeKey.get(item.value.group) || '';
 
 					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
