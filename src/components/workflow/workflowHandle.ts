@@ -288,6 +288,7 @@ export class WorkflowHandle implements IFlowchartHander {
 
 	tempActionData: any = null;
 	test = (action: string) => {
+		let addKey = '';
 		switch (action) {
 			case 'render':
 				const redata = WorkflowHelper.getFlowchartData(TestDataJson);
@@ -304,17 +305,20 @@ export class WorkflowHandle implements IFlowchartHander {
 			case 'getall':
 				const flData = this.flowchart.onGetAll();
 				this.tempActionData = this.resetData(flData);
-				console.log(`>>>>>`, this.tempActionData);
 				break;
 			case 'hide_contextMenu':
 				this.flowchart._hideContextMenu();
 				break;
 			case 'add_smiple':
 				let openJD = this.flowchart.onGetNode(`openJD`);
+
 				if (openJD && openJD.key) {
-					this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);
+					addKey = this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);
 				} else {
-					this.flowchart.onAdd2Next8NodeId('', NodeEnum.ExtractData);
+					addKey = this.flowchart.onAdd2Next8NodeId('', NodeEnum.ExtractData);
+				}
+				if (addKey) {
+					this.flowchart.onSetNodeSelected(addKey);
 				}
 				break;
 			case 'add_loop':

@@ -259,7 +259,11 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	 * 流程图画完
 	 */
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ LayoutCompleted 123`);
+		console.log(`~ test flowchart ~ LayoutCompleted 123`);
+		const e: INodeEvent = {
+			eType: HandleEnum.ReRender
+		} as INodeEvent;
+		this.props.onFlowchartEvent(e);
 	};
 }
 

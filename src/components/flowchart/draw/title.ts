@@ -52,7 +52,6 @@ export class DrawTitle {
 					}
 				},
 				// new go.Binding('text', 'isSel', function (s, y) {
-				// 	console.log(`>>>>>>>>  33333333333`);
 				// 	if (s || y) return BaseColors.highlight;
 				// 	return BaseColors.backgroud;
 				// 	return s ? BaseColors.highlight : BaseColors.backgroud;
@@ -73,7 +72,7 @@ export class DrawTitle {
 		if (DiagramSetting.showLabel) {
 			return DiagramSetting.showLabel;
 		}
-		return 'key';
+		return 'label';
 	}
 
 	/**

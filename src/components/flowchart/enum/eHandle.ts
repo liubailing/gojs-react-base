@@ -28,6 +28,7 @@ export enum HandleEnum {
 	PasteNode = 'paste_Node',
 
 	Init = 'init',
+	ReRender = 'rerender',
 
 	AddBranchToLeft = 'addBranch_to_before',
 	AddBranchToRight = 'addBranch_to_after',

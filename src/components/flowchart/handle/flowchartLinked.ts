@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+/* eslint-disable accessor-pairs */
 /* eslint-disable complexity */
 import go from 'gojs';
 import { observable } from 'mobx';
@@ -23,6 +25,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 为false的时候不触发click
 	 */
 	private setNodeSelected_OnClick = true;
+	private _willSelectedNodeKey = '';
 
 	/**
 	 * 设置被复制的节点
@@ -141,6 +144,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		switch (e.eType) {
 			case HandleEnum.Init:
 				this.flowchartHander.handlerInit();
+				break;
+			case HandleEnum.ReRender:
+				if (this.setNodeSelected_OnClick && this._willSelectedNodeKey) {
+					this._setNodeSelected(this._willSelectedNodeKey);
+				}
 				break;
 			/** 打开点菜单 */
 			case HandleEnum.ShowNodeMenu:
@@ -455,8 +463,10 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	_hideContextMenu() {
 		if (this.flowchartDiagram) {
 			// this.flowchartDiagram.commandHandler.showContextMenu();
+			// this.flowchartDiagram.currentTool.doCancel();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 			this.flowchartHander.handlerHideContextMenu();
+			// this.flowchartHander.toolManager.contextMenuTool.doCancel();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 		}
 	}
@@ -496,14 +506,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param clikckNode 是否要触发click
 	 */
 	onSetNodeSelected(nodekey: string, clikckNode: boolean = true) {
-		if (this.flowchartDiagram) {
-			// 1、首先赋值
-			this.setNodeSelected_OnClick = clikckNode;
-			// 2、设置选中
-			this.flowchartDiagram.clearSelection();
-			const obj = this.flowchartDiagram.findNodeForKey(nodekey);
-			this.flowchartDiagram.select(obj);
-		}
+		// 1、首先赋值
+		this.setNodeSelected_OnClick = clikckNode;
+		this._willSelectedNodeKey = nodekey;
+		// 2、设置选中
+		this._setNodeSelected(nodekey);
 	}
 
 	/**
@@ -598,12 +605,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	get canCopy(): boolean {
-		if (this._willCopyNodeId && this._willCopyNodeId.length > 2) return true;
+		if (this._willCopyNodeId && this._willCopyNodeId.length > 2) {
+			return true;
+		}
 		return false;
 	}
 
 	get canCut(): boolean {
-		if (this._willCutNodeId && this._willCutNodeId.length > 2) return true;
+		if (this._willCutNodeId && this._willCutNodeId.length > 2) {
+			return true;
+		}
 		return false;
 	}
 
@@ -613,7 +624,17 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		this.nodeDataArray = [...data.nodeArray];
 		this.linkDataArray = [...data.linkArray];
 		this.flowchartHander.handlerChanged();
-		console.log(`>>>>>>>>> 1`, this.mapNodeData);
+	}
+
+	private _setNodeSelected(key: string) {
+		if (this.flowchartDiagram && key) {
+			const obj = this.flowchartDiagram.findNodeForKey(key);
+			if (obj) {
+				this.flowchartDiagram.clearSelection();
+				this.flowchartDiagram.select(obj);
+				this._willSelectedNodeKey = '';
+			}
+		}
 	}
 
 	private get _getPostion(): { x: number; y: number } {

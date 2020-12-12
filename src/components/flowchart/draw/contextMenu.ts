@@ -50,8 +50,9 @@ export default class DrawContextMenu extends Base {
 			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
 
 			delete node.data._handleEnum;
-			console.log('----- content', e);
+			// console.log('----- content', e);
 			this.callBack(e);
+			// this.toolManager.contextMenuTool.hideContextMenu();
 		}
 
 		// if (node && node.part && node.part.data) {

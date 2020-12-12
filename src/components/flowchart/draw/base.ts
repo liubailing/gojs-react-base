@@ -22,6 +22,7 @@ export default class Base {
 						if (node.diagram) {
 							node.data._handleEnum = eType;
 							node.diagram.commandHandler.showContextMenu(node.diagram);
+							// node.diagram.currentTool.doCancel();
 						}
 						break;
 					default:
