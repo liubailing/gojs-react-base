@@ -82,7 +82,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.log(`handler -change`);
 	}
 
-	handlerWillCopy(mapData: Map<string, string>): void {
+	handlerWillCopy(): void {
 		this.log(`handler -will copy`);
 	}
 

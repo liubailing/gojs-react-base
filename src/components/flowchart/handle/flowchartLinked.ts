@@ -43,7 +43,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 
 	constructor(handles: IFlowchartHander) {
 		super();
-		// this.dat.mapNodeData = new Map<string, object>();
+		// this.dat.cacheNodeData = new Map<string, object>();
 		this.handleDiagramEvent = this.handleDiagramEvent.bind(this);
 		this.handleModelChange = this.handleModelChange.bind(this);
 		this.handFlowchartEvent = this.handFlowchartEvent.bind(this);
@@ -189,8 +189,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 						return false;
 					}
 				}
-				// console.log(`~test flowchart~ delete`, node.key, this.props.store.currNodeKey)
-				// if (node && node.key && node.key !== this.props.store.currNodeKey) return false;
 				this.onRemoveNode(node.key);
 				break;
 			case HandleEnum.CopyNode:
@@ -217,10 +215,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			default:
-				console.log(`--------- 操作不明确`, e.eType);
 				break;
 		}
-		// console.log(`---------,`, e);
 	}
 
 	handleGetDiagram = (d: go.Diagram) => {
@@ -332,7 +328,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			if (res) {
 				// 删除节点缓存数据
 				if (clearData) {
-					this.mapNodeData.delete(nodekey);
+					this.cacheNodeData.delete(nodekey);
 				}
 				let currkey = pre || '';
 				// 说明删除的第一个节点
@@ -417,7 +413,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (!this._willCopyNodeId) {
 			return;
 		}
-
 		const resNodekey = this.copyNode2Node(this._willCopyNodeId, toNodekey);
 		if (resNodekey) {
 			this._refresDiagram();
@@ -478,7 +473,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onSetNodeData(nodekey: string, data: object) {
 		if (data && Object.keys(data).length > 0) {
-			this.mapNodeData.set(nodekey, data);
+			this.cacheNodeData.set(nodekey, data);
 		}
 	}
 
@@ -489,7 +484,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onGetNodeData(nodekey: string, shouldHander: boolean = true): object | null {
 		if (nodekey) {
-			const data = this.mapNodeData.get(nodekey);
+			const data = this.cacheNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
 				if (shouldHander) {
 					this.flowchartHander.handlerGetNodeData(data);

@@ -37,12 +37,6 @@ export interface IFlowchartHander {
 	onShowEditPage: () => void;
 
 	/**
-	 * 修改名称前准备操作 ，
-	 * 修改名称
-	 */
-	handlerShowEditNodeName: (currName: string, currNodeKey: string) => void;
-
-	/**
 	 * 修改名称后的操作
 	 */
 	handlerSaveNodeName: (newName: string) => void;
@@ -56,7 +50,7 @@ export interface IFlowchartHander {
 	 * 流程节点准备复制
 	 * todo
 	 */
-	handlerWillCopy(mapData: Map<string, string>): void;
+	handlerWillCopy(): void;
 
 	/**
 	 * 流程黏贴

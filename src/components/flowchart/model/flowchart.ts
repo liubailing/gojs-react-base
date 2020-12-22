@@ -31,10 +31,13 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	mapNodeChildKeys: Map<string, Array<string>>;
 
 	/** 节点对应父级节点 */
-	mapNodeParentKey = new Map<string, string>();
+	mapNodeParentKey: Map<string, string>;
 
 	/** 节点对应类型 */
-	mapNodeType = new Map<string, string>();
+	mapNodeType: Map<string, string>;
+
+	/** 节点对应类型 */
+	mapNodeName: Set<string>;
 
 	guidNodeType: Array<NodeEnum> = [
 		NodeEnum.Start,
@@ -55,7 +58,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		this.mapNodePreNodeKey = new Map<string, string>();
 		this.mapNodeParentKey = new Map<string, string>();
 		this.mapNodeType = new Map<string, string>();
-
+		this.mapNodeName = new Set<string>();
 		// 这个不要在init()里面
 		this.cacheNodeData = new Map<string, object>();
 	}
@@ -120,6 +123,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 			// 完善缓存 6
 			this.mapNodeType.set(item.value.key, item.value.type);
+
+			// 完善缓存 7
+			this.mapNodeName.add(item.value.label);
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -191,6 +197,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			if (k !== '' && k !== null) {
 				this.mapNodeType.set(k, v);
 			}
+		});
+
+		item.mapNodeName.forEach((v) => {
+			this.mapNodeName.add(v);
 		});
 	}
 
@@ -304,11 +314,11 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			if (item.value.key === nodekey && item.value.type !== NodeEnum.Branch) {
 				// 新建一个loop
 
-				const newLoop = NodeStore.getNode(NodeEnum.Loop, item.value.group);
+				const newLoop = this.getNode(NodeEnum.Loop, item.value.group);
 				newLoop.childs = new FlowchartModel();
-				newLoop.childs.add(NodeStore.getNode(NodeEnum.SubOpen, newLoop.key));
+				newLoop.childs.add(this.getNode(NodeEnum.SubOpen, newLoop.key));
 				newLoop.childs.add({ ...item.value, ...{ group: newLoop.key } });
-				newLoop.childs.add(NodeStore.getNode(NodeEnum.SubClose, newLoop.key));
+				newLoop.childs.add(this.getNode(NodeEnum.SubClose, newLoop.key));
 				item.value = newLoop;
 				return newLoop.key;
 			}
@@ -338,7 +348,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				const resV = item.value;
 				let resAct = false;
 				if (this.size() === 3 && preItem.value.type === NodeEnum.SubOpen) {
-					const newNode = NodeStore.getNode(NodeEnum.WFGuideNode, item.value.group);
+					const newNode = this.getNode(NodeEnum.WFGuideNode, item.value.group);
 					const res = this.replace(item.value, newNode);
 					if (res) {
 						resAct = true;
@@ -410,8 +420,16 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		let newC: FlowchartModel | null = null;
 		const data = this.cacheNodeData.get(nodekey);
 		if (newM) {
-			// 将要扥到的结果
+			// 将要得到的结果
 			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
+			// 控制重名
+			let currName = res.label;
+			let i = 0;
+			while (this.mapNodeName.has(currName)) {
+				currName = `${res.label}${++i}`;
+			}
+			res.label = currName;
+
 			if (newM.childs) {
 				newC = new FlowchartModel();
 				let idxItem = newM.childs._header.next;
@@ -433,7 +451,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 			// 数据复制
 			if (data && Object.keys(data).length > 0) {
-				this.cacheNodeData.set(res.key, { ...data });
+				// 深拷贝
+				const json = JSON.parse(JSON.stringify({ ...data }));
+				this.cacheNodeData.set(res.key, json);
 			}
 			return res;
 		}
@@ -445,26 +465,34 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param nodekey
 	 * @param newNode
 	 */
-	private getNodeModel8Type(type: NodeEnum, group: string): INodeModel {
-		const newNode = NodeStore.getNode(type, group);
+	private getNodeModel8Type(type: NodeEnum, group: string, groupName: string = ''): INodeModel {
+		const newNode = this.getNode(type, group);
+
+		debugger;
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
 			newNode.childs = new FlowchartModel();
-			newNode.childs.add(NodeStore.getNode(NodeEnum.SubOpen, newNode.key));
-			newNode.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, newNode.key));
-			newNode.childs.add(NodeStore.getNode(NodeEnum.SubClose, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.SubOpen, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.WFGuideNode, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.SubClose, newNode.key));
 		} else if (type === NodeEnum.Condition) {
 			newNode.childs = new FlowchartModel();
-			const branch1 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch1 = this.getNode(NodeEnum.Branch, newNode.key);
+			if (groupName) {
+				branch1.label = `${groupName}_${branch1.label}`;
+			}
 			branch1.childs = new FlowchartModel();
-			branch1.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch1.key));
-			branch1.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch1.key));
-			branch1.childs.add(NodeStore.getNode(NodeEnum.SubClose, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.SubOpen, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.WFGuideNode, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.SubClose, branch1.key));
 
-			const branch2 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch2 = this.getNode(NodeEnum.Branch, newNode.key);
+			if (groupName) {
+				branch2.label = `${groupName}_${branch1.label}`;
+			}
 			branch2.childs = new FlowchartModel();
-			branch2.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch2.key));
-			branch2.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch2.key));
-			branch2.childs.add(NodeStore.getNode(NodeEnum.SubClose, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.SubOpen, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.WFGuideNode, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.SubClose, branch2.key));
 
 			newNode.childs.add(branch1);
 			newNode.childs.add(branch2);
@@ -472,6 +500,16 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return newNode;
 	}
 
+	private getNode(type: NodeEnum, group: string): INodeModel {
+		let node = NodeStore.getNode(type, group);
+		let currName = node.label;
+		let i = 0;
+		while (this.mapNodeName.has(currName)) {
+			currName = `${node.label}${++i}`;
+		}
+		node.label = currName;
+		return node;
+	}
 	/**
 	 * 插入
 	 * @param nodekey

@@ -44,7 +44,7 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 						</div>
 						<Flowchart taskId={this.props.taskId} flowchart={this.Workflow.flowchart}></Flowchart>
 					</div>
-					<div className="div-logs">
+					{/* <div className="div-logs">
 						<ul>
 							{this.Workflow.logs.reverse().map((x, i) => {
 								return (
@@ -54,10 +54,10 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 								);
 							})}
 						</ul>
-					</div>
+					</div> */}
 				</div>
 
-				<div className="divActions">
+				<div className="divActions" style={{ display: 'none' }}>
 					<div id="div-actions" className="divActionItem" style={{ marginTop: '5px' }}>
 						<div>
 							<label>初始：</label>

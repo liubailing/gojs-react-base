@@ -38,7 +38,7 @@ export class NodeStore {
 		return n;
 	}
 
-	static getNode = (fcType: string, group: string = ''): INodeModel => {
+	static getNode = (fcType: string, group: string = '',): INodeModel => {
 		const node: INodeModel = NodeStore.baseModel;
 		let title = '';
 		let isGroup = false;

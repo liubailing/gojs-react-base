@@ -16,10 +16,12 @@ class App extends React.Component<{}> {
 	public render() {
 		return (
 			<>
-				<Workflow key="1sdsds" taskId="sdasdawwcc"></Workflow>
-				<br />
-				<br />
-				{/* <Workflow key="3333d" taskId="sss12121444"></Workflow> */}
+				<div style={{ width: '49%', float: 'left' }}>
+					<Workflow key="1sdsds" taskId="sdasdawwcc"></Workflow>
+				</div>
+				<div style={{ width: '50%', float: 'left' }}>
+					<Workflow key="3333d" taskId="sss12121444"></Workflow>
+				</div>
 			</>
 		);
 	}
