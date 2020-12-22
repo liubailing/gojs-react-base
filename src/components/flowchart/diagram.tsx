@@ -56,6 +56,8 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+			diagram.addDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
+			diagram.addDiagramListener('LostFocus', this.props.onDiagramEvent);
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
@@ -76,6 +78,8 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.removeDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('LostFocus', this.props.onDiagramEvent);
 		}
 	}
 	/**

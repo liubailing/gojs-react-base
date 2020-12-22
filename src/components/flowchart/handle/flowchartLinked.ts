@@ -66,7 +66,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const { name } = e;
 		switch (name) {
-			case 'ChangedSelection': {
+			case 'ChangedSelection':
 				const sel = e.subject.first();
 				if (sel) {
 					if (sel instanceof go.Node) {
@@ -92,9 +92,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				// 恢复默认值
 				this.setNodeSelected_OnClick = true;
 				break;
-			}
+			case 'BackgroundSingleClicked':
+				console.log('>>>>>>>> handleDiagramEvent.', name);
+				this.flowchartHander.handlerClickBackground();
+				break;
+			case 'LostFocus':
+				console.log('>>>>>>>> handleDiagramEvent.', name);
+				this.flowchartHander.handlerLostFocus();
+				break;
 			default:
-				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				break;
 		}
 	}

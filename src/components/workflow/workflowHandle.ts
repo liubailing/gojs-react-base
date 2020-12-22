@@ -213,6 +213,8 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.logs.push(str);
 	}
 
+	handlerClickBackground() {}
+	handlerLostFocus() {}
 	private showContent(domId: string, posX: number, posY: number) {
 		let contextMenuDIV = document.getElementById(this.taskId);
 		if (!contextMenuDIV) {

@@ -145,4 +145,8 @@ export interface IFlowchartHander {
 	 * 隐藏 右键菜单
 	 * */
 	handlerHideContextMenu(): void;
+
+	handlerLostFocus(): void;
+
+	handlerClickBackground(): void;
 }
