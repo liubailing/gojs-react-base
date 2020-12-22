@@ -49,8 +49,8 @@ export default class DrawBreak extends Base {
 					padding: 5
 				},
 				DrawTitle.getTitle(DiagramEnum.FCNode)
-			),
-			$DrawSpot.getSpotMenu(DiagramEnum.FCNode)
+			)
+			// $DrawSpot.getSpotMenu(DiagramEnum.FCNode)
 		);
 	}
 }

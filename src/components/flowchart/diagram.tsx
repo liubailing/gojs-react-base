@@ -98,7 +98,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			contentAlignment: go.Spot.TopCenter,
 			initialContentAlignment: go.Spot.RightCenter,
 			// hoverDelay: 100,
-			initialScale: 1.125,
+			initialScale: 1,
 			layout: $(go.TreeLayout, {
 				angle: 90,
 				treeStyle: go.TreeLayout.StyleLayered,

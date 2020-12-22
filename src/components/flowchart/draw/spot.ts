@@ -46,7 +46,7 @@ export default class DrawSpot extends Base {
 				spotCss = {
 					...spotCss,
 					...{
-						margin: new Margin(1, 10, 0, 0)
+						margin: new Margin(1, 1, 0, 0)
 					}
 				};
 				break;
@@ -76,6 +76,9 @@ export default class DrawSpot extends Base {
 			'Auto',
 			{
 				...spotCss,
+				...{
+					margin: new Margin(1, 10, 0, 0)
+				},
 				...{ name: 'action_Spot', width: 25 }
 			},
 			$(go.Panel, 'Horizontal', {}, this.getMenu(), this.getMenuHover())

@@ -162,7 +162,7 @@ export default class DrawBranch extends Base {
 					strokeWidth: 1
 				})
 			), // end output port
-			$DrawSpot.getSpot(DiagramEnum.ConditionSwitch)
+			$DrawSpot.getSpotMenu(DiagramEnum.ConditionSwitch)
 		);
 	}
 
