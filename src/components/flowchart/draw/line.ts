@@ -25,6 +25,8 @@ export default class DrawLink extends Base {
 				// selectionChanged: this.onselectionChangedHandler,
 				movable: false,
 				resizable: false,
+				width: 180,
+				background: BaseColors.transparent,
 				deletable: false
 			},
 			$(go.Shape, {
@@ -55,6 +57,7 @@ export default class DrawLink extends Base {
 					padding: new go.Margin(5, 0, 5, 0),
 					click: this.onClick,
 					alignment: go.Spot.Top,
+					width: 140,
 					visible: false
 				},
 				$(go.Shape, 'Circle', {
@@ -62,6 +65,7 @@ export default class DrawLink extends Base {
 					width: DiagramSetting.linkIconWidth,
 					height: DiagramSetting.linkIconWidth,
 					fill: BaseColors.link_icon_bg,
+					margin: new go.Margin(0, 0, 0, 62),
 					strokeWidth: 0
 				}),
 				$(go.Shape, 'PlusLine', {
