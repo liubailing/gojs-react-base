@@ -93,11 +93,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.setNodeSelected_OnClick = true;
 				break;
 			case 'BackgroundSingleClicked':
-				console.log('>>>>>>>> handleDiagramEvent.', name);
+				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				this.flowchartHander.handlerClickBackground();
 				break;
 			case 'LostFocus':
-				console.log('>>>>>>>> handleDiagramEvent.', name);
+				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				this.flowchartHander.handlerLostFocus();
 				break;
 			default:

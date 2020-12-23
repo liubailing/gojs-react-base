@@ -86,6 +86,7 @@ export default class DrawBranch extends Base {
 						defaultAlignment: go.Spot.Left,
 						padding: new go.Margin(0, 1, 1, 1)
 					},
+
 					$(
 						go.Panel,
 						'Horizontal',

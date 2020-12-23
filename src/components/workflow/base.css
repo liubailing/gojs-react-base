@@ -17,6 +17,7 @@
 	padding-left: 3px;
 	flex: 1;
 	max-height: 602px;
+	overflow: auto;
 }
 
 .div-flowchart-main .div-logs ul {

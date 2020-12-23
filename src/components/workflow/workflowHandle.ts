@@ -212,9 +212,15 @@ export class WorkflowHandle implements IFlowchartHander {
 	log(str: string) {
 		this.logs.push(str);
 	}
+	/**
+	 * 流程图失去焦点
+	 */
+	handlerLostFocus(): void {}
 
-	handlerClickBackground() {}
-	handlerLostFocus() {}
+	/**
+	 * 流程图点击空白处
+	 */
+	handlerClickBackground(): void {}
 	private showContent(domId: string, posX: number, posY: number) {
 		let contextMenuDIV = document.getElementById(this.taskId);
 		if (!contextMenuDIV) {

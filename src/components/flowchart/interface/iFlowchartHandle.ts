@@ -146,7 +146,13 @@ export interface IFlowchartHander {
 	 * */
 	handlerHideContextMenu(): void;
 
+	/**
+	 * 流程图失去焦点
+	 */
 	handlerLostFocus(): void;
 
+	/**
+	 * 流程图点击空白处
+	 */
 	handlerClickBackground(): void;
 }

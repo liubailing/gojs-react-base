@@ -16,11 +16,8 @@ class App extends React.Component<{}> {
 	public render() {
 		return (
 			<>
-				<div style={{ width: '49%', float: 'left' }}>
+				<div style={{ width: '99%', float: 'left' }}>
 					<Workflow key="1sdsds" taskId="sdasdawwcc"></Workflow>
-				</div>
-				<div style={{ width: '50%', float: 'left' }}>
-					<Workflow key="3333d" taskId="sss12121444"></Workflow>
 				</div>
 			</>
 		);
