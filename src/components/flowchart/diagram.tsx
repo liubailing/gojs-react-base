@@ -232,21 +232,32 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		// var myContextMenu = $(go.HTMLInfo, );
 		myDiagram.contextMenu = new DrawContextMenu(myDiagram, this.props.onFlowchartEvent).getContextMenu();
 
+		// Overview;
+		$(
+			go.Overview,
+			`myOverviewDiv${this.props.diagramId}`, // the HTML DIV element for the Overview
+			{ observed: myDiagram, contentAlignment: go.Spot.Center }
+		);
+
+		// tell it which Diagram to show and pan
 		return myDiagram;
 	};
 
 	render() {
 		return (
-			<ReactDiagram
-				ref={this.diagramRef}
-				divClassName="diagram-component"
-				initDiagram={this.initDiagram}
-				nodeDataArray={this.props.nodeDataArray}
-				linkDataArray={this.props.linkDataArray}
-				modelData={this.props.modelData}
-				onModelChange={this.props.onModelChange}
-				skipsDiagramUpdate={this.props.skipsDiagramUpdate}
-			/>
+			<>
+				<ReactDiagram
+					ref={this.diagramRef}
+					divClassName="diagram-component"
+					initDiagram={this.initDiagram}
+					nodeDataArray={this.props.nodeDataArray}
+					linkDataArray={this.props.linkDataArray}
+					modelData={this.props.modelData}
+					onModelChange={this.props.onModelChange}
+					skipsDiagramUpdate={this.props.skipsDiagramUpdate}
+				/>
+				<div id={`myOverviewDiv${this.props.diagramId}`} className="diagram-overview"></div>
+			</>
 		);
 	}
 
