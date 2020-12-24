@@ -16,9 +16,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 
 	/**
 	 * 设置选中节点后并触发 click,
-	 * 为false的时候不触发click
 	 */
-	// private preClickNodeKey = '';
+	private _showContentView: boolean = false;
 
 	/**
 	 * 设置选中节点后并触发 click,
@@ -65,10 +64,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const { name } = e;
+
 		switch (name) {
 			case 'ChangedSelection':
 				const sel = e.subject.first();
 				if (sel) {
+					this._hideContextMenu();
 					if (sel instanceof go.Node) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
@@ -86,10 +87,33 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				// 恢复默认值
 				this.setNodeSelected_OnClick = true;
 				break;
+
+			case 'ObjectContextClicked':
+				debugger;
+				if (this.flowchartDiagram) {
+					const selC = this.flowchartDiagram.findPartAt(this.flowchartDiagram.lastInput.documentPoint);
+					if (selC) {
+						this._hideContextMenu();
+						if (selC instanceof go.Node || selC instanceof go.Group) {
+							const node = this.mapNode.get(selC.key as string);
+							this.handFlowchartEvent({
+								eType: HandleEnum.ShowNodeMenu,
+								node
+							} as INodeEvent);
+						}
+					}
+				}
+				break;
 			case 'BackgroundSingleClicked':
+				this._hideContextMenu();
 				this.flowchartHander.handlerClickBackground();
 				break;
+			case 'ViewportBoundsChanged':
+				this._hideContextMenu();
+				// this.flowchartHander.handlerClickBackground();
+				break;
 			case 'LostFocus':
+				// this._hideContextMenu();
 				this.flowchartHander.handlerLostFocus();
 				break;
 			default:
@@ -454,13 +478,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	_hideContextMenu() {
-		if (this.flowchartDiagram) {
+		if (this.flowchartDiagram && this._showContentView) {
 			// this.flowchartDiagram.commandHandler.showContextMenu();
 			// this.flowchartDiagram.currentTool.doCancel();
 			this.flowchartDiagram.commandHandler.doKeyDown();
 			this.flowchartHander.handlerHideContextMenu();
 			// this.flowchartHander.toolManager.contextMenuTool.doCancel();
 			this.flowchartDiagram.commandHandler.doKeyDown();
+			this._showContentView = false;
 		}
 	}
 
@@ -631,6 +656,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	private get _getPostion(): { x: number; y: number } {
+		this._showContentView = true;
 		if (this.flowchartDiagram) {
 			const offset = this.flowchartDiagram.lastInput.viewPoint;
 			return {

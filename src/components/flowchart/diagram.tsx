@@ -58,6 +58,8 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
 			diagram.addDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
 			diagram.addDiagramListener('LostFocus', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
@@ -80,6 +82,8 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			diagram.removeDiagramListener('ChangedSelection', this.props.onDiagramEvent);
 			diagram.removeDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
 			diagram.removeDiagramListener('LostFocus', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
 		}
 	}
 	/**

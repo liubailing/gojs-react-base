@@ -1,6 +1,6 @@
 import go, { GraphObject } from 'gojs';
 import { HandleEnum } from '../enum';
-import { INodeEvent } from '../interface';
+import { INodeEvent, ILineModel, INodeModel } from '../interface';
 import BaseChanges from './baseChanges';
 
 export default class Base {
@@ -20,9 +20,10 @@ export default class Base {
 					case HandleEnum.ShowNodeInfo:
 					case HandleEnum.ShowLineMenu:
 						if (node.diagram) {
-							node.data._handleEnum = eType;
-							node.diagram.commandHandler.showContextMenu(node.diagram);
+							// node.data._handleEnum = eType;
+							// node.diagram.commandHandler.showContextMenu(node.diagram);
 							// node.diagram.currentTool.doCancel();
+							this.showInfo(eType, node, flowchartcallBack);
 						}
 						break;
 					default:
@@ -47,4 +48,22 @@ export default class Base {
 			BaseChanges.setGroupCss(node, false);
 		}
 	};
+
+	private showInfo(eType: HandleEnum, currNode: any, flowchartcallBack: any) {
+		const node = currNode.diagram.findPartAt(currNode.diagram.lastInput.documentPoint);
+		if (node) {
+			// const eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
+			const e: INodeEvent = {
+				eType
+			} as INodeEvent;
+
+			if (eType === HandleEnum.ShowLineMenu) {
+				e.line = node.data as ILineModel;
+			} else {
+				e.node = node.data as INodeModel;
+			}
+
+			flowchartcallBack(e);
+		}
+	}
 }
