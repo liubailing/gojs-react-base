@@ -7,7 +7,7 @@ export default {
 	childs: [
 		{
 			key: 'openJD',
-			label: 'openJD123',
+			label: '11open12JD123',
 			type: ActionNodeType.Navigate as string,
 			data: { tip: '这是一个node1存值' }
 		},

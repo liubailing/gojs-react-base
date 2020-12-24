@@ -26,7 +26,7 @@ export const DiagramSetting = {
 	iconInWidth: 7,
 	linkIconWidth: 16,
 	linkIconInWidth: 8,
-	nodeWith: 180,
+	nodeWith: 150,
 	nodeHeight: 20,
 	groupWith: 160,
 	ConditionWidth: 140,

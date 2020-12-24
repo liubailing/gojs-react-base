@@ -87,7 +87,6 @@ export default class DrawLoop extends Base {
 			{
 				layout: $(go.TreeLayout, {
 					angle: 90,
-
 					arrangement: go.TreeLayout.ArrangementHorizontal,
 					layerSpacing: DiagramSetting.layerSpacing,
 					arrangementSpacing: new go.Size(30, 10)

@@ -12,8 +12,9 @@
 
 .div-flowchart .diagram-overview {
 	background-color: #eee;
+	display: none;
 	position: absolute;
-	left: 0;
+	right: 0;
 	bottom: 0;
 	height: 90px;
 	width: 60px;

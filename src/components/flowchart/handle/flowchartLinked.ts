@@ -18,7 +18,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 设置选中节点后并触发 click,
 	 * 为false的时候不触发click
 	 */
-	private preClickNodeKey = '';
+	// private preClickNodeKey = '';
 
 	/**
 	 * 设置选中节点后并触发 click,
@@ -72,18 +72,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					if (sel instanceof go.Node) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							if (this.preClickNodeKey !== node.key) {
-								this.flowchartHander.handlerClickNode(node);
-								this.preClickNodeKey = node.key;
-							}
+							this.flowchartHander.handlerClickNode(node);
 						}
 					} else if (sel instanceof go.Group) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							if (this.preClickNodeKey !== node.key) {
-								this.flowchartHander.handlerClickNode(node);
-								this.preClickNodeKey = node.key;
-							}
+							this.flowchartHander.handlerClickNode(node);
 						}
 					}
 				} else {
@@ -93,11 +87,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.setNodeSelected_OnClick = true;
 				break;
 			case 'BackgroundSingleClicked':
-				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				this.flowchartHander.handlerClickBackground();
 				break;
 			case 'LostFocus':
-				// console.log('>>>>>>>> handleDiagramEvent.', name);
 				this.flowchartHander.handlerLostFocus();
 				break;
 			default:

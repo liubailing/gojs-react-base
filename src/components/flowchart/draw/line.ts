@@ -25,7 +25,7 @@ export default class DrawLink extends Base {
 				// selectionChanged: this.onselectionChangedHandler,
 				movable: false,
 				resizable: false,
-				width: 180,
+				width: DiagramSetting.nodeWith,
 				background: BaseColors.transparent,
 				deletable: false
 			},

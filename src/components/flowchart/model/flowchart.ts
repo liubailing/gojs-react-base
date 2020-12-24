@@ -37,10 +37,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	mapNodeType: Map<string, string>;
 
 	/** 节点对应类型 */
-	mapNodeName: Set<string>;
+	// mapNodeName: Set<string>;
 
 	/** 节点对应类型 */
-	static allNodeName: Set<string> = new Set<string>();
+	allNodeName: Set<string> = new Set<string>();
 
 	guidNodeType: Array<NodeEnum> = [
 		NodeEnum.Start,
@@ -61,7 +61,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		this.mapNodePreNodeKey = new Map<string, string>();
 		this.mapNodeParentKey = new Map<string, string>();
 		this.mapNodeType = new Map<string, string>();
-		this.mapNodeName = new Set<string>();
+		this.allNodeName = new Set<string>();
 		// 这个不要在init()里面
 		this.cacheNodeData = new Map<string, object>();
 	}
@@ -128,7 +128,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			this.mapNodeType.set(item.value.key, item.value.type);
 
 			// 完善缓存 7
-			this.mapNodeName.add(item.value.label);
+			this.allNodeName.add(item.value.label);
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -202,8 +202,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 		});
 
-		item.mapNodeName.forEach((v) => {
-			FlowchartModel.allNodeName.add(v);
+		item.allNodeName.forEach((v) => {
+			this.allNodeName.add(v);
 		});
 	};
 
@@ -359,7 +359,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				} else {
 					const res = this.remove(item.value);
 					if (item.value && item.value.label) {
-						FlowchartModel.allNodeName.delete(item.value.label);
+						this.allNodeName.delete(item.value.label);
 					}
 					if (res) {
 						resAct = true;
@@ -430,19 +430,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			// 将要得到的结果
 
 			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
-			// 系统默认的值
-			const baseRes = NodeStore.getNode(newM.type);
-			// 当节点使用的默认名称，即为系统默认值
-			if (!this.guidNodeType.includes(newM.type as NodeEnum)) {
-				let currName = baseRes.label;
-				let i = 0;
-				while (FlowchartModel.allNodeName.has(currName)) {
-					currName = `${baseRes.label}${++i}`;
-				}
-				res.label = currName;
-			}
-
-			FlowchartModel.allNodeName.add(res.label);
+			res.label = this.getNodeName(newM.type as NodeEnum, res.label);
 
 			if (newM.childs) {
 				newC = new FlowchartModel();
@@ -512,18 +500,42 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return newNode;
 	}
 
+	/**
+	 * 初始化得到流程图节点
+	 * @param type
+	 * @param group
+	 */
 	private getNode(type: NodeEnum, group: string): INodeModel {
 		let node = NodeStore.getNode(type, group);
-		if (!this.guidNodeType.includes(type)) {
-			let currName = node.label;
-			let i = 0;
-			while (FlowchartModel.allNodeName.has(currName)) {
-				currName = `${node.label}${++i}`;
-			}
-			node.label = currName;
-		}
+		node.label = this.getNodeName(type, node.label);
 		return node;
 	}
+
+	/**
+	 * 计算流程图重名逻辑
+	 * @param type
+	 * @param name
+	 */
+	private getNodeName(type: NodeEnum, name: string): string {
+		let currName = name;
+		/**
+		 * 流程图节点重名后处理逻辑，暂不开启，
+		 */
+		// if (!this.guidNodeType.includes(type as NodeEnum)) {
+		// 	const reg = /\d+$/;
+		// 	name = name.replace(reg, '');
+		// 	let i = 0;
+		// 	while (this.allNodeName.has(currName)) {
+		// 		currName = `${name}${++i}`;
+		// 	}
+		// }
+		// this.allNodeName.add(currName);
+		/**
+		 * 流程图节点重名后处理逻辑，暂不开启  end
+		 */
+		return currName;
+	}
+
 	/**
 	 * 插入
 	 * @param nodekey

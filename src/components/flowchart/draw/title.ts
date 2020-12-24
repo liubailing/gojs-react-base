@@ -81,8 +81,8 @@ export class DrawTitle {
 	private covShowLabel = (_val: any, _targetObj: any): string => {
 		if (_val && typeof _val === 'string') {
 			const { len } = this.gbLenght(_val);
-			if (len > 20) {
-				return `${_val.slice(0, 9)}···`;
+			if (len > 16) {
+				return `${_val.slice(0, 8)}···`;
 			}
 		}
 		return _val;

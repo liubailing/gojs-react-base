@@ -94,7 +94,7 @@ export default class DrawNode extends Base {
 	// define tooltips for nodes
 	tooltiptemplate = $(
 		'ToolTip',
-		{ 'Border.fill': BaseColors.group_font, 'Border.stroke': BaseColors.group_bg, visible: true },
+		{ 'Border.fill': BaseColors.tip, 'Border.stroke': BaseColors.tip, visible: true },
 		$(
 			go.TextBlock,
 			{
