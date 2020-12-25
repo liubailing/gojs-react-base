@@ -142,9 +142,9 @@ export interface IFlowchartHander {
 	handlerHideLineMenu(): void;
 
 	/**
-	 * 隐藏 右键菜单
+	 * 隐藏 弹层信息
 	 * */
-	handlerHideContextMenu(): void;
+	handlerHideModal(): void;
 
 	/**
 	 * 流程图失去焦点
@@ -155,4 +155,14 @@ export interface IFlowchartHander {
 	 * 流程图点击空白处
 	 */
 	handlerClickBackground(): void;
+
+	/**
+	 * 右键节点
+	 */
+	handlerRightClickNode(node: INodeModel, posX: number, posY: number): void;
+
+	/**
+	 * 流程图渲染变化
+	 */
+	handlerViewChanged(): void;
 }

@@ -41,7 +41,7 @@ export class FlowChartNodeMenu extends Component<FlowChartNodeMenuProps> {
 				this.props.store.flowchart.onCutNode(nodekey, true);
 				break;
 		}
-		this.props.store.handlerHideContextMenu();
+		this.props.store.handlerHideModal();
 	}
 	render() {
 		return (

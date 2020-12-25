@@ -21,7 +21,7 @@ export class FlowChartLineMenu extends Component<FlowChartLineMenuProps> {
 	addNode(type: NodeEnum) {
 		const nodekey = this.props.store.currentActionNodeKey;
 		this.props.store.flowchart.onAdd2Pre8NodeId(nodekey, type);
-		this.props.store.handlerHideContextMenu();
+		this.props.store.handlerHideModal();
 	}
 	render() {
 		return (

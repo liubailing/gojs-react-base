@@ -186,17 +186,17 @@ export class WorkflowHandle implements IFlowchartHander {
 	}
 
 	/**
-	 * 隐藏 右键菜单
-	 * 已经是回调函数，不要去调用 onHideContextMenu
+	 * 隐藏 弹层信息
 	 * */
-	handlerHideContextMenu(): void {
+	handlerHideModal(): void {
+		this.hideModal();
+	}
+
+	private hideModal() {
 		this.currentActionNodeKey = '';
 		this.currentNodeMenuPosX = 0;
 		this.currentNodeMenuPosY = 0;
 		this.currentNodeMenuShowType = 0;
-
-		// this.flowchart.flowchartDiagram?.click;
-		this.log(`hide ContextMenu`);
 	}
 
 	/**
@@ -221,31 +221,23 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * 流程图点击空白处
 	 */
 	handlerClickBackground(): void {}
-	private showContent(domId: string, posX: number, posY: number) {
-		let contextMenuDIV = document.getElementById(this.taskId);
-		if (!contextMenuDIV) {
-			contextMenuDIV = document.createElement('div');
-			contextMenuDIV.id = this.taskId;
-			contextMenuDIV.className = 'div-flowchart-contextMenu';
-		}
-		contextMenuDIV.innerHTML = '';
-		// Show only the relevant buttons given the current state.
-		let contextMen = document.getElementById(domId)?.cloneNode(true);
 
-		if (contextMen) contextMenuDIV.appendChild(contextMen);
-		contextMenuDIV.style.left = posX - 10 + 'px'; //因为offsetLeft是只读属性所以要通过left属性设置。而且还要设置绝对定位。
-		contextMenuDIV.style.top = posY + 20 + 'px'; //
-		contextMenuDIV.style.display = 'block';
-		document.body.appendChild(contextMenuDIV);
+	/**
+	 * 右键节点
+	 */
+	handlerRightClickNode(node: INodeModel, posX: number, posY: number): void {
+		this.currentActionNodeKey = node.key;
+		this.currentNodeMenuPosX = posX - 100;
+		this.currentNodeMenuPosY = posY;
+		this.currentNodeMenuShowType = 2;
+		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
 	}
 
-	private HideContent() {
-		let contextMenuDIV = document.getElementById(this.taskId);
-
-		if (contextMenuDIV) {
-			contextMenuDIV.style.display = 'none';
-			contextMenuDIV.innerHTML = '';
-		}
+	/**
+	 * 流程图渲染变化
+	 */
+	handlerViewChanged(): void {
+		// this.hideModal();
 	}
 
 	private resetData(thisItme: FlowchartModel, parentNode: INodeModel | null = null): any {
@@ -315,7 +307,7 @@ export class WorkflowHandle implements IFlowchartHander {
 				this.tempActionData = this.resetData(flData);
 				break;
 			case 'hide_contextMenu':
-				this.flowchart._hideContextMenu();
+				this.hideModal();
 				break;
 			case 'add_smiple':
 				let openJD = this.flowchart.onGetNode(`openJD`);

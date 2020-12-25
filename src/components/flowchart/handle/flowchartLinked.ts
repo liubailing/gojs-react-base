@@ -3,8 +3,9 @@
 /* eslint-disable complexity */
 import go from 'gojs';
 import { observable } from 'mobx';
-import flowchartStore from './flowchartStore';
 import { IDiagramHander, IFlowchartHander, IDiagramModel, INodeModel, ILineModel, INodeEvent } from '../interface';
+import BaseChanges from '../draw/baseChanges';
+import flowchartStore from './flowchartStore';
 import { HandleEnum, NodeEnum } from '../enum';
 import { NodeStore, LineStore } from '../store';
 import { FlowchartModel } from '../model';
@@ -18,6 +19,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 设置选中节点后并触发 click,
 	 */
 	private _showContentView: boolean = false;
+
+	/**
+	 * 前一次激活的
+	 */
+	private _preActiveNodeKey: string = '';
 
 	/**
 	 * 设置选中节点后并触发 click,
@@ -70,15 +76,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				const sel = e.subject.first();
 				if (sel) {
 					this._hideContextMenu();
-					if (sel instanceof go.Node) {
+					if (sel instanceof go.Node || sel instanceof go.Group) {
 						const node = this.mapNode.get(sel.key as string);
 						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
 							this.flowchartHander.handlerClickNode(node);
-						}
-					} else if (sel instanceof go.Group) {
-						const node = this.mapNode.get(sel.key as string);
-						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							this.flowchartHander.handlerClickNode(node);
+							if (this._preActiveNodeKey !== node.key) {
+								this._setNodeBlur(this._preActiveNodeKey);
+								this._preActiveNodeKey = node.key;
+							}
 						}
 					}
 				} else {
@@ -89,28 +94,31 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				break;
 
 			case 'ObjectContextClicked':
-				debugger;
-				if (this.flowchartDiagram) {
-					const selC = this.flowchartDiagram.findPartAt(this.flowchartDiagram.lastInput.documentPoint);
-					if (selC) {
-						this._hideContextMenu();
-						if (selC instanceof go.Node || selC instanceof go.Group) {
-							const node = this.mapNode.get(selC.key as string);
-							this.handFlowchartEvent({
-								eType: HandleEnum.ShowNodeMenu,
-								node
-							} as INodeEvent);
+				this._hideContextMenu();
+				if (!this.flowchartDiagram) return;
+				const selC = this.flowchartDiagram.findPartAt(this.flowchartDiagram.lastInput.documentPoint);
+				if (!selC) return;
+
+				if (selC instanceof go.Node || selC instanceof go.Group) {
+					const node = this.mapNode.get(selC.key as string);
+					if (node) {
+						const pos = this._getPostion;
+						this.flowchartHander.handlerRightClickNode(node, pos.x, pos.y);
+						if (this._preActiveNodeKey !== node.key) {
+							this._setNodeBlur(this._preActiveNodeKey);
+							this._preActiveNodeKey = node.key;
 						}
 					}
 				}
+
 				break;
 			case 'BackgroundSingleClicked':
 				this._hideContextMenu();
+				this._setNodeBlur(this._preActiveNodeKey);
 				this.flowchartHander.handlerClickBackground();
 				break;
 			case 'ViewportBoundsChanged':
-				this._hideContextMenu();
-				// this.flowchartHander.handlerClickBackground();
+				this.flowchartHander.handlerViewChanged();
 				break;
 			case 'LostFocus':
 				// this._hideContextMenu();
@@ -477,14 +485,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		}
 	}
 
-	_hideContextMenu() {
+	private _hideContextMenu() {
 		if (this.flowchartDiagram && this._showContentView) {
-			// this.flowchartDiagram.commandHandler.showContextMenu();
-			// this.flowchartDiagram.currentTool.doCancel();
-			this.flowchartDiagram.commandHandler.doKeyDown();
-			this.flowchartHander.handlerHideContextMenu();
-			// this.flowchartHander.toolManager.contextMenuTool.doCancel();
-			this.flowchartDiagram.commandHandler.doKeyDown();
+			this.flowchartHander.handlerHideModal();
 			this._showContentView = false;
 		}
 	}
@@ -651,6 +654,16 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.flowchartDiagram.clearSelection();
 				this.flowchartDiagram.select(obj);
 				this._willSelectedNodeKey = '';
+			}
+		}
+	}
+
+	private _setNodeBlur(key: string) {
+		if (this.flowchartDiagram && key) {
+			const objPre = this.flowchartDiagram.findNodeForKey(key);
+			if (objPre) {
+				BaseChanges.setGroupCss(objPre, false);
+				BaseChanges.setNodeCss(objPre, false);
 			}
 		}
 	}

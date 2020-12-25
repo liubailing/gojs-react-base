@@ -99,6 +99,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 
 		let myDiagram: Diagram = $(go.Diagram, this.props.diagramId, {
 			'undoManager.isEnabled': true,
+			'animationManager.duration': 2,
 			draggingTool: new DraggingTool(this.props.onFlowchartEvent),
 			clickSelectingTool: new ClickSelectingTool(),
 			commandHandler: new CommandHandler(this.props.onFlowchartEvent),
@@ -243,6 +244,8 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			{ observed: myDiagram, contentAlignment: go.Spot.Center }
 		);
 
+		// myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
+		// myDiagram.animationManager.duration = 2;
 		// tell it which Diagram to show and pan
 		return myDiagram;
 	};

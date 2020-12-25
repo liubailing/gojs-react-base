@@ -12,6 +12,9 @@ export default class baseChanges {
 		const group_main = node.findObject('group_main');
 		const group_Top = node.findObject('group_Top');
 		const group_Title = node.findObject('group_Title');
+		const listHover = node.findObject('node_Ilist_Hover');
+		const list = node.findObject('node_Ilist');
+
 		node.opacity = 1;
 		if (isShow) {
 			if (group_main) {
@@ -35,6 +38,12 @@ export default class baseChanges {
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = BaseColors.group_font;
+			}
+			if (list) {
+				list.visible = false;
+			}
+			if (listHover) {
+				listHover.visible = false;
 			}
 		}
 
