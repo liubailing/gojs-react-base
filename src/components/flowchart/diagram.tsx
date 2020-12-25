@@ -60,6 +60,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			diagram.addDiagramListener('LostFocus', this.props.onDiagramEvent);
 			diagram.addDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
 			diagram.addDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ObjectSingleClicked', this.props.onDiagramEvent);
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
@@ -67,6 +68,17 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 				eType: HandleEnum.Init
 			} as INodeEvent;
 			this.props.onFlowchartEvent(e);
+
+			// 流程图不让监听 scroll 事件
+			// const divdia = document.getElementsByClassName(`diagram-${this.props.diagramId}`);
+			// if (divdia && divdia[0]) {
+			// 	const divd = divdia[0].getElementsByTagName('div')[0];
+			// 	if (divd) {
+			// 		divd.addEventListener('scroll', function () {
+			// 			// console.log(`~ test flowchart ~`, scroll);
+			// 		});
+			// 	}
+			// }
 		}
 	}
 
@@ -84,6 +96,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			diagram.removeDiagramListener('LostFocus', this.props.onDiagramEvent);
 			diagram.removeDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
 			diagram.removeDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ObjectSingleClicked', this.props.onDiagramEvent);
 		}
 	}
 	/**
@@ -255,7 +268,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			<>
 				<ReactDiagram
 					ref={this.diagramRef}
-					divClassName="diagram-component"
+					divClassName={`diagram-component diagram-${this.props.diagramId}`}
 					initDiagram={this.initDiagram}
 					nodeDataArray={this.props.nodeDataArray}
 					linkDataArray={this.props.linkDataArray}
@@ -263,7 +276,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 					onModelChange={this.props.onModelChange}
 					skipsDiagramUpdate={this.props.skipsDiagramUpdate}
 				/>
-				<div id={`myOverviewDiv${this.props.diagramId}`} className="diagram-overview"></div>
+				<div id={`myOverviewDiv${this.props.diagramId}`} className="diagram-overview" />
 			</>
 		);
 	}

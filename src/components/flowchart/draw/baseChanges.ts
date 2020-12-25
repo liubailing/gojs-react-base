@@ -27,6 +27,9 @@ export default class baseChanges {
 			if (group_Title) {
 				(group_Title as any).stroke = HoverColors.group_font;
 			}
+			if (list) {
+				list.visible = true;
+			}
 		} else {
 			if (group_main) {
 				(group_main as any).fill = BaseColors.transparent;

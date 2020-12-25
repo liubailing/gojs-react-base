@@ -18,6 +18,12 @@ export interface IFlowchartHander {
 	handlerClickNode(node: any | INodeModel, isManual?: boolean): void;
 
 	/**
+	 * 重新点击在一个点上，但是不是双击
+	 * @param node 节点数据
+	 */
+	handlerClickNodeAgain(node: any | INodeModel): void;
+
+	/**
 	 * 删除节点信息
 	 * @param currKey 删除操作后选中的 nodekey
 	 * @param deleteKey 已经删除的 nodekey
@@ -165,4 +171,9 @@ export interface IFlowchartHander {
 	 * 流程图渲染变化
 	 */
 	handlerViewChanged(): void;
+
+	/**
+	 * 点击了出节点以外的对象，但是不包括背景
+	 */
+	handlerClickExcludeNode(): void;
 }

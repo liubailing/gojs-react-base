@@ -51,6 +51,10 @@ export class WorkflowHandle implements IFlowchartHander {
 		console.log(`handler -click data`, data);
 	}
 
+	handlerClickNodeAgain(node: INodeModel): void {
+		this.log(`handler -clickagin ${node.key}`);
+	}
+
 	handlerDeleteNode(currKey: string, deleteKey: string) {
 		this.log(`handler -delete ${currKey}, ${deleteKey}`);
 	}
@@ -239,6 +243,11 @@ export class WorkflowHandle implements IFlowchartHander {
 	handlerViewChanged(): void {
 		// this.hideModal();
 	}
+
+	/**
+	 * 点击了出节点以外的对象，但是不包括背景
+	 */
+	handlerClickExcludeNode(): void {}
 
 	private resetData(thisItme: FlowchartModel, parentNode: INodeModel | null = null): any {
 		let parentKey = 'root';
