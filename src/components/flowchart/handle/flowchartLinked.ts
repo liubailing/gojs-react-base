@@ -78,8 +78,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					e.subject.part &&
 					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
 				) {
+					this._hideContextMenu();
 					const clickNode = e.subject.part.data;
 					if (clickNode && clickNode.key && this._preActiveNodeKey === clickNode.key) {
+						// this._setNodeFocus(clickNode.key);
+						BaseChanges.setNodeCss(e.subject.part, true);
+						BaseChanges.setActionCss(e.subject.part, true);
 						this.flowchartHander.handlerClickNodeAgain(clickNode);
 						if (this._preActiveNodeKey !== clickNode.key) {
 							this._setNodeBlur(this._preActiveNodeKey);
@@ -90,14 +94,18 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			case 'ChangedSelection':
-				const changedNode = e.subject.first();
-				if (changedNode) {
+				const firstNode = e.subject.first();
+				if (
+					firstNode &&
+					firstNode.part &&
+					firstNode.data &&
+					(firstNode.part instanceof go.Node || firstNode.part instanceof go.Group)
+				) {
 					this._hideContextMenu();
-					if (changedNode instanceof go.Node || changedNode instanceof go.Group) {
-						const node = this.mapNode.get(changedNode.key as string);
-						if (node && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-							this.flowchartHander.handlerClickNode(node);
-						}
+					const changedNode = firstNode.data;
+					if (changedNode && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
+						this.flowchartHander.handlerClickNode(changedNode);
+						this._setNodeBlur(this._preActiveNodeKey);
 					} else {
 						this.flowchartHander.handlerClickExcludeNode();
 					}
@@ -111,19 +119,19 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				if (!this.flowchartDiagram) {
 					return;
 				}
-				const contextNode = this.flowchartDiagram.findPartAt(this.flowchartDiagram.lastInput.documentPoint);
-				if (!contextNode) {
-					return;
-				}
 
-				if (contextNode instanceof go.Node || contextNode instanceof go.Group) {
-					const node = this.mapNode.get(contextNode.key as string);
-					if (node) {
+				if (
+					e.subject &&
+					e.subject.part &&
+					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
+				) {
+					const contextNode = e.subject.part.data;
+					if (contextNode) {
 						const pos = this._getPostion;
-						this.flowchartHander.handlerRightClickNode(node, pos.x, pos.y);
-						if (this._preActiveNodeKey !== node.key) {
+						this.flowchartHander.handlerRightClickNode(contextNode, pos.x, pos.y);
+						if (this._preActiveNodeKey !== contextNode.key) {
 							this._setNodeBlur(this._preActiveNodeKey);
-							this._preActiveNodeKey = node.key;
+							this._preActiveNodeKey = contextNode.key;
 						}
 					} else {
 						this.flowchartHander.handlerClickExcludeNode();
@@ -215,6 +223,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case HandleEnum.ShowLineMenu:
 				pos = this._getPostion;
 				this.flowchartHander.handlerShowLineMenu(line, pos.x, pos.y);
+				break;
+			case HandleEnum.MouseEnter:
+				this.flowchartHander.handlerMouseEnter(node);
 				break;
 			case HandleEnum.HideContextMenu:
 				this._hideContextMenu();
@@ -504,6 +515,19 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		}
 	}
 
+	/**
+	 * 显示、隐藏详情按钮
+	 * @param key
+	 */
+	onSetNodeListActionVisible(key: string, show: boolean = false) {
+		if (this.flowchartDiagram && key) {
+			const objPre = this.flowchartDiagram.findNodeForKey(key);
+			if (objPre) {
+				BaseChanges.setListCss(objPre, show);
+			}
+		}
+	}
+
 	private _hideContextMenu() {
 		if (this.flowchartDiagram && this._showContentView) {
 			this.flowchartHander.handlerHideModal();
@@ -673,8 +697,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.flowchartDiagram.clearSelection();
 				this.flowchartDiagram.select(obj);
 				this._willSelectedNodeKey = '';
-				BaseChanges.setGroupCss(obj, true);
-				BaseChanges.setNodeCss(obj, true);
+				this._setNodeFocus(key);
 			}
 		}
 	}
@@ -683,8 +706,20 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (this.flowchartDiagram && key) {
 			const objPre = this.flowchartDiagram.findNodeForKey(key);
 			if (objPre) {
-				BaseChanges.setGroupCss(objPre, false);
 				BaseChanges.setNodeCss(objPre, false);
+				BaseChanges.setListCss(objPre, false);
+				BaseChanges.setActionCss(objPre, false);
+			}
+		}
+	}
+
+	private _setNodeFocus(key: string) {
+		if (this.flowchartDiagram && key) {
+			const objPre = this.flowchartDiagram.findNodeForKey(key);
+			if (objPre) {
+				BaseChanges.setNodeCss(objPre, true);
+				BaseChanges.setListCss(objPre, true);
+				BaseChanges.setActionCss(objPre, true);
 			}
 		}
 	}

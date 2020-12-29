@@ -31,6 +31,9 @@ export enum HandleEnum {
 	/** 修改节点名称 */
 	RenameNode = 'rename_Node',
 
+	/** 修改节点名称 */
+	MouseEnter = 'mouse_Enter',
+
 	Init = 'init',
 	ReRender = 'rerender',
 

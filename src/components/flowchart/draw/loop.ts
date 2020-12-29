@@ -211,10 +211,13 @@ export default class DrawLoop extends Base {
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
 		const node = (obj as any).part;
 		// console.log('node', node);
-
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setListCss(node, true);
+		}
+
+		if (node && node.data) {
+			this.doFlowchartEvent(_e, obj, HandleEnum.MouseEnter, this.callBack);
 		}
 	};
 }

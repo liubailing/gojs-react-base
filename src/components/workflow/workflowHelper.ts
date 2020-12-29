@@ -40,7 +40,6 @@ export class WorkflowHelper {
 
 				n.label = x.label || n.label;
 				n.childs = this.doFlowchartData(n, x.childs);
-
 				d.add(n);
 			});
 		}
@@ -71,6 +70,7 @@ export class WorkflowHelper {
 						n.label = x.label || n.label;
 						n.sortIndex = i;
 						n.childs = WorkflowHelper.doFlowchartData(n, x.childs);
+
 						dlist.add(n);
 					});
 				}

@@ -176,4 +176,10 @@ export interface IFlowchartHander {
 	 * 点击了出节点以外的对象，但是不包括背景
 	 */
 	handlerClickExcludeNode(): void;
+
+	/**
+	 * 鼠标移入
+	 * 目前只有loop放开有这个事件
+	 */
+	handlerMouseEnter(node: INodeModel): void;
 }

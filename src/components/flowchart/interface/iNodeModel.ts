@@ -20,7 +20,7 @@ export interface INodeModel {
 	isGroup: boolean;
 
 	/***********************
-	 * 以下属性不用管
+	 * 以下非必要属性属性
 	 **********************/
 
 	childs: FlowchartModel | null;
