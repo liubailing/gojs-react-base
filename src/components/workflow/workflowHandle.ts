@@ -52,7 +52,9 @@ export class WorkflowHandle implements IFlowchartHander {
 	}
 
 	handlerClickNodeAgain(node: INodeModel): void {
-		this.log(`handler -clickagin ${node.key}`);
+		const loopKey = this.flowchart.onGetNodeLoopKey(node.key) || '';
+
+		this.log(`handler -clickagin loop ${loopKey}`);
 	}
 
 	handlerDeleteNode(currKey: string, deleteKey: string) {

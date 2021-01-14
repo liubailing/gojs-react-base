@@ -8,7 +8,7 @@ import lang from '../../../locales/index';
  * @param fcType
  */
 export class NodeStore {
-	static strCondition = lang.FCEntities.ExtractData;
+	static strCondition = lang.FCEntities.Condition;
 	static strExtractData = lang.FCEntities.ExtractData;
 	static strComplete = lang.FCEntities.Complete;
 	static strEnterText = lang.FCEntities.EnterText;
@@ -38,7 +38,7 @@ export class NodeStore {
 		return n;
 	}
 
-	static getNode = (fcType: string, group: string = '',): INodeModel => {
+	static getNode = (fcType: string, group: string = ''): INodeModel => {
 		const node: INodeModel = NodeStore.baseModel;
 		let title = '';
 		let isGroup = false;

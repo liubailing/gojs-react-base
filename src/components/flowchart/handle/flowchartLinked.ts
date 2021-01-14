@@ -81,9 +81,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					this._hideContextMenu();
 					const clickNode = e.subject.part.data;
 					if (clickNode && clickNode.key && this._preActiveNodeKey === clickNode.key) {
-						// this._setNodeFocus(clickNode.key);
-						BaseChanges.setNodeCss(e.subject.part, true);
-						BaseChanges.setActionCss(e.subject.part, true);
+						this._setNodeFocus(clickNode.key);
 						this.flowchartHander.handlerClickNodeAgain(clickNode);
 						if (this._preActiveNodeKey !== clickNode.key) {
 							this._setNodeBlur(this._preActiveNodeKey);
@@ -663,6 +661,22 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return '';
 	}
 
+	/**
+	 * 得到节点被包裹的第一层循环
+	 * @param nodekey
+	 */
+	onGetNodeLoopKey(nodekey: string): string {
+		const data = this.mapNode.get(nodekey);
+		if (data && data.group) {
+			let preData = this.mapNode.get(data.group);
+			while (preData) {
+				if (preData.type === NodeEnum.Loop) return preData.key;
+				preData = this.mapNode.get(preData.group);
+			}
+		}
+		return '';
+	}
+
 	onGetAll(): FlowchartModel {
 		const res = this.getData();
 		return res;
@@ -694,6 +708,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (this.flowchartDiagram && key) {
 			const obj = this.flowchartDiagram.findNodeForKey(key);
 			if (obj) {
+				debugger;
 				this.flowchartDiagram.clearSelection();
 				this.flowchartDiagram.select(obj);
 				this._willSelectedNodeKey = '';
