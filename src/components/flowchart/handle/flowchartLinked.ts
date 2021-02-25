@@ -519,9 +519,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	onSetNodeListActionVisible(key: string, show: boolean = false) {
 		if (this.flowchartDiagram && key) {
-			const objPre = this.flowchartDiagram.findNodeForKey(key);
-			if (objPre) {
-				BaseChanges.setListCss(objPre, show);
+			const node = this.flowchartDiagram.findNodeForKey(key);
+			if (node) {
+				BaseChanges.setListCss(node, show);
 			}
 		}
 	}
@@ -549,7 +549,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param data
 	 */
-	onGetNodeData(nodekey: string, shouldHander: boolean = true): object | null {
+	onGetNodeData(nodekey: string, shouldHander: boolean = true) {
 		if (nodekey) {
 			const data = this.cacheNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
@@ -588,7 +588,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			// let obj = this.flowchartDiagram.findNodeForKey(nodekey);
 			// this.flowchartDiagram.(obj);
 			this._refresDiagram();
-			this.flowchartHander.handlerSaveNodeName(newName);
+			this.flowchartHander.handlerSaveNodeName(nodekey, newName);
 		}
 	}
 
@@ -642,7 +642,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param newName
 	 */
 	onGetNodeByType(nodekey: string): string[] {
+		if (nodekey === NodeEnum.ExtractData) {
+			return this.cacheExateData;
+		}
 		const data = this.mapNodeTypeKeys.get(nodekey);
+
 		if (data && data.size > 0) {
 			return [...data];
 		}
@@ -665,12 +669,14 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * 得到节点被包裹的第一层循环
 	 * @param nodekey
 	 */
-	onGetNodeLoopKey(nodekey: string): string {
+	onGetNodeFirstLoopKey(nodekey: string): string {
 		const data = this.mapNode.get(nodekey);
 		if (data && data.group) {
 			let preData = this.mapNode.get(data.group);
 			while (preData) {
-				if (preData.type === NodeEnum.Loop) return preData.key;
+				if (preData.type === NodeEnum.Loop) {
+					return preData.key;
+				}
 				preData = this.mapNode.get(preData.group);
 			}
 		}
@@ -708,7 +714,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (this.flowchartDiagram && key) {
 			const obj = this.flowchartDiagram.findNodeForKey(key);
 			if (obj) {
-				debugger;
 				this.flowchartDiagram.clearSelection();
 				this.flowchartDiagram.select(obj);
 				this._willSelectedNodeKey = '';

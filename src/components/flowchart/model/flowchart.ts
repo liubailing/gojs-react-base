@@ -455,6 +455,13 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			if (data && Object.keys(data).length > 0) {
 				// 深拷贝
 				const json = JSON.parse(JSON.stringify({ ...data }));
+				// 深拷贝纠正 uid  belongTo
+				if (json && json.ActionType === 'ExtractDataAction' && json.extractTemplate && json.extractTemplate.length > 1) {
+					json.extractTemplate.forEach((e,idx) => {
+						e.uid = res.key + e.Id;
+						e.belongTo = res.key;
+					});
+				}
 				this.cacheNodeData.set(res.key, json);
 			}
 			return res;
@@ -506,7 +513,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param group
 	 */
 	private getNode(type: NodeEnum, group: string): INodeModel {
-		let node = NodeStore.getNode(type, group);
+		const node = NodeStore.getNode(type, group);
 		node.label = this.getNodeName(type, node.label);
 		return node;
 	}
@@ -517,7 +524,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param name
 	 */
 	private getNodeName(type: NodeEnum, name: string): string {
-		let currName = name;
+		const currName = name;
 		/**
 		 * 流程图节点重名后处理逻辑，暂不开启，
 		 */

@@ -45,7 +45,7 @@ export interface IFlowchartHander {
 	/**
 	 * 修改名称后的操作
 	 */
-	handlerSaveNodeName: (newName: string) => void;
+	handlerSaveNodeName: (key: string, newName: string) => void;
 
 	/**
 	 * 流程改变后 触发事件
@@ -54,7 +54,6 @@ export interface IFlowchartHander {
 
 	/**
 	 * 流程节点准备复制
-	 * todo
 	 */
 	handlerWillCopy(): void;
 

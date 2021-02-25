@@ -12,6 +12,7 @@ export default class FlowchartStore {
 	 * 缓存 nodeKey - 缓存的数据
 	 */
 	cacheNodeData: Map<string, object>;
+	cacheExateData: string[];
 
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
@@ -39,6 +40,7 @@ export default class FlowchartStore {
 
 	constructor() {
 		this.cacheNodeData = new Map<string, object>();
+		this.cacheExateData = []
 		// this
 		this._data = new FlowchartModel();
 		this.mapNode = new Map();
@@ -169,6 +171,7 @@ export default class FlowchartStore {
 		this.mapNodeType = this._data.mapNodeType;
 
 		this.cacheNodeData = this._data.cacheNodeData;
+		this.cacheExateData = []
 		/** 特殊逻辑处理 */
 		this.resetData(this._data);
 		return res;
@@ -184,29 +187,31 @@ export default class FlowchartStore {
 			if (!thisItme.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
 				item.value.childs = null;
 			}
+			if (item.value.type === NodeEnum.ExtractData) {
+				this.cacheExateData.push(item.value.key);
+			}
 
-			{
-				let NavigateKey = '';
-				if (item.value.type === NodeEnum.Navigate) {
-					NavigateKey = item.value.key;
-					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
-				} else if (!NavigateKey && preItem && preItem.value) {
-					if (preItem.value.type === NodeEnum.Navigate) {
-						NavigateKey = preItem.value.key;
-					} else {
-						NavigateKey = this.mapNodeNativeKey.get(preItem.value.key) || '';
-					}
-					if (NavigateKey) {
-						this.mapNodeNativeKey.set(item.value.key, NavigateKey);
-					}
+			let NavigateKey = '';
+			if (item.value.type === NodeEnum.Navigate) {
+				NavigateKey = item.value.key;
+				this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+			} else if (!NavigateKey && preItem && preItem.value) {
+				if (preItem.value.type === NodeEnum.Navigate) {
+					NavigateKey = preItem.value.key;
+				} else {
+					NavigateKey = this.mapNodeNativeKey.get(preItem.value.key) || '';
 				}
-
-				if (!NavigateKey && item.value.group && item.value.group !== 'root') {
-					NavigateKey = this.mapNodeNativeKey.get(item.value.group) || '';
-
+				if (NavigateKey) {
 					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
 				}
 			}
+
+			if (!NavigateKey && item.value.group && item.value.group !== 'root') {
+				NavigateKey = this.mapNodeNativeKey.get(item.value.group) || '';
+
+				this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+			}
+
 
 			if (item.value.childs) {
 				this.resetData(item.value.childs);
