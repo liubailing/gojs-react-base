@@ -456,8 +456,13 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				// 深拷贝
 				const json = JSON.parse(JSON.stringify({ ...data }));
 				// 深拷贝纠正 uid  belongTo
-				if (json && json.ActionType === 'ExtractDataAction' && json.extractTemplate && json.extractTemplate.length > 1) {
-					json.extractTemplate.forEach((e,idx) => {
+				if (
+					json &&
+					json.ActionType === 'ExtractDataAction' &&
+					json.extractTemplate &&
+					json.extractTemplate.length > 1
+				) {
+					json.extractTemplate.forEach((e: any, idx: number) => {
 						e.uid = res.key + e.Id;
 						e.belongTo = res.key;
 					});
