@@ -2,6 +2,8 @@ import { NodeEnum } from '../enum';
 import { INodeModel } from '../interface';
 import { FlowchartModel } from '../model';
 
+declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
+
 /**
  * 处理数据
  */
@@ -40,7 +42,7 @@ export default class FlowchartStore {
 
 	constructor() {
 		this.cacheNodeData = new Map<string, object>();
-		this.cacheExateData = []
+		this.cacheExateData = [];
 		// this
 		this._data = new FlowchartModel();
 		this.mapNode = new Map();
@@ -146,6 +148,23 @@ export default class FlowchartStore {
 		return res;
 	}
 
+	getNodeLinked(nodekey: string): void {
+		const newM = this._data.getNodeLinked8Copy(nodekey, '');
+		if (newM) {
+			window.gojsCopyNodelinked = newM;
+		}
+	}
+
+	copyNodeLinked2Node(toNodekey: string): string {
+		if (window.gojsCopyNodelinked) {
+			const res = this._data.copyNodeLinked2Node(window.gojsCopyNodelinked, toNodekey);
+			if (res) {
+				return res;
+			}
+		}
+		return '';
+	}
+
 	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const res = this._data.copyNode2Node(nodekey, toNodekey);
 		if (res) {
@@ -171,7 +190,7 @@ export default class FlowchartStore {
 		this.mapNodeType = this._data.mapNodeType;
 
 		this.cacheNodeData = this._data.cacheNodeData;
-		this.cacheExateData = []
+		this.cacheExateData = [];
 		/** 特殊逻辑处理 */
 		this.resetData(this._data);
 		return res;
@@ -211,7 +230,6 @@ export default class FlowchartStore {
 
 				this.mapNodeNativeKey.set(item.value.key, NavigateKey);
 			}
-
 
 			if (item.value.childs) {
 				this.resetData(item.value.childs);

@@ -9,6 +9,7 @@ import flowchartStore from './flowchartStore';
 import { HandleEnum, NodeEnum } from '../enum';
 import { NodeStore, LineStore } from '../store';
 import { FlowchartModel } from '../model';
+declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
 
 export default class HanderFlowchart extends flowchartStore implements IDiagramHander {
 	/** 调用 对外的暴露的接口方法 */
@@ -196,6 +197,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const node: INodeModel = e.node ? e.node : NodeStore.baseModel;
 		const line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
 		let pos;
+
 		switch (e.eType) {
 			case HandleEnum.Init:
 				this.flowchartHander.handlerInit();
@@ -438,6 +440,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	onCopyNode(nodekey: string, setHight: boolean = false, isCopyOnce: boolean = false) {
 		this._willCopyNodeId = nodekey;
 		this._isCopyOnce = isCopyOnce;
+		this.getNodeLinked(nodekey);
 		if (setHight && this.flowchartDiagram) {
 			const node = this.flowchartDiagram.findNodeForKey(nodekey);
 			if (node && node.part && node.part.data) {
@@ -460,6 +463,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				node.opacity = 0.7;
 			}
 		}
+		window.gojsCopyNodelinked = null;
 		return true;
 	}
 
@@ -468,12 +472,11 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param toNodekey 要黏贴到的nodeId
 	 */
 	onPaste2Node(toNodekey: string) {
-		if (!this._willCopyNodeId) {
-			return;
-		}
-		const resNodekey = this.copyNode2Node(this._willCopyNodeId, toNodekey);
+		const resNodekey = this.copyNodeLinked2Node(toNodekey);
 		if (resNodekey) {
 			this._refresDiagram();
+			// 自身再复制一次，准备下一次被复制，必须在 _refresDiagram 后执行
+			this.getNodeLinked(resNodekey);
 			this.flowchartHander.handlerPaste(resNodekey);
 		}
 
@@ -689,7 +692,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	get canCopy(): boolean {
-		if (this._willCopyNodeId && this._willCopyNodeId.length > 2) {
+		if (window.gojsCopyNodelinked) {
 			return true;
 		}
 		return false;

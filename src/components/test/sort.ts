@@ -98,4 +98,34 @@ export class Sort {
 		console.log('>>>>>>>>----- ', resMap);
 		return max;
 	}
+
+	//
+	static fn(str: string) {
+		let charStr = str.split('');
+		let left = ['(', '[', '{'];
+		let right = [')', ']', '}'];
+
+		if (right.indexOf(charStr[0]) > -1) return false;
+		if (left.indexOf(charStr[charStr.length - 1]) > -1) return false;
+
+		let tempLeft = [];
+		for (var i = 0; i < charStr.length; i++) {
+			let curr = charStr[i];
+			if (left.indexOf(curr) > -1) {
+				tempLeft.push(curr);
+			} else {
+				if (right.indexOf(curr) > -1 && right.indexOf(curr) === left.indexOf(tempLeft[tempLeft.length - 1])) {
+					tempLeft.pop();
+				} else {
+					console.log('>>>>>', 0);
+					return false;
+				}
+			}
+		}
+
+		if (tempLeft.length > 0) return false;
+
+		console.log('>>>>>', 1);
+		return true;
+	}
 }

@@ -361,8 +361,7 @@ export default class CommandHandler extends go.CommandHandler {
 
 					this._doEvent(e);
 					this._prActionForKeyV = '';
-				}
-				if (this._prActionForKeyV === 'ctrl+c') {
+				} else {
 					const e: INodeEvent = {
 						eType: HandleEnum.Copy2PasteNode,
 						node: node.part.data

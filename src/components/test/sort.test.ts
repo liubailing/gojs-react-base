@@ -8,7 +8,9 @@ test('testSort', () => {
 	// let res = Sort.quick(testArr);
 	// console.log('>>>>> 2', res);
 
-	let res1 = Sort.maxProduct(testArr);
+	// let res1 = Sort.maxProduct(testArr);
 
-	console.log(res1);
+	// console.log(res1);
+
+	Sort.fn('()[]}}');
 });

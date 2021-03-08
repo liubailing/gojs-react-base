@@ -3,6 +3,7 @@ import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
 
+declare const window: Window & { gojsCopyNodeData: Map<string, object> };
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 以下是 点 相关的缓存数据
@@ -402,7 +403,15 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const toNode = this.mapNode.get(toNodekey);
 		if (toNode) {
-			const newM = this.getNode8Copy(nodekey, '');
+			const newM = this.getNodeLinked8Copy(nodekey, '');
+			return this.copyNodeLinked2Node(newM, toNodekey);
+		}
+		return '';
+	}
+
+	copyNodeLinked2Node(newM: INodeModel | null, toNodekey: string): string {
+		const toNode = this.mapNode.get(toNodekey);
+		if (toNode) {
 			let res = false;
 			if (newM) {
 				if (toNode.type === NodeEnum.Loop || toNode.type === NodeEnum.Branch) {
@@ -416,19 +425,24 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				}
 			}
 			if (res && newM) {
+				if (window.gojsCopyNodeData) {
+					window.gojsCopyNodeData.clear();
+				}
 				return newM.key;
 			}
 		}
 		return '';
 	}
 
-	private getNode8Copy = (nodekey: string, groupId: string): INodeModel | null => {
+	getNodeLinked8Copy = (nodekey: string, groupId: string): INodeModel | null => {
+		if (!window.gojsCopyNodeData) {
+			window.gojsCopyNodeData = new Map<string, object>();
+		}
 		const newM = this.mapNode.get(nodekey);
 		let newC: FlowchartModel | null = null;
-		const data = this.cacheNodeData.get(nodekey);
+		const data = this.cacheNodeData.get(nodekey) || window.gojsCopyNodeData.get(nodekey);
 		if (newM) {
 			// 将要得到的结果
-
 			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
 			res.label = this.getNodeName(newM.type as NodeEnum, res.label);
 
@@ -437,7 +451,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				let idxItem = newM.childs._header.next;
 				while (idxItem !== newM.childs._tail) {
 					if (idxItem.value) {
-						const newN = this.getNode8Copy(idxItem.value.key, res.key);
+						const newN = this.getNodeLinked8Copy(idxItem.value.key, res.key);
 						// 追加子节点
 						if (newN) {
 							newC.add(newN);
@@ -467,6 +481,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 						e.belongTo = res.key;
 					});
 				}
+				window.gojsCopyNodeData.set(res.key, json);
 				this.cacheNodeData.set(res.key, json);
 			}
 			return res;
