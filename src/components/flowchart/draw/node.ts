@@ -20,7 +20,7 @@ export default class DrawNode extends Base {
 		return $(
 			go.Node,
 			'Auto',
-			{ name: 'node_Title', toolTip: this.tooltiptemplate },
+			// { name: 'node_Title', toolTip: this.tooltiptemplate },
 			new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
 			new go.Binding('desiredSize', 'size', go.Size.parse).makeTwoWay(go.Size.stringify),
 			{
@@ -90,21 +90,6 @@ export default class DrawNode extends Base {
 			BaseChanges.setNodeCss(node, true);
 		}
 	}
-
-	// define tooltips for nodes
-	tooltiptemplate = $(
-		'ToolTip',
-		{ 'Border.fill': BaseColors.tip, 'Border.stroke': BaseColors.tip, visible: true },
-		$(
-			go.TextBlock,
-			{
-				font: 'bold 8pt Helvetica, bold Arial, sans-serif',
-				wrap: go.TextBlock.WrapFit,
-				margin: 5
-			},
-			new go.Binding('text', 'label')
-		)
-	);
 }
 
 // const drawNode = new DrawNode();

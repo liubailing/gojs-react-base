@@ -22,5 +22,6 @@ export const BaseColors = {
 	link_icon_bg: '#BFC5D3',
 
 	tip: '#ddd',
+	tipfont_color: '#666',
 	transparent: 'transparent'
 };

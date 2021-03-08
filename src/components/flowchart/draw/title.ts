@@ -5,6 +5,21 @@ import { DiagramEnum } from '../enum';
 const $ = go.GraphObject.make;
 
 export class DrawTitle {
+	// define tooltips for nodes
+	tooltiptemplate = $(
+		'ToolTip',
+		{ 'Border.fill': BaseColors.tip, 'Border.stroke': BaseColors.tip, visible: true },
+		$(
+			go.TextBlock,
+			{
+				stroke: BaseColors.tipfont_color,
+				wrap: go.TextBlock.WrapFit,
+				margin: 5
+			},
+			new go.Binding('text', 'label')
+		)
+	);
+
 	/**
 	 * 节点标题 辅助方法
 	 * @param DiagramEnum 节点类型
@@ -35,7 +50,7 @@ export class DrawTitle {
 		return $(
 			go.Panel,
 			'Horizontal',
-			{},
+			{ name: 'node_Title', toolTip: this.tooltiptemplate },
 			$(
 				go.TextBlock,
 				{

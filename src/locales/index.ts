@@ -12,10 +12,9 @@ export const lang = {
 		SwitchCombo: '切换下拉选项',
 		EnterCapacha: '识别验证码',
 		Branch: '条件分支',
-		WFGuideNode: '将要执行的流程拖放在此'
-	},
-	FCSettings: {
-		DragDropProcessHere: '将要执行的流程拖放在此处'
+		WFGuideNode: '将要执行的流程拖放在此',
+		WFGuideLine: '添加流程',
+		WFGuideBranch: '添加分支条件'
 	},
 	Flowchart: {
 		Flowchart: '流程图',

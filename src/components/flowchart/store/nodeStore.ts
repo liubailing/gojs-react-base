@@ -21,6 +21,8 @@ export class NodeStore {
 	static strEnterCapacha = lang.FCEntities.EnterCapacha;
 	static strBranch = lang.FCEntities.Branch;
 	static strWFGuideNode = lang.FCEntities.WFGuideNode;
+	static strWFGuideLine = lang.FCEntities.WFGuideLine;
+	static strWFGuideBranch = lang.FCEntities.WFGuideBranch;
 
 	static getRandomKey = (): string => Math.random().toString(36).substring(2);
 

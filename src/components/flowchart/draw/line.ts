@@ -3,6 +3,9 @@ import { DiagramSetting, BaseColors } from '../config';
 import Base from './base';
 import BaseChangese from './baseChanges';
 import { HandleEnum } from '../enum';
+import { ToolTip } from './toolTip';
+
+import { NodeStore } from '../store';
 const $ = go.GraphObject.make;
 
 export default class DrawLink extends Base {
@@ -52,6 +55,7 @@ export default class DrawLink extends Base {
 			$(
 				go.Panel,
 				'Auto',
+				ToolTip.getTitle(NodeStore.strWFGuideLine),
 				{
 					name: 'link_Add',
 					padding: new go.Margin(5, 0, 5, 0),

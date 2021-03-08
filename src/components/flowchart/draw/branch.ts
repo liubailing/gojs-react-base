@@ -5,6 +5,8 @@ import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
+import { ToolTip } from './toolTip';
+import NodeStore from '../store/nodeStore';
 
 const $ = go.GraphObject.make;
 
@@ -110,6 +112,7 @@ export default class DrawBranch extends Base {
 			$(
 				go.Panel,
 				'Auto',
+				ToolTip.getTitle(NodeStore.strWFGuideBranch),
 				{
 					name: 'left_Spot',
 					alignment: go.Spot.Left,
@@ -139,6 +142,7 @@ export default class DrawBranch extends Base {
 			$(
 				go.Panel,
 				'Auto',
+				ToolTip.getTitle(NodeStore.strWFGuideBranch),
 				{
 					name: 'right_Spot',
 					alignment: go.Spot.Right,
