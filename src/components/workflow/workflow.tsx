@@ -38,12 +38,22 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 					<TestMenu Workflow={this.Workflow}></TestMenu>
 					<div className="div-flowchart">
 						<FlowChartMenu store={this.Workflow} />
-
 						<Flowchart taskId={this.props.taskId} flowchart={this.Workflow.flowchart}></Flowchart>
-						<div style={{ height: 300 }}></div>
+						<div style={{ height: 300, display: this.Workflow.showNodeSetting ? 'block' : 'none' }}>
+							{this.Workflow.currentActionNodeKey}1
+						</div>
 					</div>
 					<div className="div-logs">
 						<ul>
+							<li>
+								<button
+									onClick={() => {
+										this.Workflow.test('clearLogs');
+									}}
+								>
+									清空操作记录
+								</button>
+							</li>
 							{this.Workflow.logs.reverse().map((x, i) => {
 								return (
 									<li className={'div-log-item'} key={x + i}>

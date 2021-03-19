@@ -22,7 +22,6 @@ export class FlowChartLoopInfo extends Component<FlowChartLoopInfoProps> {
 	}
 
 	handleSelectListItem = (value: any, option: any, currNode: any) => {
-		console.log(value, currNode);
 		this.loopValue.set(currNode.key, value);
 		const nodekey = this.props.store.currentActionNodeKey;
 		const nodeInfoData = this.props.store.flowchart.onGetNodeData(nodekey);

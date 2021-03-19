@@ -151,9 +151,6 @@ export default class DrawSpot extends Base {
 				...{
 					name: 'node_Imenu_Hover',
 					click: this.onMenuClick,
-					// click: function (e, shape) {
-					// 	e.diagram.commandHandler.showContextMenu();
-					// },
 					mouseLeave: this.onMenuMouseLeave
 				}
 			},
@@ -201,35 +198,26 @@ export default class DrawSpot extends Base {
 	};
 
 	private onMenuMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
-		try {
-			if (_obj) {
-				const node = (_obj as any).part;
-				if (node) {
-					const set = node.findObject('node_Imenu');
-					if (set) {
-						set.visible = false;
-					}
-					const setting = node.findObject('node_Imenu_Hover');
-					if (setting) {
-						setting.visible = true;
-					}
-				}
-			}
-		} catch (e) {}
+		this.showMenu(_obj, false, true);
 	};
 
 	private onMenuMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+		this.showMenu(_obj, true, false);
+	};
+
+	showMenu = (_obj: GraphObject, showMouseEnter: boolean, showMouseLeave: boolean): void => {
 		try {
 			if (_obj) {
 				const node = (_obj as any).part;
 				if (node) {
 					const set = node.findObject('node_Imenu');
-					if (set) {
-						set.visible = true;
-					}
 					const setting = node.findObject('node_Imenu_Hover');
+					if (set) {
+						set.visible = showMouseEnter;
+					}
+
 					if (setting) {
-						setting.visible = false;
+						setting.visible = showMouseLeave;
 					}
 				}
 			}

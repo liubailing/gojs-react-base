@@ -26,7 +26,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * 2，点菜单时候nodekey
 	 * 3，循环详情时候nodekey
 	 */
-	currentActionNodeKey: string = '';
+	@observable currentActionNodeKey: string = '';
 	/** 0：关闭不显示 1：显示添加节点 2：点操作 3：loopInfo */
 	@observable currentNodeMenuShowType: number = 0;
 	/** X坐标 */
@@ -37,6 +37,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	/** 流程图完成第一次加载 */
 	@observable flowChartHasInited: boolean = false;
 
+	@observable showNodeSetting: boolean = false;
 	/******************************
 	 *
 	 ******************************/
@@ -48,11 +49,14 @@ export class WorkflowHandle implements IFlowchartHander {
 	handlerClickNode(node: INodeModel): void {
 		this.log(`handler -click ${node.key}`);
 		const data = this.flowchart.onGetNodeNavigateKey(node.key) || '';
-		console.log(`handler -click data`, data);
+		this.currentActionNodeKey = node.key;
+		this.showNodeSetting = true;
 	}
 
 	handlerClickNodeAgain(node: INodeModel): void {
 		const loopKey = this.flowchart.onGetNodeFirstLoopKey(node.key) || '';
+		this.showNodeSetting = true;
+		this.currentActionNodeKey = node.key;
 		this.log(`handler -clickagin loop ${loopKey}`);
 	}
 
@@ -125,6 +129,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerShowNodeSetting(node: INodeModel, posX: number, posY: number): void {
 		this.log(`Show NodeSetting,${posX},${posY},${node.label}`);
+		this.showNodeSetting = true;
 	}
 
 	/**
@@ -139,6 +144,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 2;
 		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
+		this.showNodeSetting = true;
 	}
 
 	/** 隐藏节点菜单 */
@@ -159,6 +165,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void {
 		this.currentActionNodeKey = node.key;
 		this.log(`Show NodeInfo,${posX},${posY},${node.label}`);
+		this.showNodeSetting = true;
 	}
 
 	/** 隐藏信息面板 */
@@ -225,7 +232,9 @@ export class WorkflowHandle implements IFlowchartHander {
 	/**
 	 * 流程图点击空白处
 	 */
-	handlerClickBackground(): void {}
+	handlerClickBackground(): void {
+		this.showNodeSetting = false;
+	}
 
 	/**
 	 * 右键节点
@@ -236,6 +245,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 2;
 		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
+		this.showNodeSetting = true;
 	}
 
 	/**
@@ -243,6 +253,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerViewChanged(): void {
 		// this.hideModal();
+		this.log(`handlerViewChanged`);
 	}
 
 	/**
@@ -308,6 +319,9 @@ export class WorkflowHandle implements IFlowchartHander {
 	test = (action: string) => {
 		let addKey = '';
 		switch (action) {
+			case 'clearLogs':
+				this.logs = [];
+				break;
 			case 'render':
 				const redata = WorkflowHelper.getFlowchartData(TestDataJson);
 				this.flowchart.init(redata);
