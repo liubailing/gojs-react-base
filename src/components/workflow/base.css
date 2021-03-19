@@ -1,22 +1,27 @@
 .div-flowchart-main {
 	display: flex;
+	height: 100%;
+	box-sizing: border-box;
+	border: 1px solid #eee;
+	padding: 5px;
 }
 
 .div-flowchart-main .div-flowchart {
-	flex: 3;
+	flex: 5;
 	display: flex;
-	min-height: 600px;
-	border: 1px solid #eee;
+	/* min-height: 600px; */
+	box-sizing: border-box;
 	flex-direction: column;
+	border-bottom: 1px solid #eee;
 }
 
 .div-flowchart-main .div-logs {
 	font-size: 12px;
-	border-top: 2px solid #eee;
-	border-bottom: 2px solid #eee;
+	box-sizing: border-box;
 	padding-left: 3px;
 	flex: 1;
-	max-height: 602px;
+	border-left: 1px solid #eee;
+	/* max-height: 602px; */
 	overflow: auto;
 }
 
@@ -52,8 +57,12 @@
 
 /* 样式 */
 
-.divActions {
+.div-flowchart-main .divActions {
+	flex: 2;
 	background-color: #fff;
+	overflow: scroll;
+	clear: both;
+	border-right: 1px solid #eee;
 }
 
 .divActions .divActionItem {
@@ -63,6 +72,11 @@
 	border-bottom: 1px solid #ccc;
 	clear: both;
 }
+
+.divActions .divActionItem:hover {
+	background-color: #ddd;
+}
+
 .divActions .divActionItem > div:last-child::after {
 	clear: both;
 }
@@ -76,7 +90,7 @@
 }
 
 .divActions .divActionItem > div {
-	float: left;
+	display: inline;
 }
 .divActions .divActionItem > div > button {
 	margin: 3px 3px 0;

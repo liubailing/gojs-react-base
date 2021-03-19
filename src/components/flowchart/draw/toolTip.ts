@@ -1,7 +1,5 @@
-import go, { Margin } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
-
+import go from 'gojs';
+import { BaseColors } from '../config';
 const $ = go.GraphObject.make;
 
 export class ToolTip {
