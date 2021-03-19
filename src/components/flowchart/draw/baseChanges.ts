@@ -38,8 +38,22 @@ export default class baseChanges {
 				(group_Title as any).stroke = BaseColors.group_font;
 			}
 		}
+	}
 
-		this.setActionCss(node, isShow);
+	/**
+	 * 修改样式
+	 * @param node 节点
+	 * @param isShow 是否显示
+	 */
+	static setActionHide(node: go.Part) {
+		const node_Iset = node.findObject('node_Iset');
+		const node_Imenu = node.findObject('node_Imenu');
+		if (node_Iset) {
+			node_Iset.visible = false;
+		}
+		if (node_Imenu) {
+			node_Imenu.visible = false;
+		}
 	}
 
 	/**

@@ -205,6 +205,7 @@ export default class DrawLoop extends Base {
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setListCss(node, false);
+			BaseChanges.setActionCss(node, false);
 		}
 	};
 
@@ -214,6 +215,7 @@ export default class DrawLoop extends Base {
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setListCss(node, true);
+			BaseChanges.setActionCss(node, true);
 		}
 
 		if (node && node.data) {

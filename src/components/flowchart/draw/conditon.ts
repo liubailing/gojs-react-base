@@ -92,6 +92,7 @@ export default class DrawCondition extends Base {
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
+			BaseChanges.setActionCss(node, false);
 		}
 	};
 
@@ -99,6 +100,7 @@ export default class DrawCondition extends Base {
 		const node = (obj as any).part;
 
 		if (node && node.diagram && !node.isSelected) {
+			BaseChanges.setActionCss(node, true);
 			BaseChanges.setGroupCss(node, true);
 		}
 	};

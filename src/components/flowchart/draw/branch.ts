@@ -173,11 +173,11 @@ export default class DrawBranch extends Base {
 
 	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		// console.log('node', node);
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setBranchCss(node, false);
+			BaseChanges.setActionCss(node, false);
 		}
 	}
 
@@ -188,6 +188,7 @@ export default class DrawBranch extends Base {
 		if (node && node.diagram) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
+			BaseChanges.setActionCss(node, true);
 		}
 	}
 
@@ -221,6 +222,7 @@ export default class DrawBranch extends Base {
 		} else {
 			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setBranchCss(node, false);
+			BaseChanges.setActionHide(node);
 		}
 		// }
 	};

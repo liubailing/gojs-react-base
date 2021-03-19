@@ -71,7 +71,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 */
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const { name } = e;
-
 		switch (name) {
 			case 'ObjectSingleClicked':
 				if (
@@ -108,6 +107,12 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					} else {
 						this.flowchartHander.handlerClickExcludeNode();
 					}
+
+					// if (this.flowchartDiagram) {
+					// 	// debugger;
+					// 	// try to center the diagram at the first node that was found
+					// 	this.flowchartDiagram.centerRect(firstNode.actualBounds);
+					// }
 				}
 				// 恢复默认值
 				this.setNodeSelected_OnClick = true;
@@ -731,7 +736,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			if (objPre) {
 				BaseChanges.setNodeCss(objPre, false);
 				BaseChanges.setListCss(objPre, false);
-				BaseChanges.setActionCss(objPre, false);
+				// BaseChanges.setActionCss(objPre, false);
 			}
 		}
 	}
@@ -742,7 +747,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			if (objPre) {
 				BaseChanges.setNodeCss(objPre, true);
 				BaseChanges.setListCss(objPre, true);
-				BaseChanges.setActionCss(objPre, true);
+				// BaseChanges.setActionCss(objPre, true);
 			}
 		}
 	}
