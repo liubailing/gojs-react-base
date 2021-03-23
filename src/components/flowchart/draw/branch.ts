@@ -16,6 +16,7 @@ export default class DrawBranch extends Base {
 		super();
 		this.callBack = e;
 	}
+
 	getBranch(): go.Group {
 		const $DrawSpot = new DrawSpot(this.callBack);
 		return $(

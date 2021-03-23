@@ -27,18 +27,18 @@ export default {
 						// { key: 'data11-2', type: ActionNodeType.ExtractData as string },
 					]
 				},
-				// {
-				// 	key: 'branch1-2',
-				// 	type: ActionNodeType.Branch as string,
-				// 	childs: [
-				// 		{ key: 'jd-chaoshi', label: '打开生鲜超市', type: ActionNodeType.Navigate as string },
-				// 		{ key: 'data12-2', type: ActionNodeType.ExtractData as string }
-				// 	]
-				// },
-				// {
-				// 	key: 'branch1-3',
-				// 	type: ActionNodeType.Branch as string
-				// },
+				{
+					key: 'branch1-2',
+					type: ActionNodeType.Branch as string,
+					childs: [
+						{ key: 'jd-chaoshi', label: '打开生鲜超市', type: ActionNodeType.Navigate as string },
+						{ key: 'data12-2', type: ActionNodeType.ExtractData as string }
+					]
+				},
+				{
+					key: 'branch1-3',
+					type: ActionNodeType.Branch as string
+				},
 				{
 					key: 'branch1-4',
 					type: ActionNodeType.Branch as string,
@@ -55,22 +55,22 @@ export default {
 				}
 			]
 		},
-		// { key: 'data00-2', type: ActionNodeType.ExtractData as string, parentKey: 'root' },
-		// {
-		// 	key: 'jd-dingdan',
-		// 	label: '打开我的订单',
-		// 	type: ActionNodeType.Navigate as string,
-		// 	data: { tip: '这是一个loop存值111111' },
-		// 	parentKey: 'root'
-		// },
-		// { key: 'data44-2', type: ActionNodeType.ExtractData as string, parentKey: 'root' },
-		// {
-		// 	key: 'loop',
-		// 	type: ActionNodeType.Loop as string,
-		// 	parentKey: 'root',
-		// 	data: { tip: '这是一个loop存值' },
-		// 	childs: []
-		// },
+		{ key: 'data00-2', type: ActionNodeType.ExtractData as string, parentKey: 'root' },
+		{
+			key: 'jd-dingdan',
+			label: '打开我的订单',
+			type: ActionNodeType.Navigate as string,
+			data: { tip: '这是一个loop存值111111' },
+			parentKey: 'root'
+		},
+		{ key: 'data44-2', type: ActionNodeType.ExtractData as string, parentKey: 'root' },
+		{
+			key: 'loop',
+			type: ActionNodeType.Loop as string,
+			parentKey: 'root',
+			data: { tip: '这是一个loop存值' },
+			childs: []
+		},
 		{
 			key: 'loop2',
 			label: '循环循环循环循环循环循环循环循环循环循环循环',

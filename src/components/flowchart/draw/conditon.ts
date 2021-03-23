@@ -100,12 +100,8 @@ export default class DrawCondition extends Base {
 		const node = (obj as any).part;
 
 		if (node && node.diagram && !node.isSelected) {
-			BaseChanges.setActionCss(node, true);
 			BaseChanges.setGroupCss(node, true);
+			BaseChanges.setActionCss(node, true);
 		}
 	};
 }
-
-// const drawCondition = new DrawCondition();
-
-// export default drawCondition;

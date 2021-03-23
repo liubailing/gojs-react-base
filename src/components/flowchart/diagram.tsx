@@ -68,17 +68,6 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 				eType: HandleEnum.Init
 			} as INodeEvent;
 			this.props.onFlowchartEvent(e);
-
-			// 流程图不让监听 scroll 事件
-			// const divdia = document.getElementsByClassName(`diagram-${this.props.diagramId}`);
-			// if (divdia && divdia[0]) {
-			// 	const divd = divdia[0].getElementsByTagName('div')[0];
-			// 	if (divd) {
-			// 		divd.addEventListener('scroll', function () {
-			// 			// console.log(`~ test flowchart ~`, scroll);
-			// 		});
-			// 	}
-			// }
 		}
 	}
 
@@ -210,7 +199,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		myDiagram.groupTemplateMap.add(
 			DiagramEnum.ConditionGroup,
 			new DrawCondition(this.props.onFlowchartEvent).getCondition()
-		); // end Group
+		);
 
 		/**
 		 * 条件分支
@@ -284,17 +273,13 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	/**
 	 *
 	 */
-	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`);
-		// var dia = this.props.store.diagram;
-		// dia.div.style.height = (dia.documentBounds.height + 24) + "px";
-	};
+	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {};
 
 	/**
 	 * 流程图画完
 	 */
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ LayoutCompleted 123`);
+		console.log(`~ test flowchart ~ LayoutCompleted 123`);
 		const e: INodeEvent = {
 			eType: HandleEnum.ReRender
 		} as INodeEvent;

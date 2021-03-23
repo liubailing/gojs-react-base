@@ -15,10 +15,9 @@ export default class ContextMenuTool extends go.ContextMenuTool {
 	}
 
 	positionContextMenu(contextmenu: go.Adornment, obj: go.GraphObject | null): void {
-		// console.log(`-------positionContextMenu`);
-		// //let pos = this.diagram.lastInput.documentPoint.copy();
+		// let pos = this.diagram.lastInput.documentPoint.copy();
 		// let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
-		// // let node: go.Part = this.diagram.lastInput as go.Part;
+		// let node: go.Part = this.diagram.lastInput as go.Part;
 		// super.positionContextMenu(node.getDocumentPoint(go.Spot.Center), null);
 	}
 	hideContextMenu(): void {

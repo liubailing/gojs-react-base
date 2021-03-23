@@ -57,8 +57,6 @@ export class DrawTitle {
 					...obj,
 					...{
 						editable: DiagramSetting.renameable,
-						mouseEnter: this.onMouseEnter,
-						mouseLeave: this.onMouseLeave,
 						font: DiagramSetting.font,
 						textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
 							// todo 1
@@ -66,11 +64,6 @@ export class DrawTitle {
 						}
 					}
 				},
-				// new go.Binding('text', 'isSel', function (s, y) {
-				// 	if (s || y) return BaseColors.highlight;
-				// 	return BaseColors.backgroud;
-				// 	return s ? BaseColors.highlight : BaseColors.backgroud;
-				// }).ofObject()
 				new go.Binding('text', this.showLabel, this.covShowLabel)
 			)
 		);
@@ -116,20 +109,6 @@ export class DrawTitle {
 			}
 		}
 		return { len };
-	};
-
-	/**
-	 * 鼠标移入显示全名val
-	 */
-	private onMouseEnter = (_val: any, _obj: any): void => {
-		// const node = (_obj as any).part;
-	};
-
-	/**
-	 * 鼠标移出隐藏
-	 */
-	private onMouseLeave = (_val: any, _obj: any): void => {
-		// const node = (_obj as any).part;
 	};
 }
 

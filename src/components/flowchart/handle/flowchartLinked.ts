@@ -11,41 +11,43 @@ import { NodeStore, LineStore } from '../store';
 import { FlowchartModel } from '../model';
 declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
 
+/**
+ *
+ */
+interface IWaiteEvent {
+	/** 监听的事件类型 */
+	eType: 'setSelected' | 'setSelectedTriggerClick';
+	/** 当前点 */
+	nodeKey: string;
+}
+
 export default class HanderFlowchart extends flowchartStore implements IDiagramHander {
 	/** 调用 对外的暴露的接口方法 */
 	flowchartHander: IFlowchartHander;
 	flowchartDiagram: go.Diagram | null = null;
 
 	/**
-	 * 设置选中节点后并触发 click,
+	 * 是否已经显示了节点/线的菜单弹窗/其他弹窗,
+	 * 默认是没有显示
+	 * 现在是当你去得到点/线的坐标时候。就认为你打开的弹窗
 	 */
-	private _showContentView: boolean = false;
+	private _showFlowchartPopups: boolean = false;
 
 	/**
-	 * 前一次激活的
+	 * 上一次操作的节点ID
 	 */
 	private _preActiveNodeKey: string = '';
 
 	/**
-	 * 设置选中节点后并触发 click,
-	 * 为false的时候不触发click
+	 * 在 Diagram LayoutCompleted 后要触发的事件，
+	 * 存在这种情况，外部希望触发一个节点（但是该节点可能还没绘制出来），那我们先存储要希望的操作，等LayoutCompleted后再执行
 	 */
-	private setNodeSelected_OnClick = true;
-	private _willSelectedNodeKey = '';
+	private _afterRenderEvent: IWaiteEvent | null = null;
 
-	/**
-	 * 设置被复制的节点
-	 * 为false的时候不触发click
-	 */
-	private _willCopyNodeId = '';
 	/**
 	 * 要剪切的节点
 	 */
 	private _willCutNodeId = '';
-	/**
-	 * 是否只复制一次
-	 */
-	private _isCopyOnce = false;
 
 	constructor(handles: IFlowchartHander) {
 		super();
@@ -68,30 +70,18 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * Handle any relevant DiagramEvents, in this case just selection changes.
 	 * On ChangedSelection, find the corresponding data and set the selectedData state.
 	 * @param e a GoJS DiagramEvent
+	 *
+	 * 重要说明
+	 * 根据业务需求
+	 * 因为 ChangedSelection 必然要改变节点的选中状态，且必须触发一次选中，
+	 * 所以 ObjectSingleClicked 就不触发选中事件，不然会引起重复触发点击
 	 */
 	public handleDiagramEvent(e: go.DiagramEvent) {
 		const { name } = e;
 		switch (name) {
-			case 'ObjectSingleClicked':
-				if (
-					e.subject &&
-					e.subject.part &&
-					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
-				) {
-					this._hideContextMenu();
-					const clickNode = e.subject.part.data;
-					if (clickNode && clickNode.key && this._preActiveNodeKey === clickNode.key) {
-						this._setNodeFocus(clickNode.key);
-						this.flowchartHander.handlerClickNodeAgain(clickNode);
-						if (this._preActiveNodeKey !== clickNode.key) {
-							this._setNodeBlur(this._preActiveNodeKey);
-						}
-					}
-
-					this._preActiveNodeKey = clickNode.key;
-				}
-				break;
 			case 'ChangedSelection':
+				// 都会执行的方法 ObjectSingleClicked、ObjectContextClicked、BackgroundSingleClicked
+				this._hideContextMenu();
 				const firstNode = e.subject.first();
 				if (
 					firstNode &&
@@ -99,31 +89,45 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 					firstNode.data &&
 					(firstNode.part instanceof go.Node || firstNode.part instanceof go.Group)
 				) {
-					this._hideContextMenu();
 					const changedNode = firstNode.data;
-					if (changedNode && this.setNodeSelected_OnClick && this.flowchartHander.handlerClickNode) {
-						this.flowchartHander.handlerClickNode(changedNode);
-						this._setNodeBlur(this._preActiveNodeKey);
+					if (changedNode) {
+						if (this._preActiveNodeKey !== changedNode.key) {
+							// 清除上一个节点的 Spot样式
+							this._setNodeBlur(this._preActiveNodeKey);
+							this._preActiveNodeKey = changedNode.key;
+						}
+						// 同步当前节点的 Spot样式
+						this._setNodeFocus(changedNode.key);
+
+						// 如果只设置选中 且 只是选中不触发click回调函数
+						if (this._afterRenderEvent && this._afterRenderEvent.eType === 'setSelected') {
+							return;
+						} else {
+							this.flowchartHander.handlerClickNode(changedNode);
+						}
 					} else {
+						/**
+						 * 当出现不符合条件的节点时候，走这里。
+						 * 目前基本触发不到
+						 */
 						this.flowchartHander.handlerClickExcludeNode();
 					}
-
-					// if (this.flowchartDiagram) {
-					// 	// debugger;
-					// 	// try to center the diagram at the first node that was found
-					// 	this.flowchartDiagram.centerRect(firstNode.actualBounds);
-					// }
 				}
-				// 恢复默认值
-				this.setNodeSelected_OnClick = true;
 				break;
-
-			case 'ObjectContextClicked':
-				this._hideContextMenu();
-				if (!this.flowchartDiagram) {
-					return;
+			case 'ObjectSingleClicked': // 默认会先触发 ChangedSelection
+				if (
+					e.subject &&
+					e.subject.part &&
+					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
+				) {
+					const clickNode = e.subject.part.data;
+					if (clickNode && clickNode.key && this._preActiveNodeKey === clickNode.key) {
+						this.flowchartHander.handlerClickNodeAgain(clickNode);
+					}
+					this._preActiveNodeKey = clickNode.key;
 				}
-
+				break;
+			case 'ObjectContextClicked': // 默认会先触发 ChangedSelection
 				if (
 					e.subject &&
 					e.subject.part &&
@@ -131,28 +135,19 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				) {
 					const contextNode = e.subject.part.data;
 					if (contextNode) {
-						const pos = this._getPostion;
-						this.flowchartHander.handlerRightClickNode(contextNode, pos.x, pos.y);
-						if (this._preActiveNodeKey !== contextNode.key) {
-							this._setNodeBlur(this._preActiveNodeKey);
-							this._preActiveNodeKey = contextNode.key;
-						}
-					} else {
-						this.flowchartHander.handlerClickExcludeNode();
+						const { x } = this._getPostion();
+						const { y } = this._getNodeDocumentOffset(contextNode);
+						this.flowchartHander.handlerRightClickNode(contextNode, x, y);
 					}
 				}
-
 				break;
-			case 'BackgroundSingleClicked':
-				this._hideContextMenu();
-				this._setNodeBlur(this._preActiveNodeKey);
+			case 'BackgroundSingleClicked': // 默认会先触发 ChangedSelection
 				this.flowchartHander.handlerClickBackground();
 				break;
 			case 'ViewportBoundsChanged':
 				this.flowchartHander.handlerViewChanged();
 				break;
 			case 'LostFocus':
-				// this._hideContextMenu();
 				this.flowchartHander.handlerLostFocus();
 				break;
 			default:
@@ -202,31 +197,36 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		const node: INodeModel = e.node ? e.node : NodeStore.baseModel;
 		const line: ILineModel = e.line ? e.line : LineStore.getLink('', '', '');
 		let pos;
-
 		switch (e.eType) {
 			case HandleEnum.Init:
 				this.flowchartHander.handlerInit();
 				break;
+			/** 流程图重新渲染后事件 */
 			case HandleEnum.ReRender:
-				if (this.setNodeSelected_OnClick && this._willSelectedNodeKey) {
-					this._setNodeSelected(this._willSelectedNodeKey);
+				if (this._afterRenderEvent && this._afterRenderEvent.nodeKey) {
+					switch (this._afterRenderEvent.eType) {
+						case 'setSelected':
+							this._setNodeSelected(this._afterRenderEvent.nodeKey, false);
+							break;
+						case 'setSelectedTriggerClick':
+							this._setNodeSelected(this._afterRenderEvent.nodeKey, true);
+							break;
+					}
 				}
+				// 清空事件
+				this._afterRenderEvent = null;
 				break;
 			/** 打开点菜单 */
 			case HandleEnum.ShowNodeMenu:
-				pos = this._getPostion;
+				pos = this._getNodeDocumentOffset(node);
 				this.flowchartHander.handlerShowNodeMenu(node, pos.x, pos.y);
 				break;
 			case HandleEnum.ShowNodeInfo:
-				pos = this._getPostion;
+				pos = this._getNodeDocumentOffset(node);
 				this.flowchartHander.handlerShowNodeInfo(node, pos.x, pos.y);
 				break;
-			case HandleEnum.ShowNodeSetting:
-				pos = this._getPostion;
-				this.flowchartHander.handlerShowNodeSetting(node, pos.x, pos.y);
-				break;
 			case HandleEnum.ShowLineMenu:
-				pos = this._getPostion;
+				pos = this._getLIneDocumentOffset(line);
 				this.flowchartHander.handlerShowLineMenu(line, pos.x, pos.y);
 				break;
 			case HandleEnum.MouseEnter:
@@ -301,7 +301,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
 			if (resNode) {
-				this.flowchartHander.handlerAddNode(resNode, false);
+				this.flowchartHander.handlerAddNode(resNode);
 			}
 			return res;
 		}
@@ -319,7 +319,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
 			if (resNode) {
-				this.flowchartHander.handlerAddNode(resNode, false);
+				this.flowchartHander.handlerAddNode(resNode);
 			}
 			return res;
 		}
@@ -337,7 +337,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
 			if (resNode) {
-				this.flowchartHander.handlerAddNode(resNode, false);
+				this.flowchartHander.handlerAddNode(resNode);
 			}
 			return res;
 		}
@@ -356,7 +356,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
 			if (resNode) {
-				this.flowchartHander.handlerAddNode(resNode, false);
+				this.flowchartHander.handlerAddNode(resNode);
 			}
 			return res;
 		}
@@ -374,7 +374,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
 			if (resNode) {
-				this.flowchartHander.handlerAddNode(resNode, false);
+				this.flowchartHander.handlerAddNode(resNode);
 			}
 			return res;
 		}
@@ -443,8 +443,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param isCopyOnce 是否只复制一次，
 	 */
 	onCopyNode(nodekey: string, setHight: boolean = false, isCopyOnce: boolean = false) {
-		this._willCopyNodeId = nodekey;
-		this._isCopyOnce = isCopyOnce;
 		this.getNodeLinked(nodekey);
 		if (setHight && this.flowchartDiagram) {
 			const node = this.flowchartDiagram.findNodeForKey(nodekey);
@@ -485,10 +483,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			this.flowchartHander.handlerPaste(resNodekey);
 		}
 
-		// 如果只复制一次
-		if (this._isCopyOnce) {
-			this._willCopyNodeId = '';
-		}
 		return resNodekey;
 	}
 
@@ -535,9 +529,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	}
 
 	private _hideContextMenu() {
-		if (this.flowchartDiagram && this._showContentView) {
+		if (this.flowchartDiagram && this._showFlowchartPopups) {
 			this.flowchartHander.handlerHideModal();
-			this._showContentView = false;
+			this._showFlowchartPopups = false;
 		}
 	}
 
@@ -557,13 +551,10 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey
 	 * @param data
 	 */
-	onGetNodeData(nodekey: string, shouldHander: boolean = true) {
+	onGetNodeData(nodekey: string) {
 		if (nodekey) {
 			const data = this.cacheNodeData.get(nodekey);
 			if (data && Object.keys(data).length > 0) {
-				if (shouldHander) {
-					this.flowchartHander.handlerGetNodeData(data);
-				}
 				return data;
 			}
 		}
@@ -576,11 +567,25 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param clikckNode 是否要触发click
 	 */
 	onSetNodeSelected(nodekey: string, clikckNode: boolean = true) {
-		// 1、首先赋值
-		this.setNodeSelected_OnClick = clikckNode;
-		this._willSelectedNodeKey = nodekey;
-		// 2、设置选中
-		this._setNodeSelected(nodekey);
+		if (this.flowchartDiagram && nodekey) {
+			const obj = this.flowchartDiagram.findNodeForKey(nodekey);
+			// 1 如果直接存在这个节点
+			if (obj) {
+				// 1.1、设置选中 对已经存在的节点可以直接起作用
+				this._setNodeSelected(nodekey, clikckNode);
+			} else {
+				/**
+				 * 2、如果不存在这个节点，则交给流程图渲染后处理
+				 * 这里有点难理解
+				 * 会在 handFlowchartEvent 方法 case HandleEnum.ReRender的分支条件下触发
+				 * 利用 Diagram 渲染完成触发 LayoutCompleted 事件，后执行。
+				 */
+				this._afterRenderEvent = {
+					eType: clikckNode ? 'setSelectedTriggerClick' : 'setSelected',
+					nodeKey: nodekey
+				};
+			}
+		}
 	}
 
 	/**
@@ -691,11 +696,73 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return '';
 	}
 
+	/**
+	 * 得到所有数据
+	 */
 	onGetAll(): FlowchartModel {
 		const res = this.getData();
 		return res;
 	}
 
+	/**
+	 * 得到node 右上角（top right）的坐标
+	 * @param nodekey
+	 */
+	onGetNodeDocumentOffsetForMenu(nodekey: string): { x: number; y: number } {
+		const data = this.mapNode.get(nodekey);
+		return this._getNodeDocumentOffset(data);
+	}
+	/**
+	 * 得到line 右上角(top right)的坐标
+	 * @param nodekey
+	 */
+	onGetLineDocumentOffsetForMenu(line: ILineModel): { x: number; y: number } {
+		return this._getLIneDocumentOffset(line);
+	}
+
+	/**
+	 * 得到节点 左上角在 document的坐标
+	 * @param nodekey
+	 */
+	onGetNodeDocumentOffset(nodekey: string): { x: number; y: number } {
+		const node = this.mapNode.get(nodekey);
+		if (this.flowchartDiagram && node) {
+			const currentNode = this.flowchartDiagram.findNodeForKey(node.key);
+			if (currentNode) {
+				const pos = this.flowchartDiagram.transformDocToView(currentNode.getDocumentPoint(go.Spot.TopLeft));
+				// 如果是分支，x偏移5px
+				return {
+					x: pos.x,
+					y: pos.y
+				};
+			}
+		}
+		return {
+			x: -10000,
+			y: -10000
+		};
+	}
+
+	/**
+	 * 显示node在中央
+	 * 为了优化
+	 * @param _centerKey
+	 */
+	onNodeCeterRect = (_centerKey: string) => {
+		if (this.flowchartDiagram) {
+			if (_centerKey) {
+				const _currentNode = this.flowchartDiagram.findNodeForKey(_centerKey);
+				if (_currentNode) {
+					this.flowchartDiagram.centerRect(_currentNode.actualBounds);
+					// this._centerKey = '';
+				}
+			}
+		}
+	};
+
+	/**
+	 * 判断是否能复制
+	 */
 	get canCopy(): boolean {
 		if (window.gojsCopyNodelinked) {
 			return true;
@@ -703,6 +770,9 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		return false;
 	}
 
+	/**
+	 * 判断是否能剪切
+	 */
 	get canCut(): boolean {
 		if (this._willCutNodeId && this._willCutNodeId.length > 2) {
 			return true;
@@ -718,42 +788,61 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		this.flowchartHander.handlerChanged();
 	}
 
-	private _setNodeSelected(key: string) {
+	private _setNodeSelected(key: string, triggerClikckEvent: boolean) {
 		if (this.flowchartDiagram && key) {
 			const obj = this.flowchartDiagram.findNodeForKey(key);
 			if (obj) {
 				this.flowchartDiagram.clearSelection();
+
+				// 如果要触发点击事件
 				this.flowchartDiagram.select(obj);
-				this._willSelectedNodeKey = '';
-				this._setNodeFocus(key);
+
+				// 修正节点
+				if (this._preActiveNodeKey !== key) {
+					this._preActiveNodeKey = key;
+				}
 			}
 		}
 	}
 
+	/**
+	 *  只所以要这个方法，是因为失焦时候要对 spot 样式同步修改（比如：菜单）
+	 * @param key
+	 */
 	private _setNodeBlur(key: string) {
 		if (this.flowchartDiagram && key) {
 			const objPre = this.flowchartDiagram.findNodeForKey(key);
 			if (objPre) {
 				BaseChanges.setNodeCss(objPre, false);
 				BaseChanges.setListCss(objPre, false);
-				// BaseChanges.setActionCss(objPre, false);
+				BaseChanges.setGroupCss(objPre, false);
+				BaseChanges.setActionCss(objPre, false);
 			}
 		}
 	}
 
+	/**
+	 *  之所以要这个方法，是因为选中时候要对 spot 样式同步修改（比如：菜单）
+	 * @param key
+	 */
 	private _setNodeFocus(key: string) {
 		if (this.flowchartDiagram && key) {
 			const objPre = this.flowchartDiagram.findNodeForKey(key);
 			if (objPre) {
 				BaseChanges.setNodeCss(objPre, true);
+				BaseChanges.setGroupCss(objPre, true);
 				BaseChanges.setListCss(objPre, true);
-				// BaseChanges.setActionCss(objPre, true);
+				BaseChanges.setActionCss(objPre, true);
 			}
 		}
 	}
 
-	private get _getPostion(): { x: number; y: number } {
-		this._showContentView = true;
+	/**
+	 * 得到当前点击的docment坐标
+	 */
+	private _getPostion(): { x: number; y: number } {
+		// 默认打开的弹窗
+		this._showFlowchartPopups = true;
 		if (this.flowchartDiagram) {
 			const offset = this.flowchartDiagram.lastInput.viewPoint;
 			return {
@@ -762,8 +851,57 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			};
 		}
 		return {
-			x: 0,
-			y: 0
+			x: -10000,
+			y: -10000
+		};
+	}
+
+	/**
+	 *  得到node在docment的坐标
+	 * @param node
+	 */
+	private _getNodeDocumentOffset(node: INodeModel | undefined): { x: number; y: number } {
+		if (this.flowchartDiagram && node) {
+			// 默认打开的弹窗
+			this._showFlowchartPopups = true;
+			const currentNode = this.flowchartDiagram.findNodeForKey(node.key);
+
+			if (currentNode) {
+				const pos = this.flowchartDiagram.transformDocToView(currentNode.getDocumentPoint(go.Spot.TopRight));
+				// 如果是分支，x偏移5px
+				return {
+					x: pos.x - (node.type === NodeEnum.Branch ? 22 : 12),
+					y: pos.y + 32
+				};
+			}
+		}
+		return {
+			x: -10000,
+			y: -10000
+		};
+	}
+
+	/**
+	 *  得到node在docment的坐标
+	 * @param node
+	 */
+	private _getLIneDocumentOffset(line: ILineModel | undefined): { x: number; y: number } {
+		if (this.flowchartDiagram && line) {
+			// 默认打开的弹窗
+			this._showFlowchartPopups = true;
+			const currentNode = this.flowchartDiagram.findLinkForData(line);
+			if (currentNode) {
+				const pos = this.flowchartDiagram.transformDocToView(currentNode.getDocumentPoint(go.Spot.TopRight));
+				// 如果是分支，x偏移5px
+				return {
+					x: pos.x - 85,
+					y: pos.y + 20
+				};
+			}
+		}
+		return {
+			x: -10000,
+			y: -10000
 		};
 	}
 }

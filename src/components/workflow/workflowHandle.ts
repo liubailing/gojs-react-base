@@ -1,10 +1,11 @@
 import { IFlowchartHander, INodeModel, ILineModel } from '../flowchart/interface';
 import { HanderFlowchart } from '../flowchart/handle';
-import { observable } from 'mobx';
+import { observable, reaction } from 'mobx';
 import { NodeEnum } from '../flowchart/enum';
 import { WorkflowHelper } from './index';
 import { FlowchartModel } from '../flowchart/model';
 import TestDataJson from './testData';
+import ReactDOM from 'react-dom';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -12,6 +13,7 @@ import TestDataJson from './testData';
  */
 export class WorkflowHandle implements IFlowchartHander {
 	flowchart: HanderFlowchart;
+	flowchartRef: any;
 	constructor(taskId: string) {
 		this.taskId = taskId;
 		this.flowchart = new HanderFlowchart(this);
@@ -26,11 +28,14 @@ export class WorkflowHandle implements IFlowchartHander {
 	 * 2，点菜单时候nodekey
 	 * 3，循环详情时候nodekey
 	 */
-	@observable currentActionNodeKey: string = '';
+	currentActionNodeKey: string = '';
+	currentActionLine: ILineModel | undefined = undefined;
 	/** 0：关闭不显示 1：显示添加节点 2：点操作 3：loopInfo */
 	@observable currentNodeMenuShowType: number = 0;
 	/** X坐标 */
 	@observable currentNodeMenuPosX: number = 0;
+	/** 纠偏 X坐标 */
+	@observable currentNodeMenuPosXOffset: number = 0;
 	/** Y坐标 */
 	@observable currentNodeMenuPosY: number = 0;
 
@@ -67,8 +72,8 @@ export class WorkflowHandle implements IFlowchartHander {
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNode(node: INodeModel, isDrag: boolean) {
-		this.log(`handler -add ${node.key}, ${isDrag}`);
+	handlerAddNode(node: INodeModel) {
+		this.log(`handler -add ${node.key}`);
 	}
 
 	handlerShowEditNodeName(currName: string, currNodeKey: string) {
@@ -91,10 +96,6 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.log(`handler -change`);
 	}
 
-	handlerWillCopy(): void {
-		this.log(`handler -will copy`);
-	}
-
 	handlerPaste(currNodeKey: string): void {
 		this.log(`handler -Paste ${currNodeKey}`);
 	}
@@ -113,10 +114,6 @@ export class WorkflowHandle implements IFlowchartHander {
 
 	handlerHoverNodeInfo(nodedata: any) {
 		this.log(`handler -弃用 nodeinfo `);
-	}
-
-	handlerGetNodeData() {
-		this.log(`handler -getNodeData `);
 	}
 
 	// --------------
@@ -143,7 +140,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosX = posX - 100;
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 2;
-		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
+		// this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
 		this.showNodeSetting = true;
 	}
 
@@ -153,6 +150,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosX = 0;
 		this.currentNodeMenuPosY = 0;
 		this.currentNodeMenuShowType = 0;
+		this.currentNodeMenuPosXOffset = 0;
 		this.log(`hide NodeSetting`);
 	}
 
@@ -164,7 +162,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerShowNodeInfo(node: INodeModel, posX: number, posY: number): void {
 		this.currentActionNodeKey = node.key;
-		this.log(`Show NodeInfo,${posX},${posY},${node.label}`);
+		// this.log(`Show NodeInfo,${posX},${posY},${node.label}`);
 		this.showNodeSetting = true;
 	}
 
@@ -185,6 +183,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerShowLineMenu(line: ILineModel, posX: number, posY: number): void {
 		this.currentActionNodeKey = line.to;
+		this.currentActionLine = line;
 		this.currentNodeMenuPosX = posX - 70;
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 1;
@@ -193,7 +192,10 @@ export class WorkflowHandle implements IFlowchartHander {
 
 	/** 隐藏线面板 */
 	handlerHideLineMenu(): void {
+		this.currentActionNodeKey = '';
+		this.currentActionLine = undefined;
 		this.currentNodeMenuShowType = 0;
+		this.currentNodeMenuPosXOffset = 0;
 		this.log(`handler hide Line`);
 	}
 
@@ -209,6 +211,7 @@ export class WorkflowHandle implements IFlowchartHander {
 		this.currentNodeMenuPosX = 0;
 		this.currentNodeMenuPosY = 0;
 		this.currentNodeMenuShowType = 0;
+		this.currentNodeMenuPosXOffset = 0;
 	}
 
 	/**
@@ -234,6 +237,7 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerClickBackground(): void {
 		this.showNodeSetting = false;
+		this.hideModal();
 	}
 
 	/**
@@ -241,19 +245,53 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerRightClickNode(node: INodeModel, posX: number, posY: number): void {
 		this.currentActionNodeKey = node.key;
-		this.currentNodeMenuPosX = posX - 100;
+		this.currentNodeMenuPosX = posX - 50;
 		this.currentNodeMenuPosY = posY;
 		this.currentNodeMenuShowType = 2;
-		this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
+		// this.log(`Show NodeMenu,${posX},${posY},${node.label}`);
 		this.showNodeSetting = true;
+		const { x, y } = this.flowchart.onGetNodeDocumentOffsetForMenu(node.key);
+		this.currentNodeMenuPosXOffset = posX - x + 50;
+		console.log(`------- 1111`, this.currentNodeMenuPosXOffset);
 	}
 
 	/**
 	 * 流程图渲染变化
 	 */
 	handlerViewChanged(): void {
-		// this.hideModal();
-		this.log(`handlerViewChanged`);
+		if (this.currentNodeMenuShowType) {
+			/** 0：关闭不显示 1：显示添加节点 2：点操作 3：loopInfo */
+			let node;
+			let pos = { x: -10000, y: -10000 };
+			switch (this.currentNodeMenuShowType) {
+				case 2:
+					if (this.currentActionNodeKey) {
+						node = this.flowchart.onGetNode(this.currentActionNodeKey);
+						pos = this.flowchart.onGetNodeDocumentOffsetForMenu(this.currentActionNodeKey);
+						if (node) {
+							this.handlerShowNodeMenu(node, pos.x + this.currentNodeMenuPosXOffset, pos.y);
+						}
+					}
+					break;
+				case 1:
+					if (this.currentActionLine) {
+						pos = this.flowchart.onGetLineDocumentOffsetForMenu(this.currentActionLine);
+						this.handlerShowLineMenu(this.currentActionLine, pos.x, pos.y);
+					}
+					break;
+				case 3:
+					if (this.currentActionNodeKey) {
+						node = this.flowchart.onGetNode(this.currentActionNodeKey);
+						pos = this.flowchart.onGetNodeDocumentOffsetForMenu(this.currentActionNodeKey);
+						if (node) {
+							this.handlerShowNodeInfo(node, pos.x, pos.y);
+						}
+					}
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	/**
@@ -282,7 +320,7 @@ export class WorkflowHandle implements IFlowchartHander {
 			},
 			...{
 				key: parentKey,
-				data: this.flowchart.onGetNodeData(parentKey, false),
+				data: this.flowchart.onGetNodeData(parentKey),
 				childKeys: this.flowchart.onGetNodeChildKeys(parentKey),
 				childs: []
 			}
@@ -305,7 +343,7 @@ export class WorkflowHandle implements IFlowchartHander {
 			}
 
 			if (!thisItme.guidNodeType.includes(item.value.type as NodeEnum)) {
-				res.data = this.flowchart.onGetNodeData(item.value.key, false) as any;
+				res.data = this.flowchart.onGetNodeData(item.value.key) as any;
 				resData.childs.push(res as never);
 			}
 			// 下一轮循环
@@ -313,6 +351,37 @@ export class WorkflowHandle implements IFlowchartHander {
 		}
 
 		return resData;
+	}
+
+	getflowchartDom = (): HTMLElement | null => {
+		if (this.flowchartRef) {
+			// const element = document.getElementsByClassName(this.tableRef.current.props.className)[0] as HTMLElement;
+			const element = ReactDOM.findDOMNode(this.flowchartRef) as HTMLElement;
+			if (element) {
+				return element;
+			}
+		}
+		return null;
+	};
+
+	getflowchartClientRect = (): DOMRect | null => {
+		const flDom = this.getflowchartDom();
+		if (flDom) {
+			const rect = flDom.getBoundingClientRect();
+			return rect;
+		}
+		return null;
+	};
+
+	centerView(nodekey: string) {
+		const rect = this.getflowchartClientRect();
+
+		if (rect) {
+			const { x, y } = this.flowchart.onGetNodeDocumentOffset(this.currentActionNodeKey);
+			if (x < rect.x || y < rect.y || x > rect.x + rect.width || y > rect.y + rect.height) {
+				this.flowchart.onNodeCeterRect(this.currentActionNodeKey);
+			}
+		}
 	}
 
 	tempActionData: any = null;
@@ -354,7 +423,10 @@ export class WorkflowHandle implements IFlowchartHander {
 				}
 				break;
 			case 'add_loop':
-				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Loop);
+				addKey = this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Loop);
+				if (addKey) {
+					this.flowchart.onSetNodeSelected(addKey, false);
+				}
 				break;
 			case 'add_condition':
 				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.Condition);
@@ -459,6 +531,9 @@ export class WorkflowHandle implements IFlowchartHander {
 				break;
 			case 'copy_paste2':
 				this.flowchart.onCopyNode2PasteNode('cond', 'loop2');
+				break;
+			case 'center_node':
+				this.centerView('data24-3');
 				break;
 			default:
 				this.log('未实现的操作');

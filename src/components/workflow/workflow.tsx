@@ -38,7 +38,11 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 					<TestMenu Workflow={this.Workflow}></TestMenu>
 					<div className="div-flowchart">
 						<FlowChartMenu store={this.Workflow} />
-						<Flowchart taskId={this.props.taskId} flowchart={this.Workflow.flowchart}></Flowchart>
+						<Flowchart
+							ref={(ref) => (this.Workflow.flowchartRef = ref)}
+							taskId={this.props.taskId}
+							flowchart={this.Workflow.flowchart}
+						></Flowchart>
 						<div style={{ height: 300, display: this.Workflow.showNodeSetting ? 'block' : 'none' }}>
 							{this.Workflow.currentActionNodeKey}1
 						</div>

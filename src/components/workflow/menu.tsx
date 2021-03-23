@@ -419,6 +419,15 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 									获取条件
 								</button>
 							</div>
+							<div>
+								<button
+									onClick={() => {
+										this.Workflow.test('center_node');
+									}}
+								>
+									居中
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>

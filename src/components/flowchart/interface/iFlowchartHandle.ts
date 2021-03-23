@@ -33,7 +33,7 @@ export interface IFlowchartHander {
 	/**
 	 * 节点增加后 触发事件
 	 */
-	handlerAddNode(node: any | INodeModel, isDrag: boolean): void;
+	handlerAddNode(node: any | INodeModel): void;
 
 	/**
 	 * 优化掉
@@ -51,11 +51,6 @@ export interface IFlowchartHander {
 	 * 流程改变后 触发事件
 	 */
 	handlerChanged(): void;
-
-	/**
-	 * 流程节点准备复制
-	 */
-	handlerWillCopy(): void;
 
 	/**
 	 * 流程黏贴
@@ -82,11 +77,6 @@ export interface IFlowchartHander {
 	 * todo 将弃用
 	 */
 	handlerHoverNodeInfo(nodedata: any): void;
-
-	/**
-	 * 获取完流程节点
-	 */
-	handlerGetNodeData(nodedata: any): void;
 
 	/**
 	 * 获取完流程节点

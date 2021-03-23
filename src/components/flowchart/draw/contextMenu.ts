@@ -3,7 +3,6 @@ import { HandleEnum } from '../enum';
 import Base from './base';
 import { INodeEvent, ILineModel, INodeModel } from '../interface';
 const $ = go.GraphObject.make;
-// const domId = 'div-flowchart-contextMenu';
 
 export default class DrawContextMenu extends Base {
 	callBack: Function;
@@ -27,7 +26,6 @@ export default class DrawContextMenu extends Base {
 	showContextMenu = () => {
 		const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 		if (node) {
-			// console.log(`%%%%%%%%%%`, node.data);
 			const eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
 			const e: INodeEvent = {
 				eType
@@ -45,21 +43,14 @@ export default class DrawContextMenu extends Base {
 			// 	e.posX = offset?.x;
 			// 	e.posY = offset?.y;
 			// }
-			// console.log('-----loc', node.position);
-			// console.log('-----loc', node.getDocumentPoint(go.Spot.TopLeft).to);
-			// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
 
 			delete node.data._handleEnum;
-			// console.log('----- content', e);
 			this.callBack(e);
 			// this.toolManager.contextMenuTool.hideContextMenu();
 		}
 
 		// if (node && node.part && node.part.data) {
 		// this._show = true;
-		// console.log('-----loc', node.data.loc, node.getDocumentPoint(go.Spot.Center));
-		// console.log('-----loc',  node.data.loc, node.getDocumentPoint(go.Spot.TopLeft));
-		// console.log('-----loc', loc, node.data.loc, node.getDocumentPoint(go.Spot.TopRight));
 		// let offsetN = node.getDocumentPoint(go.Spot.TopRight);
 		// let offset = node.getRelativePoint(node.part, go.Spot.TopRight);
 		// const objBounds = node.part.locationObject.getDocumentBounds();
@@ -93,13 +84,6 @@ export default class DrawContextMenu extends Base {
 	};
 
 	hideContextMenu = () => {
-		// this.contextMenuDIV = document.getElementById(domId);
-		// if (this.contextMenuDIV) {
-		// 	// this.contextMenuDIV.innerHTML = '';
-		// 	// this.contextMenuDIV.style.display = 'none';
-		// 	document.body.removeChild(this.contextMenuDIV);
-		// }
-
 		const handle: INodeEvent = {
 			eType: HandleEnum.HideContextMenu
 		} as INodeEvent;
