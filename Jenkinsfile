@@ -10,4 +10,7 @@ pwd'''
     }
 
   }
+  environment {
+    sss = '中文'
+  }
 }
