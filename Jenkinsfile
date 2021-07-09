@@ -5,6 +5,7 @@ pipeline {
       steps {
         sh '''node -v 
 pwd'''
+        sh 'echo \'这是一个测试文档\''
       }
     }
 
