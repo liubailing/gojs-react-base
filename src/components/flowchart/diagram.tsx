@@ -2,12 +2,12 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import go, { Diagram } from 'gojs';
-import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
+import go, { Diagram } from '@octopus/gojs';
+import { ReactDiagram } from '@octopus/gojs-react';
 import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
-import { DiagramEnum } from './enum';
+import { DiagramEnum, HandleEnum } from './enum';
 import { INodeEvent } from './interface';
 import {
 	DrawLink,
@@ -56,9 +56,18 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.addDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+			diagram.addDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
+			diagram.addDiagramListener('LostFocus', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
+			diagram.addDiagramListener('ObjectSingleClicked', this.props.onDiagramEvent);
 		}
 		if (diagram) {
 			this.props.getDiagram(diagram);
+			const e: INodeEvent = {
+				eType: HandleEnum.Init
+			} as INodeEvent;
+			this.props.onFlowchartEvent(e);
 		}
 	}
 
@@ -72,6 +81,11 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		const diagram = this.diagramRef.current.getDiagram();
 		if (diagram instanceof go.Diagram) {
 			diagram.removeDiagramListener('ChangedSelection', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('BackgroundSingleClicked', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('LostFocus', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ObjectContextClicked', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ViewportBoundsChanged', this.props.onDiagramEvent);
+			diagram.removeDiagramListener('ObjectSingleClicked', this.props.onDiagramEvent);
 		}
 	}
 	/**
@@ -87,6 +101,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 
 		let myDiagram: Diagram = $(go.Diagram, this.props.diagramId, {
 			'undoManager.isEnabled': true,
+			'animationManager.duration': 2,
 			draggingTool: new DraggingTool(this.props.onFlowchartEvent),
 			clickSelectingTool: new ClickSelectingTool(),
 			commandHandler: new CommandHandler(this.props.onFlowchartEvent),
@@ -94,7 +109,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			contentAlignment: go.Spot.TopCenter,
 			initialContentAlignment: go.Spot.RightCenter,
 			// hoverDelay: 100,
-			initialScale: 1.125,
+			initialScale: 1,
 			layout: $(go.TreeLayout, {
 				angle: 90,
 				treeStyle: go.TreeLayout.StyleLayered,
@@ -184,7 +199,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		myDiagram.groupTemplateMap.add(
 			DiagramEnum.ConditionGroup,
 			new DrawCondition(this.props.onFlowchartEvent).getCondition()
-		); // end Group
+		);
 
 		/**
 		 * 条件分支
@@ -224,38 +239,49 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 		// var myContextMenu = $(go.HTMLInfo, );
 		myDiagram.contextMenu = new DrawContextMenu(myDiagram, this.props.onFlowchartEvent).getContextMenu();
 
+		// Overview;
+		$(
+			go.Overview,
+			`myOverviewDiv${this.props.diagramId}`, // the HTML DIV element for the Overview
+			{ observed: myDiagram, contentAlignment: go.Spot.Center }
+		);
+
+		// myDiagram.animationManager.initialAnimationStyle = go.AnimationManager.None;
+		// myDiagram.animationManager.duration = 2;
+		// tell it which Diagram to show and pan
 		return myDiagram;
 	};
 
 	render() {
 		return (
-			<ReactDiagram
-				ref={this.diagramRef}
-				divClassName="diagram-component"
-				initDiagram={this.initDiagram}
-				nodeDataArray={this.props.nodeDataArray}
-				linkDataArray={this.props.linkDataArray}
-				modelData={this.props.modelData}
-				onModelChange={this.props.onModelChange}
-				skipsDiagramUpdate={this.props.skipsDiagramUpdate}
-			/>
+			<>
+				<ReactDiagram
+					ref={this.diagramRef}
+					divClassName={`diagram-component diagram-${this.props.diagramId}`}
+					initDiagram={this.initDiagram}
+					nodeDataArray={this.props.nodeDataArray}
+					linkDataArray={this.props.linkDataArray}
+					modelData={this.props.modelData}
+					onModelChange={this.props.onModelChange}
+					skipsDiagramUpdate={this.props.skipsDiagramUpdate}
+				/>
+				<div id={`myOverviewDiv${this.props.diagramId}`} className="diagram-overview" />
+			</>
 		);
 	}
 
 	/**
 	 *
 	 */
-	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ InitialLayoutCompleted 123`);
-		// var dia = this.props.store.diagram;
-		// dia.div.style.height = (dia.documentBounds.height + 24) + "px";
-	};
-
+	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {};
 	/**
 	 * 流程图画完
 	 */
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		// console.log(`~ test flowchart ~ LayoutCompleted 123`);
+		const e: INodeEvent = {
+			eType: HandleEnum.ReRender
+		} as INodeEvent;
+		this.props.onFlowchartEvent(e);
 	};
 }
 

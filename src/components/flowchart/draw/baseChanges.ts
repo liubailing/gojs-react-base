@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import go from 'gojs';
+import go from '@octopus/gojs';
 import { BaseColors, HoverColors } from '../config';
 
 export default class baseChanges {
@@ -13,6 +13,7 @@ export default class baseChanges {
 		const group_Top = node.findObject('group_Top');
 		const group_Title = node.findObject('group_Title');
 
+		node.opacity = 1;
 		if (isShow) {
 			if (group_main) {
 				(group_main as any).fill = HoverColors.group_bg;
@@ -37,8 +38,22 @@ export default class baseChanges {
 				(group_Title as any).stroke = BaseColors.group_font;
 			}
 		}
+	}
 
-		this.setActionCss(node, isShow);
+	/**
+	 * 修改样式
+	 * @param node 节点
+	 * @param isShow 是否显示
+	 */
+	static setActionHide(node: go.Part) {
+		const node_Iset = node.findObject('node_Iset');
+		const node_Imenu = node.findObject('node_Imenu');
+		if (node_Iset) {
+			node_Iset.visible = false;
+		}
+		if (node_Imenu) {
+			node_Imenu.visible = false;
+		}
 	}
 
 	/**
@@ -116,14 +131,23 @@ export default class baseChanges {
 	 */
 	static setNodeCss(node: go.Part, isShow: boolean) {
 		const node_Body = node.findObject('node_Body');
-
+		const node_Title = node.findObject('node_Title');
+		node.opacity = 1;
 		if (isShow) {
 			if (node_Body) {
 				(node_Body as any).fill = BaseColors.highlight;
+				(node_Body as any).stroke =BaseColors.highlight;
+			}
+			if (node_Title) {
+				(node_Title as any).stroke = BaseColors.highlight_font;
 			}
 		} else {
 			if (node_Body) {
 				(node_Body as any).fill = BaseColors.backgroud;
+				(node_Body as any).stroke = BaseColors.border;	
+			}
+			if (node_Title) {
+				(node_Title as any).stroke = BaseColors.font;
 			}
 		}
 	}

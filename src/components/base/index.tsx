@@ -2,7 +2,7 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 import { produce } from 'immer';
 import * as React from 'react';
 

@@ -1,10 +1,10 @@
-import go, { GraphObject } from 'gojs';
-import { DiagramSetting, BaseColors } from '../config';
-import { DiagramEnum } from '../enum';
+import go, { GraphObject } from '@octopus/gojs';
 import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
+import { DiagramSetting, BaseColors } from '../config';
+import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
 
@@ -20,7 +20,6 @@ export default class DrawNode extends Base {
 		return $(
 			go.Node,
 			'Auto',
-			{ name: 'node_Title', toolTip: this.tooltiptemplate },
 			new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
 			new go.Binding('desiredSize', 'size', go.Size.parse).makeTwoWay(go.Size.stringify),
 			{
@@ -42,10 +41,11 @@ export default class DrawNode extends Base {
 					parameter1: DiagramSetting.parameter1,
 					name: 'node_Body',
 					strokeWidth: 1,
-					stroke: BaseColors.transparent
+					// stroke: BaseColors.border
 					// fill: BaseColors.backgroud
 				},
-				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject()
+				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject(),
+				new go.Binding('stroke', 'isSelected', this.getNodeStroke).ofObject()
 			),
 			$(
 				go.Panel,
@@ -58,6 +58,13 @@ export default class DrawNode extends Base {
 			$DrawSpot.getSpot(DiagramEnum.FCNode)
 		);
 	}
+
+	/**
+	 * 返回背景颜色
+	 */
+	private getNodeStroke = (_val: any, _targetObj: any): string =>
+	// const node = (_targetObj as any).part;
+	_val ? BaseColors.highlight : BaseColors.border;
 
 	/**
 	 * 返回背景颜色
@@ -76,7 +83,6 @@ export default class DrawNode extends Base {
 
 	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		// console.log('node', node);
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setActionCss(node, false);
 			BaseChanges.setNodeCss(node, false);
@@ -90,21 +96,6 @@ export default class DrawNode extends Base {
 			BaseChanges.setNodeCss(node, true);
 		}
 	}
-
-	// define tooltips for nodes
-	tooltiptemplate = $(
-		'ToolTip',
-		{ 'Border.fill': BaseColors.group_font, 'Border.stroke': BaseColors.group_bg, visible: true },
-		$(
-			go.TextBlock,
-			{
-				font: 'bold 8pt Helvetica, bold Arial, sans-serif',
-				wrap: go.TextBlock.WrapFit,
-				margin: 5
-			},
-			new go.Binding('text', 'label')
-		)
-	);
 }
 
 // const drawNode = new DrawNode();

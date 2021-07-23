@@ -1,5 +1,3 @@
-import lang from '../locales';
-
 export const DiagramSetting = {
 	keyStart: '_s',
 	keyEnd: '_n',
@@ -7,7 +5,6 @@ export const DiagramSetting = {
 	font: '12px Microsoft YaHei',
 	groupFont: '12px Microsoft YaHei',
 	tipFont: '12px Microsoft YaHei',
-	groupTip: lang.DragDropProcessHere,
 	groupTipFont: '12px Microsoft YaHei',
 	moveNode: true,
 	moveLoop: true,
@@ -29,7 +26,7 @@ export const DiagramSetting = {
 	iconInWidth: 7,
 	linkIconWidth: 16,
 	linkIconInWidth: 8,
-	nodeWith: 180,
+	nodeWith: 150,
 	nodeHeight: 20,
 	groupWith: 160,
 	ConditionWidth: 140,

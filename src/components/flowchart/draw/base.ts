@@ -1,12 +1,9 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { HandleEnum } from '../enum';
-import { INodeEvent } from '../interface';
+import { INodeEvent, ILineModel, INodeModel } from '../interface';
 import BaseChanges from './baseChanges';
 
 export default class Base {
-	SwitchingLoopTerm: string = '切换循环选项'; //  lang.FlowchartDiagram.SwitchingLoopTerm
-	OpenStepSet: string = '打开步骤设置，也可以双击步骤打开'; //  lang.FlowchartDiagram.OpenStepSet
-	ForMoreMenus: string = '更多菜单，也可右键点击步骤'; // lang.FlowchartDiagram.ForMoreMenus
 	static nodeEvent: INodeEvent;
 
 	doFlowchartEvent(e: go.InputEvent, _obj: GraphObject, eType: HandleEnum, flowchartcallBack: Function) {
@@ -23,8 +20,10 @@ export default class Base {
 					case HandleEnum.ShowNodeInfo:
 					case HandleEnum.ShowLineMenu:
 						if (node.diagram) {
-							node.data._handleEnum = eType;
-							node.diagram.commandHandler.showContextMenu(node.diagram);
+							// node.data._handleEnum = eType;
+							// node.diagram.commandHandler.showContextMenu(node.diagram);
+							// node.diagram.currentTool.doCancel();
+							this.showInfo(eType, node, flowchartcallBack);
 						}
 						break;
 					default:
@@ -49,4 +48,22 @@ export default class Base {
 			BaseChanges.setGroupCss(node, false);
 		}
 	};
+
+	private showInfo(eType: HandleEnum, currNode: any, flowchartcallBack: any) {
+		const node = currNode.diagram.findPartAt(currNode.diagram.lastInput.documentPoint);
+		if (node) {
+			// const eType: HandleEnum = node.data._handleEnum || HandleEnum.ShowNodeMenu;
+			const e: INodeEvent = {
+				eType
+			} as INodeEvent;
+
+			if (eType === HandleEnum.ShowLineMenu) {
+				e.line = node.data as ILineModel;
+			} else {
+				e.node = node.data as INodeModel;
+			}
+
+			flowchartcallBack(e);
+		}
+	}
 }

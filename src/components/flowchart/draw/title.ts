@@ -1,10 +1,25 @@
-import go, { Margin } from 'gojs';
+import go, { Margin } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
 
 export class DrawTitle {
+	// define tooltips for nodes
+	tooltiptemplate = $(
+		'ToolTip',
+		{ 'Border.fill': BaseColors.tip, 'Border.stroke': BaseColors.tip, visible: true },
+		$(
+			go.TextBlock,
+			{
+				stroke: BaseColors.tipfont_color,
+				wrap: go.TextBlock.WrapFit,
+				margin: 5
+			},
+			new go.Binding('text', 'label')
+		)
+	);
+
 	/**
 	 * 节点标题 辅助方法
 	 * @param DiagramEnum 节点类型
@@ -16,7 +31,7 @@ export class DrawTitle {
 				obj = {
 					name: 'node_Title',
 					margin: new Margin(1, 0, 0, 0),
-					stroke: BaseColors.font
+					// stroke: BaseColors.font
 				};
 				break;
 			case DiagramEnum.ConditionGroup:
@@ -25,7 +40,7 @@ export class DrawTitle {
 				obj = {
 					name: 'group_Title',
 					margin: new Margin(0, 5, 0, 5),
-					stroke: BaseColors.group_font
+					// stroke: BaseColors.group_font
 				};
 				break;
 			default:
@@ -35,32 +50,35 @@ export class DrawTitle {
 		return $(
 			go.Panel,
 			'Horizontal',
-			{},
+			{ toolTip: this.tooltiptemplate },
 			$(
 				go.TextBlock,
 				{
 					...obj,
 					...{
 						editable: DiagramSetting.renameable,
-						mouseEnter: this.onMouseEnter,
-						mouseLeave: this.onMouseLeave,
 						font: DiagramSetting.font,
+						stroke:"red",
 						textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
 							// todo 1
 							// this.props.store.iFlowchart.onSaveNodeNameHandler(newString);
 						}
 					}
 				},
-				// new go.Binding('text', 'isSel', function (s, y) {
-				// 	console.log(`>>>>>>>>  33333333333`);
-				// 	if (s || y) return BaseColors.highlight;
-				// 	return BaseColors.backgroud;
-				// 	return s ? BaseColors.highlight : BaseColors.backgroud;
-				// }).ofObject()
-				new go.Binding('text', this.showLabel, this.covShowLabel)
+				new go.Binding('text', this.showLabel, this.covShowLabel),
+				new go.Binding('stroke', 'isSelected', this.getNodeStroke).ofObject()
 			)
 		);
 	};
+
+	/**
+	 * 返回背景颜色
+	 */
+	 private getNodeStroke = (_val: any, _targetObj: any): string =>{
+	 // const node = (_targetObj as any).part;
+	 console.log(`-----------`,_val);
+	  return _val ? BaseColors.highlight_font : BaseColors.font
+	 }
 
 	/**
 	 * 返回字段
@@ -76,14 +94,16 @@ export class DrawTitle {
 		return 'label';
 	}
 
+	
+
 	/**
 	 * 返回名字
 	 */
 	private covShowLabel = (_val: any, _targetObj: any): string => {
 		if (_val && typeof _val === 'string') {
 			const { len } = this.gbLenght(_val);
-			if (len > 20) {
-				return `${_val.slice(0, 9)}···`;
+			if (len > 16) {
+				return `${_val.slice(0, 8)}···`;
 			}
 		}
 		return _val;
@@ -102,20 +122,6 @@ export class DrawTitle {
 			}
 		}
 		return { len };
-	};
-
-	/**
-	 * 鼠标移入显示全名val
-	 */
-	private onMouseEnter = (_val: any, _obj: any): void => {
-		// const node = (_obj as any).part;
-	};
-
-	/**
-	 * 鼠标移出隐藏
-	 */
-	private onMouseLeave = (_val: any, _obj: any): void => {
-		// const node = (_obj as any).part;
 	};
 }
 

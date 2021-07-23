@@ -1,8 +1,11 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import Base from './base';
 import BaseChangese from './baseChanges';
 import { HandleEnum } from '../enum';
+import { ToolTip } from './toolTip';
+
+import { NodeStore } from '../store';
 const $ = go.GraphObject.make;
 
 export default class DrawLink extends Base {
@@ -25,6 +28,8 @@ export default class DrawLink extends Base {
 				// selectionChanged: this.onselectionChangedHandler,
 				movable: false,
 				resizable: false,
+				width: DiagramSetting.nodeWith,
+				background: BaseColors.transparent,
 				deletable: false
 			},
 			$(go.Shape, {
@@ -50,11 +55,13 @@ export default class DrawLink extends Base {
 			$(
 				go.Panel,
 				'Auto',
+				ToolTip.getTitle(NodeStore.strWFGuideLine),
 				{
 					name: 'link_Add',
 					padding: new go.Margin(5, 0, 5, 0),
 					click: this.onClick,
 					alignment: go.Spot.Top,
+					width: 140,
 					visible: false
 				},
 				$(go.Shape, 'Circle', {
@@ -62,6 +69,7 @@ export default class DrawLink extends Base {
 					width: DiagramSetting.linkIconWidth,
 					height: DiagramSetting.linkIconWidth,
 					fill: BaseColors.link_icon_bg,
+					margin: new go.Margin(0, 0, 0, 62),
 					strokeWidth: 0
 				}),
 				$(go.Shape, 'PlusLine', {

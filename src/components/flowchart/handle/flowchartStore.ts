@@ -2,11 +2,19 @@ import { NodeEnum } from '../enum';
 import { INodeModel } from '../interface';
 import { FlowchartModel } from '../model';
 
+declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
+
 /**
  * 处理数据
  */
 export default class FlowchartStore {
-	_data: FlowchartModel;
+	private _data: FlowchartModel;
+
+	/**
+	 * 缓存 nodeKey - 缓存的数据
+	 */
+	cacheNodeData: Map<string, object>;
+	cacheExateData: string[];
 
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
@@ -15,17 +23,36 @@ export default class FlowchartStore {
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
 
-	/** 节点的 子节点 */
+	/** 节点的前-节点 */
+	mapNodePreNodeKey: Map<string, string>;
+
+	/** 节点类型-节点 */
+	mapNodeTypeKeys: Map<string, Set<string>>;
+
+	/** 节点的-子节点 */
 	mapNodeChildKeys: Map<string, Array<string>>;
 
+	/** 节点对应父级节点 */
+	mapNodeParentKey: Map<string, string>;
+
+	/** 节点对应类型 */
+	mapNodeType: Map<string, string>;
+
+	mapNodeNativeKey: Map<string, string>;
+
 	constructor() {
+		this.cacheNodeData = new Map<string, object>();
+		this.cacheExateData = [];
 		// this
 		this._data = new FlowchartModel();
-
 		this.mapNode = new Map();
-
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
+		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		this.mapNodeType = new Map<string, string>();
+		this.mapNodeNativeKey = new Map<string, string>();
 	}
 
 	/**
@@ -42,10 +69,10 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2Next8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2Next8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Next8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
 		return res;
 	}
@@ -55,52 +82,65 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2Pre8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2Pre8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Pre8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
 	}
 
 	/**
-	 * 往后追加 一个节点
+	 * 往内部结尾追加 一个节点
 	 * @param nodekey
 	 * @param type
 	 */
-	add2InnerTail8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2InnerTail8NodeId(nodeId: string, type: NodeEnum): string {
 		const res = this._data.add2Inner8NodeId(nodeId, type);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
 	}
 
 	/**
-	 * 往后追加 一个节点
+	 * 在一个节点外面追加一个循环
+	 * *注意* 不能是分支节点
+	 * @param nodekey
+	 */
+	add2InnerLoop8NodeId(nodeId: string): string {
+		const res = this._data.add2InnerLoop8NodeId(nodeId);
+		if (res) {
+			return res;
+		}
+		return '';
+	}
+
+	/**
+	 * 往内部开头追加 一个节点
 	 * @param nodekey
 	 * @param type
 	 */
-	add2InnerHeader8NodeId(nodeId: string, type: NodeEnum): boolean {
+	add2InnerHeader8NodeId(nodeId: string, type: NodeEnum): string {
 		const childs = this.mapNodeChildKeys.get(nodeId);
 		if (childs && childs.length > 0) {
 			const res = this._data.add2Next8NodeId(childs[0], type);
 			if (res) {
-				return true;
+				return res;
 			}
 		}
-		return false;
+		return '';
 	}
 
-	remove8NodeId(nodeId: string) {
+	remove8NodeId(nodeId: string): boolean {
 		const res = this._data.remove8NodeId(nodeId);
 		if (res) {
 			return true;
 		}
-		return res;
+		return false;
 	}
 
-	removeNode2Node(nodekey: string, toNodekey: string) {
+	removeNode2Node(nodekey: string, toNodekey: string): boolean {
 		const res = this._data.removeNode2Node(nodekey, toNodekey);
 		if (res) {
 			return true;
@@ -108,12 +148,34 @@ export default class FlowchartStore {
 		return res;
 	}
 
-	copyNode2Node(nodekey: string, toNodekey: string) {
+	getNodeLinked(nodekey: string): void {
+		const newM = this._data.getNodeLinked8Copy(nodekey, '');
+		if (newM) {
+			window.gojsCopyNodelinked = newM;
+		}
+	}
+
+	copyNodeLinked2Node(toNodekey: string): string {
+		if (window.gojsCopyNodelinked) {
+			const res = this._data.copyNodeLinked2Node(window.gojsCopyNodelinked, toNodekey);
+			if (res) {
+				return res;
+			}
+		}
+		return '';
+	}
+
+	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const res = this._data.copyNode2Node(nodekey, toNodekey);
 		if (res) {
-			return true;
+			return res;
 		}
-		return res;
+		return '';
+	}
+
+	getData(): FlowchartModel {
+		this.getDiagram();
+		return this._data;
 	}
 
 	getDiagram() {
@@ -122,6 +184,60 @@ export default class FlowchartStore {
 		this.mapNode = this._data.mapNode;
 		this.mapNodeChildKeys = this._data.mapNodeChildKeys;
 		this.mapNodeBrotherKeys = this._data.mapNodeBrotherKeys;
+		this.mapNodeTypeKeys = this._data.mapNodeTypeKeys;
+		this.mapNodePreNodeKey = this._data.mapNodePreNodeKey;
+		this.mapNodeParentKey = this._data.mapNodeParentKey;
+		this.mapNodeType = this._data.mapNodeType;
+
+		this.cacheNodeData = this._data.cacheNodeData;
+		this.cacheExateData = [];
+		/** 特殊逻辑处理 */
+		this.resetData(this._data);
 		return res;
+	}
+
+	resetData(thisItme: FlowchartModel) {
+		// const that = this;
+
+		let item = thisItme._header.next;
+		let preItem = thisItme._header;
+
+		while (item !== thisItme._tail) {
+			if (!thisItme.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
+				item.value.childs = null;
+			}
+			if (item.value.type === NodeEnum.ExtractData) {
+				this.cacheExateData.push(item.value.key);
+			}
+
+			let NavigateKey = '';
+			if (item.value.type === NodeEnum.Navigate) {
+				NavigateKey = item.value.key;
+				this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+			} else if (!NavigateKey && preItem && preItem.value) {
+				if (preItem.value.type === NodeEnum.Navigate) {
+					NavigateKey = preItem.value.key;
+				} else {
+					NavigateKey = this.mapNodeNativeKey.get(preItem.value.key) || '';
+				}
+				if (NavigateKey) {
+					this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+				}
+			}
+
+			if (!NavigateKey && item.value.group && item.value.group !== 'root') {
+				NavigateKey = this.mapNodeNativeKey.get(item.value.group) || '';
+
+				this.mapNodeNativeKey.set(item.value.key, NavigateKey);
+			}
+
+			if (item.value.childs) {
+				this.resetData(item.value.childs);
+			}
+
+			// 下一轮循环
+			preItem = item;
+			item = item.next;
+		}
 	}
 }

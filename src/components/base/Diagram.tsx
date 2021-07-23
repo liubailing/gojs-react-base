@@ -2,8 +2,8 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import * as go from 'gojs';
-import { ReactDiagram } from 'gojs-react';
+import * as go from '@octopus/gojs';
+import { ReactDiagram } from '@octopus/gojs-react';
 import * as React from 'react';
 
 import { GuidedDraggingTool } from './GuidedDraggingTool';

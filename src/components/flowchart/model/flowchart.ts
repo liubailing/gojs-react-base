@@ -3,6 +3,7 @@ import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
 
+declare const window: Window & { gojsCopyNodeData: Map<string, object> };
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 以下是 点 相关的缓存数据
@@ -12,7 +13,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 缓存 nodeKey - 缓存的数据
 	 */
-	mapNodeData: Map<string, object>;
+	cacheNodeData: Map<string, object>;
+
 	/** 节点对应数据  */
 	mapNode: Map<string, INodeModel>;
 
@@ -20,11 +22,26 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/** 节点的 兄弟节点 */
 	mapNodeBrotherKeys: Map<string, Array<string>>;
 
-	/** 节点的前一 */
+	/** 类型 对应的子节点 */
+	mapNodeTypeKeys: Map<string, Set<string>>;
+
+	/** 节点的前-节点 */
 	mapNodePreNodeKey: Map<string, string>;
 
 	/** 节点的 子节点 */
 	mapNodeChildKeys: Map<string, Array<string>>;
+
+	/** 节点对应父级节点 */
+	mapNodeParentKey: Map<string, string>;
+
+	/** 节点对应类型 */
+	mapNodeType: Map<string, string>;
+
+	/** 节点对应类型 */
+	// mapNodeName: Set<string>;
+
+	/** 节点对应类型 */
+	allNodeName: Set<string> = new Set<string>();
 
 	guidNodeType: Array<NodeEnum> = [
 		NodeEnum.Start,
@@ -38,22 +55,31 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 	constructor() {
 		super();
-		this.mapNodeData = new Map<string, object>();
-
 		this.mapNode = new Map();
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		this.mapNodeType = new Map<string, string>();
+		this.allNodeName = new Set<string>();
+		// 这个不要在init()里面
+		this.cacheNodeData = new Map<string, object>();
 	}
 
 	init() {
 		this.mapNode = new Map();
+		this.mapNodeTypeKeys = new Map<string, Set<string>>();
 		this.mapNodeBrotherKeys = new Map<string, Array<string>>();
 		this.mapNodeChildKeys = new Map<string, Array<string>>();
 		this.mapNodePreNodeKey = new Map<string, string>();
+		this.mapNodeParentKey = new Map<string, string>();
+		/** 节点对应父级节点 */
+		this.mapNodeType = new Map<string, string>();
 	}
 
 	toDiagram(): IDiagramModel<INodeModel, ILineModel> {
+		// const that = this;
 		let data: IDiagramModel<INodeModel, ILineModel> = { nodeArray: [], linkArray: [] };
 
 		let item = this._header.next;
@@ -63,7 +89,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 		if (item.value && item.value.group) {
 			this.toArray().forEach((x) => {
-				// console.log(x);
 				childKeys.push(x.key);
 			});
 			this.mapNodeChildKeys.set(item.value.group, childKeys);
@@ -77,14 +102,33 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				data.linkArray.push(l);
 			}
 
-			// 完善缓存
-			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
 			if (!this.hasChildsNodeType.includes(item.value.type as NodeEnum)) {
 				item.value.childs = null;
 			}
-			// debugger;
+
+			// 完善缓存 1
 			this.mapNode.set(item.value.key, item.value);
-			this.mapNodePreNodeKey.set(item.value.key, preItem.value?.key || '');
+			// 完善缓存 2
+			this.mapNodeBrotherKeys.set(item.value.key, childKeys);
+			// 完善缓存 3
+			this.mapNodePreNodeKey.set(item.value.key, preItem.value ? preItem.value.key : '');
+			// 完善缓存 4
+			if (this.mapNodeTypeKeys.has(item.value.type)) {
+				// 如果存在该类型
+				const v = this.mapNodeTypeKeys.get(item.value.type) || new Set();
+				this.mapNodeTypeKeys.set(item.value.type, v.add(item.value.key));
+			} else {
+				// 如果存在该类型
+				this.mapNodeTypeKeys.set(item.value.type, new Set([item.value.key]));
+			}
+			// 完善缓存 5
+			this.mapNodeParentKey.set(item.value.key, item.value.group);
+
+			// 完善缓存 6
+			this.mapNodeType.set(item.value.key, item.value.type);
+
+			// 完善缓存 7
+			this.allNodeName.add(item.value.label);
 
 			// 处理子节点
 			if (item.value.childs) {
@@ -107,7 +151,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return data;
 	}
 
-	doCacheh(item: FlowchartModel) {
+	doCacheh = (item: FlowchartModel) => {
 		item.mapNodeChildKeys.forEach((v, k) => {
 			if (k !== '' && k !== null) {
 				this.mapNodeChildKeys.set(k, v);
@@ -131,14 +175,49 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				this.mapNodeBrotherKeys.set(k, v);
 			}
 		});
-	}
 
-	add2Next8NodeId(nodekey: string, type: NodeEnum): boolean {
+		item.mapNodeTypeKeys.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				if (this.mapNodeTypeKeys.has(k)) {
+					const v1 = this.mapNodeTypeKeys.get(k) || new Set();
+
+					this.mapNodeTypeKeys.set(k, new Set([...[...v], ...[...v1]]));
+				} else {
+					this.mapNodeTypeKeys.set(k, v);
+				}
+
+				// this.mapNodeTypeKeys.set(k, v);
+			}
+		});
+
+		item.mapNodeParentKey.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodeParentKey.set(k, v);
+			}
+		});
+
+		item.mapNodeType.forEach((v, k) => {
+			if (k !== '' && k !== null) {
+				this.mapNodeType.set(k, v);
+			}
+		});
+
+		item.allNodeName.forEach((v) => {
+			this.allNodeName.add(v);
+		});
+	};
+
+	add2Next8NodeId(nodekey: string, type: NodeEnum): string {
 		const newNode = this.getNodeModel8Type(type, '');
-		return this.insert8NodeId(nodekey, newNode);
+		const res = this.insert8NodeId(nodekey, newNode);
+		if (res) {
+			return newNode.key;
+		}
+
+		return '';
 	}
 
-	add2Pre8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Pre8NodeId(nodekey: string, type: NodeEnum): string {
 		let item = this._header.next;
 		let preItem = this._header;
 		while (item !== this._tail) {
@@ -150,16 +229,25 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 					// 替换
 					if (preItem.value.type === NodeEnum.WFGuideNode) {
-						return this.replace(preItem.value, newNode);
+						const res = this.replace(preItem.value, newNode);
+						if (res) {
+							return newNode.key;
+						}
 					}
 				} else if (item.value.type === NodeEnum.WFGuideNode) {
 					// 如果自身就是 wfguide
-					return this.replace(item.value, newNode);
+					const res = this.replace(item.value, newNode);
+					if (res) {
+						return newNode.key;
+					}
 				} else if (item.value.type === NodeEnum.SubOpen) {
-					return false;
+					return '';
 				}
 
-				return this.insertPre(item.value, newNode);
+				const res = this.insertPre(item.value, newNode);
+				if (res) {
+					return newNode.key;
+				}
 			}
 
 			if (item.value.childs) {
@@ -180,10 +268,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			item = item.next;
 		}
 
-		return false;
+		return '';
 	}
 
-	add2Inner8NodeId(nodekey: string, type: NodeEnum): boolean {
+	add2Inner8NodeId(nodekey: string, type: NodeEnum): string {
 		let item = this._header.next;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
@@ -191,13 +279,22 @@ export default class FlowchartModel extends Linked<INodeModel> {
 					const newNode = this.getNodeModel8Type(type, item.value.key);
 					if (type === NodeEnum.Branch) {
 						newNode.sortIndex = item.value.childs.size();
-						return item.value.childs.add(newNode);
+						const res = item.value.childs.add(newNode);
+						if (res) {
+							return newNode.key;
+						}
 					}
 					const tailPre = item.value.childs.tailPre();
 					if (tailPre.type === NodeEnum.WFGuideNode) {
-						return item.value.childs.replace(tailPre, newNode);
+						const res = item.value.childs.replace(tailPre, newNode);
+						if (res) {
+							return newNode.key;
+						}
 					}
-					return item.value.childs.insert(tailPre, newNode);
+					const res = item.value.childs.insert(tailPre, newNode);
+					if (res) {
+						return newNode.key;
+					}
 				}
 			}
 
@@ -211,7 +308,35 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			item = item.next;
 		}
 
-		return false;
+		return '';
+	}
+
+	add2InnerLoop8NodeId(nodekey: string): string {
+		let item = this._header.next;
+		while (item !== this._tail) {
+			if (item.value.key === nodekey && item.value.type !== NodeEnum.Branch) {
+				// 新建一个loop
+
+				const newLoop = this.getNode(NodeEnum.Loop, item.value.group);
+				newLoop.childs = new FlowchartModel();
+				newLoop.childs.add(this.getNode(NodeEnum.SubOpen, newLoop.key));
+				newLoop.childs.add({ ...item.value, ...{ group: newLoop.key } });
+				newLoop.childs.add(this.getNode(NodeEnum.SubClose, newLoop.key));
+				item.value = newLoop;
+				return newLoop.key;
+			}
+
+			if (item.value.childs) {
+				const res = item.value.childs.add2InnerLoop8NodeId(nodekey);
+				if (res) {
+					return res;
+				}
+			}
+
+			item = item.next;
+		}
+
+		return '';
 	}
 
 	/**
@@ -226,13 +351,16 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				const resV = item.value;
 				let resAct = false;
 				if (this.size() === 3 && preItem.value.type === NodeEnum.SubOpen) {
-					const newNode = NodeStore.getNode(NodeEnum.WFGuideNode, item.value.group);
+					const newNode = this.getNode(NodeEnum.WFGuideNode, item.value.group);
 					const res = this.replace(item.value, newNode);
 					if (res) {
 						resAct = true;
 					}
 				} else {
 					const res = this.remove(item.value);
+					if (item.value && item.value.label) {
+						this.allNodeName.delete(item.value.label);
+					}
 					if (res) {
 						resAct = true;
 					}
@@ -248,6 +376,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 					return res;
 				}
 			}
+
 			preItem = item;
 			item = item.next;
 		}
@@ -270,38 +399,58 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return false;
 	}
 
-	copyNode2Node(nodekey: string, toNodekey: string): boolean {
+	copyNode2Node(nodekey: string, toNodekey: string): string {
 		const toNode = this.mapNode.get(toNodekey);
 		if (toNode) {
-			const newM = this.getNode8Copy(nodekey, '');
+			const newM = this.getNodeLinked8Copy(nodekey, '');
+			return this.copyNodeLinked2Node(newM, toNodekey);
+		}
+		return '';
+	}
+
+	copyNodeLinked2Node(newM: INodeModel | null, toNodekey: string): string {
+		const toNode = this.mapNode.get(toNodekey);
+		if (toNode) {
+			let res = false;
 			if (newM) {
 				if (toNode.type === NodeEnum.Loop || toNode.type === NodeEnum.Branch) {
 					const childs = this.mapNodeChildKeys.get(toNodekey);
 
 					if (childs && childs.length > 2) {
-						return this.insert8NodeId(childs[childs.length - 2], newM);
+						res = this.insert8NodeId(childs[childs.length - 2], newM);
 					}
 				} else {
-					return this.insert8NodeId(toNodekey, newM);
+					res = this.insert8NodeId(toNodekey, newM);
 				}
 			}
+			if (res && newM) {
+				if (window.gojsCopyNodeData) {
+					window.gojsCopyNodeData.clear();
+				}
+				return newM.key;
+			}
 		}
-		return false;
+		return '';
 	}
 
-	private getNode8Copy(nodekey: string, groupId: string): INodeModel | null {
+	getNodeLinked8Copy = (nodekey: string, groupId: string): INodeModel | null => {
+		if (!window.gojsCopyNodeData) {
+			window.gojsCopyNodeData = new Map<string, object>();
+		}
 		const newM = this.mapNode.get(nodekey);
 		let newC: FlowchartModel | null = null;
-
+		const data = this.cacheNodeData.get(nodekey) || window.gojsCopyNodeData.get(nodekey);
 		if (newM) {
-			// 将要扥到的结果
+			// 将要得到的结果
 			const res = { ...newM, ...{ key: NodeStore.getRandomKey(), group: groupId } };
+			res.label = this.getNodeName(newM.type as NodeEnum, res.label);
+
 			if (newM.childs) {
 				newC = new FlowchartModel();
 				let idxItem = newM.childs._header.next;
 				while (idxItem !== newM.childs._tail) {
 					if (idxItem.value) {
-						const newN = this.getNode8Copy(idxItem.value.key, res.key);
+						const newN = this.getNodeLinked8Copy(idxItem.value.key, res.key);
 						// 追加子节点
 						if (newN) {
 							newC.add(newN);
@@ -315,41 +464,102 @@ export default class FlowchartModel extends Linked<INodeModel> {
 					res.childs = newC;
 				}
 			}
+			// 数据复制
+			if (data && Object.keys(data).length > 0) {
+				// 深拷贝
+				const json = JSON.parse(JSON.stringify({ ...data }));
+				// 深拷贝纠正 uid  belongTo
+				if (
+					json &&
+					json.ActionType === 'ExtractDataAction' &&
+					json.extractTemplate &&
+					json.extractTemplate.length > 1
+				) {
+					json.extractTemplate.forEach((e: any, idx: number) => {
+						e.uid = res.key + e.Id;
+						e.belongTo = res.key;
+					});
+				}
+				window.gojsCopyNodeData.set(res.key, json);
+				this.cacheNodeData.set(res.key, json);
+			}
 			return res;
 		}
 		return null;
-	}
+	};
 
 	/**
 	 * 插入
 	 * @param nodekey
 	 * @param newNode
 	 */
-	private getNodeModel8Type(type: NodeEnum, group: string): INodeModel {
-		const newNode = NodeStore.getNode(type, group);
+	private getNodeModel8Type(type: NodeEnum, group: string, groupName: string = ''): INodeModel {
+		const newNode = this.getNode(type, group);
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
 			newNode.childs = new FlowchartModel();
-			newNode.childs.add(NodeStore.getNode(NodeEnum.SubOpen, newNode.key));
-			newNode.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, newNode.key));
-			newNode.childs.add(NodeStore.getNode(NodeEnum.SubClose, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.SubOpen, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.WFGuideNode, newNode.key));
+			newNode.childs.add(this.getNode(NodeEnum.SubClose, newNode.key));
 		} else if (type === NodeEnum.Condition) {
 			newNode.childs = new FlowchartModel();
-			const branch1 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch1 = this.getNode(NodeEnum.Branch, newNode.key);
+			if (groupName) {
+				branch1.label = `${groupName}_${branch1.label}`;
+			}
 			branch1.childs = new FlowchartModel();
-			branch1.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch1.key));
-			branch1.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch1.key));
-			branch1.childs.add(NodeStore.getNode(NodeEnum.SubClose, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.SubOpen, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.WFGuideNode, branch1.key));
+			branch1.childs.add(this.getNode(NodeEnum.SubClose, branch1.key));
 
-			const branch2 = NodeStore.getNode(NodeEnum.Branch, newNode.key);
+			const branch2 = this.getNode(NodeEnum.Branch, newNode.key);
+			if (groupName) {
+				branch2.label = `${groupName}_${branch1.label}`;
+			}
 			branch2.childs = new FlowchartModel();
-			branch2.childs.add(NodeStore.getNode(NodeEnum.SubOpen, branch2.key));
-			branch2.childs.add(NodeStore.getNode(NodeEnum.WFGuideNode, branch2.key));
-			branch2.childs.add(NodeStore.getNode(NodeEnum.SubClose, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.SubOpen, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.WFGuideNode, branch2.key));
+			branch2.childs.add(this.getNode(NodeEnum.SubClose, branch2.key));
 
 			newNode.childs.add(branch1);
 			newNode.childs.add(branch2);
 		}
 		return newNode;
+	}
+
+	/**
+	 * 初始化得到流程图节点
+	 * @param type
+	 * @param group
+	 */
+	private getNode(type: NodeEnum, group: string): INodeModel {
+		const node = NodeStore.getNode(type, group);
+		node.label = this.getNodeName(type, node.label);
+		return node;
+	}
+
+	/**
+	 * 计算流程图重名逻辑
+	 * @param type
+	 * @param name
+	 */
+	private getNodeName(type: NodeEnum, name: string): string {
+		const currName = name;
+		/**
+		 * 流程图节点重名后处理逻辑，暂不开启，
+		 */
+		// if (!this.guidNodeType.includes(type as NodeEnum)) {
+		// 	const reg = /\d+$/;
+		// 	name = name.replace(reg, '');
+		// 	let i = 0;
+		// 	while (this.allNodeName.has(currName)) {
+		// 		currName = `${name}${++i}`;
+		// 	}
+		// }
+		// this.allNodeName.add(currName);
+		/**
+		 * 流程图节点重名后处理逻辑，暂不开启  end
+		 */
+		return currName;
 	}
 
 	/**

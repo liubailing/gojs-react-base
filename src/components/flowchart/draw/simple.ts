@@ -1,4 +1,4 @@
-import go from 'gojs';
+import go from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import Base from './base';
 

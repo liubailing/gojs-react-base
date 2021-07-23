@@ -1,4 +1,4 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
@@ -92,6 +92,7 @@ export default class DrawCondition extends Base {
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
+			BaseChanges.setActionCss(node, false);
 		}
 	};
 
@@ -100,10 +101,7 @@ export default class DrawCondition extends Base {
 
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
+			BaseChanges.setActionCss(node, true);
 		}
 	};
 }
-
-// const drawCondition = new DrawCondition();
-
-// export default drawCondition;

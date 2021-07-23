@@ -9,7 +9,7 @@
 * Extensions can be found in the GoJS kit under the extensions or extensionsTS folders.
 * See the Extensions intro page (https://gojs.net/latest/intro/extensions.html) for more information.
 */
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 
 /**
  * The GuidedDraggingTool class makes guidelines visible as the parts are dragged around a diagram

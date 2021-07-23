@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
-import * as go from 'gojs';
-import { HandleEnum, DiagramEnum } from '../enum';
+import * as go from '@octopus/gojs';
+import { HandleEnum } from '../enum';
 import { INodeEvent } from '../interface';
 
 export default class CommandHandler extends go.CommandHandler {
@@ -325,6 +325,7 @@ export default class CommandHandler extends go.CommandHandler {
 		if (control && key === 'X') {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
+				node.opacity = 0.8;
 				this._prActionForKeyV = 'ctrl+x';
 				const e: INodeEvent = {
 					eType: HandleEnum.CutNode,
@@ -338,6 +339,7 @@ export default class CommandHandler extends go.CommandHandler {
 		if (control && key === 'C' && this._doEvent) {
 			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 			if (node && node.part && node.part.data) {
+				node.opacity = 0.8;
 				this._prActionForKeyV = 'ctrl+c';
 				const e: INodeEvent = {
 					eType: HandleEnum.CopyNode,
@@ -359,8 +361,7 @@ export default class CommandHandler extends go.CommandHandler {
 
 					this._doEvent(e);
 					this._prActionForKeyV = '';
-				}
-				if (this._prActionForKeyV === 'ctrl+c') {
+				} else {
 					const e: INodeEvent = {
 						eType: HandleEnum.Copy2PasteNode,
 						node: node.part.data
@@ -372,39 +373,37 @@ export default class CommandHandler extends go.CommandHandler {
 		}
 
 		// 将要删除
-		if (['Del', 'Backspace'].includes(key) && this._doEvent) {
-			/** * 是否为windows系统 * */
-			const isWindows = /windows|win32/i.test(navigator.userAgent);
-			if (key === 'Backspace' && isWindows) {
-				return;
-			}
+		// if (['Del', 'Backspace'].includes(key) && this._doEvent) {
+		// 	/** * 是否为windows系统 * */
+		// 	const isWindows = /windows|win32/i.test(navigator.userAgent);
+		// 	if (key === 'Backspace' && isWindows) {
+		// 		return;
+		// 	}
 
-			const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+		// 	const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
 
-			if (node === null || node.part === null || node.part.data === null) {
-				return;
-			}
+		// 	if (node === null || node.part === null || node.part.data === null) {
+		// 		return;
+		// 	}
 
-			const e: INodeEvent = {
-				eType: HandleEnum.DeleteNode,
-				node: node.part.data
-				// toLine: dragToNode
-			} as INodeEvent;
-			this._doEvent(e);
+		// 	const e: INodeEvent = {
+		// 		eType: HandleEnum.DeleteNode,
+		// 		node: node.part.data
+		// 		// toLine: dragToNode
+		// 	} as INodeEvent;
+		// 	this._doEvent(e);
 
-			if (key === 'Del' && isWindows) {
-				this._doEvent(e);
-				return;
-				// console.log(`~~isWindows~~`)
-			}
-			/** * 是否为mac系统（包含iphone手机） * */
-			const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
-			if (isMac) {
-				this._doEvent(e);
-			}
-			// console.log(`~~isMac~~`);
-			return;
-		}
+		// 	if (key === 'Del' && isWindows) {
+		// 		this._doEvent(e);
+		// 		return;
+		// 	}
+		// 	/** * 是否为mac系统（包含iphone手机） * */
+		// 	const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+		// 	if (isMac) {
+		// 		this._doEvent(e);
+		// 	}
+		// 	return;
+		// }
 
 		// otherwise still does all standard commands
 		super.doKeyDown();
@@ -542,6 +541,19 @@ export default class CommandHandler extends go.CommandHandler {
 	}
 
 	deleteSelection(): void {
-		super.deleteSelection();
+		const node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);
+
+		if (node === null || node.part === null || node.part.data === null) {
+			return;
+		}
+
+		const e: INodeEvent = {
+			eType: HandleEnum.DeleteNode,
+			node: node.part.data
+			// toLine: dragToNode
+		} as INodeEvent;
+		this._doEvent(e);
+		return;
+		// super.deleteSelection();
 	}
 }

@@ -3,7 +3,6 @@ import { NodeStore } from '../flowchart/store';
 import { FlowchartModel } from '../flowchart/model';
 import { NodeEnum } from '../flowchart/enum';
 import { ActionNode, ActionNodeType } from '../workflow/entity';
-import TestDataJson from './testData';
 
 /**
  * @class 自定义模式业务
@@ -22,18 +21,17 @@ export class TestData {
 	 * 初始化
 	 * @param node
 	 */
-	static getFlowchartData(wfData: boolean = false): FlowchartModel {
-		let d: FlowchartModel = new FlowchartModel();
+	static getFlowchartData(isSimple:boolean,  data:any): FlowchartModel {
+		const d: FlowchartModel = new FlowchartModel();
 
-		let start = NodeStore.getNode(NodeEnum.Start);
-		let end = NodeStore.getNode(NodeEnum.End);
-		let data = TestDataJson;
+		const start = NodeStore.getNode(NodeEnum.Start);
+		const end = NodeStore.getNode(NodeEnum.End);
 
 		d.add(start);
 
-		if (!wfData && data.childs.length > 0) {
-			data.childs.forEach((x) => {
-				let n = this.getNodeModel(x, 'root');
+		if (isSimple && data && data.childs && data.childs.length > 0) {
+			data.childs.forEach((x:any) => {
+				const n = this.getNodeModel(x, 'root');
 
 				// 缓存记录data数据
 				if (x.data && Object.keys(x.data).length > 0) {
@@ -48,8 +46,7 @@ export class TestData {
 		}
 
 		d.add(end);
-		d.mapNodeData = this.mapNodeData;
-		// let dd = d.toDiagram();
+		d.cacheNodeData = this.mapNodeData;
 		return d;
 	}
 

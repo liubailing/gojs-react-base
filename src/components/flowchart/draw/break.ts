@@ -1,9 +1,9 @@
-import go from 'gojs';
+import go from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
 import DrawTitle from './title';
-import DrawSpot from './spot';
+
 const $ = go.GraphObject.make;
 
 export default class DrawBreak extends Base {
@@ -13,7 +13,7 @@ export default class DrawBreak extends Base {
 		this.callBack = e;
 	}
 	getBreak(): go.Part {
-		const $DrawSpot = new DrawSpot(this.callBack);
+		// const $DrawSpot = new DrawSpot(this.callBack);
 		return $(
 			go.Node,
 			'Auto',
@@ -26,7 +26,7 @@ export default class DrawBreak extends Base {
 				// doubleClick: this.onSettingClick,
 				// selectionChanged: this.onselectionChangedHandler,
 				padding: new go.Margin(DiagramSetting.padding, 0, DiagramSetting.padding, 0),
-				minSize: new go.Size(DiagramSetting.nodeWith, DiagramSetting.nodeHeight),
+				minSize: new go.Size(DiagramSetting.groupWith, DiagramSetting.nodeHeight),
 				cursor: 'pointer'
 			},
 			$(
@@ -49,8 +49,8 @@ export default class DrawBreak extends Base {
 					padding: 5
 				},
 				DrawTitle.getTitle(DiagramEnum.FCNode)
-			),
-			$DrawSpot.getSpotMenu(DiagramEnum.FCNode)
+			)
+			// $DrawSpot.getSpotMenu(DiagramEnum.FCNode)
 		);
 	}
 }

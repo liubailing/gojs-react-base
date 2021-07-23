@@ -3,6 +3,7 @@ import { HanderFlowchart } from '../flowchart/handle';
 import { observable, action } from 'mobx';
 import { NodeEnum } from '../flowchart/enum';
 import { TestData } from './index';
+import TestDataJson from './testData';
 
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
@@ -10,6 +11,60 @@ import { TestData } from './index';
  * both are optional props in ReactDiagram.
  */
 export class WorkflowHandle implements IFlowchartHander {
+	handlerClickNodeAgain(node: any): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerDeleteNode(currKey: string, deleteKey: string): void {
+		// throw new Error('Method not implemented.');
+	}
+	onShowEditPage () {
+		// throw new Error('Method not implemented.');
+	}
+	handlerSaveNodeName(key: string, newName: string) {
+		// throw new Error('Method not implemented.');
+	}
+	handlerPaste(currNodeKey: string): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerDrag(currNodeKey: string): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerTip(tipType: string): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerInit(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerHoverNodeInfo(nodedata: any): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerShowLoopInfo(nodedata: any, value: any, option: any): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerHideModal(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerLostFocus(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerClickBackground(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerRightClickNode(node: INodeModel, posX: number, posY: number): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerViewChanged(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerClickExcludeNode(): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerMouseEnter(node: INodeModel): void {
+		// throw new Error('Method not implemented.');
+	}
+	handlerBeforeShowLineMenu(): void {
+		// throw new Error('Method not implemented.');
+	}
 	@observable logs: string[] = [];
 	taskId = 'cCDWC12344';
 	flowchart: HanderFlowchart = new HanderFlowchart(this);
@@ -138,18 +193,18 @@ export class WorkflowHandle implements IFlowchartHander {
 		}
 	}
 
-	isSimpleData: boolean = true;
+	isSimpleData: boolean = false;
 	test = (action: string) => {
 		switch (action) {
 			case 'init':
 				this.isSimpleData = !this.isSimpleData;
-				const data = TestData.getFlowchartData(this.isSimpleData);
+				const data = TestData.getFlowchartData(this.isSimpleData,TestDataJson);
 				this.flowchart.init(data);
 				break;
 			case 'getall':
 				break;
 			case 'hide_contextMenu':
-				this.flowchart._hideContextMenu();
+				// this.flowchart._hideContextMenu();
 				break;
 			case 'add_smiple':
 				this.flowchart.onAdd2Next8NodeId('openJD', NodeEnum.ExtractData);

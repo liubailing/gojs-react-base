@@ -1,8 +1,6 @@
-import go, { GraphObject, Margin } from 'gojs';
+import go, { GraphObject, Margin } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum, HandleEnum } from '../enum';
-import IList from '../../../assets/images/flowchart/i-node-list.png';
-import IListHover from '../../../assets/images/flowchart/i-node-list-hover.png';
 import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
@@ -16,68 +14,6 @@ export default class DrawLoop extends Base {
 		super();
 		this.callBack = e;
 	}
-	/**
-	 * 利用 节点 spot 实现靠右
-	 * @param DiagramEnum
-	 */
-	loopSpotTitleHelper = (): go.Panel => {
-		// 节点基本样式
-		const spotCss = {
-			alignment: go.Spot.TopRight,
-			cursor: 'pointer',
-			height: 26,
-			width: 25,
-			margin: new Margin(0, 25, 0, 0)
-		};
-		// 图标基本样式
-		const baseCss = {
-			margin: new Margin(0, 0, 0, 0),
-			visible: false,
-			height: 26,
-			width: 25
-		};
-		const hoverCss = {
-			background: '#ffffff'
-		};
-		return $(
-			go.Panel,
-			'Auto',
-			{
-				...spotCss,
-				...{ name: 'action_Spot', width: 25 }
-			},
-			$(
-				go.Panel,
-				'Horizontal',
-				{
-					...baseCss,
-					...{
-						name: 'node_Ilist',
-						mouseEnter: this.onListMouseEnter
-					}
-				},
-				$(go.Picture, IList, {
-					margin: new Margin(0, 6, 0, 6)
-				})
-			),
-			$(
-				go.Panel,
-				'Horizontal',
-				{
-					...baseCss,
-					...hoverCss,
-					...{
-						name: 'node_Ilist_Hover',
-						click: this.onListClick,
-						mouseLeave: this.onListMouseLeave
-					}
-				},
-				$(go.Picture, IListHover, {
-					margin: new Margin(0, 6, 0, 6)
-				})
-			)
-		);
-	};
 
 	getLoop(): go.Group {
 		const $DrawSpot = new DrawSpot(this.callBack);
@@ -87,7 +23,6 @@ export default class DrawLoop extends Base {
 			{
 				layout: $(go.TreeLayout, {
 					angle: 90,
-
 					arrangement: go.TreeLayout.ArrangementHorizontal,
 					layerSpacing: DiagramSetting.layerSpacing,
 					arrangementSpacing: new go.Size(30, 10)
@@ -139,11 +74,11 @@ export default class DrawLoop extends Base {
 				// create a placeholder to represent the area where the contents of the group are
 				$(go.Placeholder, {
 					background: BaseColors.group_panel_bg,
-					padding: new go.Margin(10, 15),
+					padding: new go.Margin(10, 8),
 					minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
 				})
 			), // end Vertical Panel
-			this.loopSpotTitleHelper(),
+			$DrawSpot.getSpotLoopInfo(),
 			$DrawSpot.getSpot(DiagramEnum.LoopGroup)
 		);
 	}
@@ -201,21 +136,23 @@ export default class DrawLoop extends Base {
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
 		const node = (obj as any).part;
-		// console.log('node', node);
-
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setListCss(node, false);
+			BaseChanges.setActionCss(node, false);
 		}
 	};
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
 		const node = (obj as any).part;
-		// console.log('node', node);
-
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setListCss(node, true);
+			BaseChanges.setActionCss(node, true);
+		}
+
+		if (node && node.data) {
+			this.doFlowchartEvent(_e, obj, HandleEnum.MouseEnter, this.callBack);
 		}
 	};
 }

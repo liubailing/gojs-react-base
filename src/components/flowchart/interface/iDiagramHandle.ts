@@ -1,4 +1,4 @@
-import go from 'gojs';
+import go from '@octopus/gojs';
 
 export interface IDiagramHander {
 	/**
