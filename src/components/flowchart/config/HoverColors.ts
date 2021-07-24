@@ -1,10 +1,7 @@
 /* eslint-disable camelcase */
 export const HoverColors = {
-	diagram_bg: '#eee',
-	group_font: '#fff',
-	group_bg: '#3470ff',
-	group_border:"#3470ff",
-	icon_bg: '#2b71ed',
-	icon: '#fff',
-	link: '#2b71ed'
+	group_border:"#b1c8fd",
+	group_bg: '#e7edfc',
+	group_font: '#3f3f3f',
+	link:"#3470ef"
 };

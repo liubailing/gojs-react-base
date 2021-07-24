@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import go from '@octopus/gojs';
-import { BaseColors, HoverColors } from '../config';
+import { BaseColors, HoverColors, SelectedColors } from '../config';
 
 export default class baseChanges {
 	/**
@@ -8,31 +8,68 @@ export default class baseChanges {
 	 * @param node 节点
 	 * @param isShow 是否显示
 	 */
-	static setGroupCss(node: go.Part, isShow: boolean) {
+	static setGroupSelectedCss(node: go.Part, isShow: boolean) {
 		const group_main = node.findObject('group_main');
-		const group_top = node.findObject('group_top');
+		const group_body = node.findObject('group_body');
 		const group_Title = node.findObject('group_Title');
 
 		node.opacity = 1;
 		if (isShow) {
 			if (group_main) {
-				(group_main as any).fill = HoverColors.group_bg;
-				(group_main as any).stroke = HoverColors.group_bg;
+				// (group_main as any).fill = HoverColors.group_bg;
+				(group_main as any).stroke = SelectedColors.group_border;
 			}
-			if (group_top) {
-				group_top.background = HoverColors.group_bg;
+			if (group_body) {
+				group_body.background = SelectedColors.group_bg;
+			}
+			if (group_Title) {
+				(group_Title as any).stroke = SelectedColors.group_font;
+			}
+		} else {
+			if (group_main) {
+				// (group_main as any).fill = BaseColors.transparent;
+				(group_main as any).stroke = BaseColors.group_border;
+			}
+
+			if (group_body) {
+				group_body.background = BaseColors.group_bg;
+			}
+			if (group_Title) {
+				(group_Title as any).stroke = BaseColors.group_font;
+			}
+		}
+	}
+
+	/**
+	 * 修改样式
+	 * @param node 节点
+	 * @param isShow 是否显示
+	 */
+	static setGroupCss(node: go.Part, isShow: boolean) {
+		const group_main = node.findObject('group_main');
+		const group_body = node.findObject('group_body');
+		const group_Title = node.findObject('group_Title');
+
+		node.opacity = 1;
+		if (isShow) {
+			if (group_main) {
+				// (group_main as any).fill = HoverColors.group_bg;
+				(group_main as any).stroke = HoverColors.group_border;
+			}
+			if (group_body) {
+				group_body.background = HoverColors.group_bg;
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = HoverColors.group_font;
 			}
 		} else {
 			if (group_main) {
-				(group_main as any).fill = BaseColors.transparent;
-				(group_main as any).stroke = BaseColors.group_bg;
+				// (group_main as any).fill = BaseColors.transparent;
+				(group_main as any).stroke = BaseColors.group_border;
 			}
 
-			if (group_top) {
-				group_top.background = BaseColors.group_bg;
+			if (group_body) {
+				group_body.background = BaseColors.group_bg;
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = BaseColors.group_font;
@@ -135,16 +172,16 @@ export default class baseChanges {
 		node.opacity = 1;
 		if (isShow) {
 			if (node_Body) {
-				(node_Body as any).fill = BaseColors.highlight;
-				(node_Body as any).stroke =BaseColors.highlight;
+				(node_Body as any).fill = HoverColors.group_bg;
+				(node_Body as any).stroke = HoverColors.group_border;
 			}
 			if (node_Title) {
-				(node_Title as any).stroke = BaseColors.highlight_font;
+				(node_Title as any).stroke = HoverColors.group_font;
 			}
 		} else {
 			if (node_Body) {
 				(node_Body as any).fill = BaseColors.backgroud;
-				(node_Body as any).stroke = BaseColors.border;	
+				(node_Body as any).stroke = BaseColors.border;
 			}
 			if (node_Title) {
 				(node_Title as any).stroke = BaseColors.font;

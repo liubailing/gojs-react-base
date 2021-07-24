@@ -63,7 +63,7 @@ export default class DrawBranch extends Base {
 			new go.Binding('height', 'height').makeTwoWay(),
 
 			$(go.Shape, 'RoundedRectangle', {
-				name: 'groupBranch_main',
+				// name: 'groupBranch_main',
 				parameter1: DiagramSetting.parameter1Group,
 				fill: BaseColors.transparent,
 				// fill: "#000",
@@ -81,22 +81,23 @@ export default class DrawBranch extends Base {
 					cursor: 'pointer',
 				},
 				$(go.Shape, 'RoundedRectangle', {
-					name: 'groupBranch_main',
+					name: 'group_main',
 					parameter1: DiagramSetting.parameter1Group,
-					// fill: BaseColors.transparent,
-					fill: "#000",
-					stroke: BaseColors.transparent,
+					fill: BaseColors.transparent,
+					// fill: "#000",
+					stroke: BaseColors.group_border,
 					strokeWidth: 1
 				}),
 				$(
 					go.Panel,
 					'Vertical',
 					{
-						name: 'group_top',
-						// background: BaseColors.group_bg,
-						background: "red",
+						name: 'group_body',
+						background: BaseColors.group_bg,
 						defaultAlignment: go.Spot.Left,
-						padding: new go.Margin(0, 1, 1, 1)
+						margin: new go.Margin(0, 0, -5, 1),
+						// padding: new go.Margin(0, 1, 1, 1)
+
 					},
 
 					$(
@@ -194,7 +195,7 @@ export default class DrawBranch extends Base {
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		if (node && node.diagram) {
+		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
 			BaseChanges.setActionCss(node, true);
@@ -207,29 +208,21 @@ export default class DrawBranch extends Base {
 
 	onRightClick = (e: go.InputEvent, obj: GraphObject): void => {
 		super.doFlowchartEvent(e, obj, HandleEnum.AddBranchToRight, this.callBack);
-
-		// let node = (obj as any).part;
-		// if (node && node.diagram) {
-		// 	BaseChanges.setSpotCss(node, true);
-		// 	BaseChanges.setBranchCss(node, true);
-		// }
 	};
 
 	doGroupCss_SelectionChanged = (_targetObj: any) => {
+		if(_targetObj){
+			super.doBranchCss_SelectionChanged(_targetObj);
+			
+		}
 		/** 点击无效区域 */
 		const node = (_targetObj as any).part;
 		if (node && node.isSelected) {
-			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
 		} else {
-			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setBranchCss(node, false);
 			BaseChanges.setActionHide(node);
 		}
-		// }
+		
 	};
 }
-
-// const drawBranch = new DrawBranch();
-
-// export default drawBranch;

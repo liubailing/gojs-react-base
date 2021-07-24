@@ -40,14 +40,28 @@ export default class Base {
 	 * @param _targetObj
 	 */
 	doGroupCss_SelectionChanged = (_targetObj: any) => {
+		this.selectNode(_targetObj);
+	};
+
+	/**
+	 * 处理 group branch 样式
+	 * @param _targetObj
+	 */
+	doBranchCss_SelectionChanged(_targetObj: any){
+		this.selectNode(_targetObj);
+	}
+
+	
+	private selectNode(_targetObj: any){
 		/** 点击无效区域 */
 		const node = (_targetObj as any).part;
 		if (node && node.isSelected) {
-			BaseChanges.setGroupCss(node, true);
+			BaseChanges.setGroupSelectedCss(node, true);
 		} else {
 			BaseChanges.setGroupCss(node, false);
 		}
-	};
+	}
+
 
 	private showInfo(eType: HandleEnum, currNode: any, flowchartcallBack: any) {
 		const node = currNode.diagram.findPartAt(currNode.diagram.lastInput.documentPoint);

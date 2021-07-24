@@ -91,7 +91,7 @@ export default class DrawNode extends Base {
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		if (node && node.diagram) {
+		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setActionCss(node, true);
 			BaseChanges.setNodeCss(node, true);
 		}
