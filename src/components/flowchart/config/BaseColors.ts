@@ -13,7 +13,7 @@ export const BaseColors = {
 	group_bg: '#fafafa',
 	group_panel_bg: '#fff',
 
-	icon_bg: '#e7edfc',
+	icon_bg: '#3470ff',
 	icon: '#fff',
 
 	link: '#d5d5d5',
