@@ -58,7 +58,6 @@ export class DrawTitle {
 					...{
 						editable: DiagramSetting.renameable,
 						font: DiagramSetting.font,
-						stroke:"red",
 						textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
 							// todo 1
 							// this.props.store.iFlowchart.onSaveNodeNameHandler(newString);
@@ -76,7 +75,6 @@ export class DrawTitle {
 	 */
 	 private getNodeStroke = (_val: any, _targetObj: any): string =>{
 	 // const node = (_targetObj as any).part;
-	 console.log(`-----------`,_val);
 	  return _val ? BaseColors.highlight_font : BaseColors.font
 	 }
 
