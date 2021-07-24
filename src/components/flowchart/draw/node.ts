@@ -3,7 +3,7 @@ import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
-import { DiagramSetting, BaseColors } from '../config';
+import { DiagramSetting, BaseColors,SelectedColors } from '../config';
 import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
@@ -63,15 +63,13 @@ export default class DrawNode extends Base {
 	 * 返回背景颜色
 	 */
 	private getNodeStroke = (_val: any, _targetObj: any): string =>
-	// const node = (_targetObj as any).part;
-	_val ? BaseColors.highlight : BaseColors.border;
+	_val ? SelectedColors.border : BaseColors.border;
 
 	/**
 	 * 返回背景颜色
 	 */
 	private getNodeFill = (_val: any, _targetObj: any): string =>
-		// const node = (_targetObj as any).part;
-		_val ? BaseColors.highlight : BaseColors.backgroud;
+		_val ? SelectedColors.background : BaseColors.backgroud;
 
 	/**
 	 * 返回名字

@@ -7,22 +7,20 @@ export const BaseColors = {
 	font: '#3f3f3f',
 	border: '#d5d5d5',
 	backgroud: '#fafafa',
-	highlight: '#2b71ed', // #5685d6
-	highlight_font: '#fff', // #5685d6
 
-	group_font: '#555',
+	group_font: '#3f3f3f',
 	group_border: '#d5d5d5',
-	group_bg: '#efefef',
+	group_bg: '#fafafa',
 	group_panel_bg: '#fff',
 
-	icon_bg: '#2b71ed',
+	icon_bg: '#e7edfc',
 	icon: '#fff',
 
 	link: '#d5d5d5',
 	link_icon: '#fff',
 	link_icon_bg: '#3470ff',
 
-	tip: '#ddd',
-	tipfont_color: '#666',
+	tip: '#e7edfc',
+	tipfont: '#3f3f3f',
 	transparent: 'transparent'
 };

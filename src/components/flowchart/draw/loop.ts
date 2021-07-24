@@ -1,4 +1,4 @@
-import go, { GraphObject, Margin } from '@octopus/gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum, HandleEnum } from '../enum';
 import Base from './base';
@@ -118,7 +118,6 @@ export default class DrawLoop extends Base {
 		try {
 			// this.changeNodeInfoOpacity(1);
 			if (_obj) {
-				// this.hideTitle();
 				const node = (_obj as any).part;
 				if (node) {
 					const list = node.findObject('node_Ilist');

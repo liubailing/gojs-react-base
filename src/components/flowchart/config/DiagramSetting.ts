@@ -31,7 +31,5 @@ export const DiagramSetting = {
 	groupWith: 160,
 	ConditionWidth: 140,
 	groupHeight: 0,
-	linkOpacity: 1,
-	spotOpacity: 0,
-	openWidth: 2
+	spotOpacity: 0
 };

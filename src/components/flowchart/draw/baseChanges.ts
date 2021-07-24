@@ -17,13 +17,13 @@ export default class baseChanges {
 		if (isShow) {
 			if (group_main) {
 				// (group_main as any).fill = HoverColors.group_bg;
-				(group_main as any).stroke = SelectedColors.group_border;
+				(group_main as any).stroke = SelectedColors.border;
 			}
 			if (group_body) {
-				group_body.background = SelectedColors.group_bg;
+				group_body.background = SelectedColors.background;
 			}
 			if (group_Title) {
-				(group_Title as any).stroke = SelectedColors.group_font;
+				(group_Title as any).stroke = SelectedColors.font;
 			}
 		} else {
 			if (group_main) {
@@ -54,13 +54,13 @@ export default class baseChanges {
 		if (isShow) {
 			if (group_main) {
 				// (group_main as any).fill = HoverColors.group_bg;
-				(group_main as any).stroke = HoverColors.group_border;
+				(group_main as any).stroke = HoverColors.border;
 			}
 			if (group_body) {
-				group_body.background = HoverColors.group_bg;
+				group_body.background = HoverColors.background;
 			}
 			if (group_Title) {
-				(group_Title as any).stroke = HoverColors.group_font;
+				(group_Title as any).stroke = HoverColors.font;
 			}
 		} else {
 			if (group_main) {
@@ -172,11 +172,11 @@ export default class baseChanges {
 		node.opacity = 1;
 		if (isShow) {
 			if (node_Body) {
-				(node_Body as any).fill = HoverColors.group_bg;
-				(node_Body as any).stroke = HoverColors.group_border;
+				(node_Body as any).fill = HoverColors.background;
+				(node_Body as any).stroke = HoverColors.border;
 			}
 			if (node_Title) {
-				(node_Title as any).stroke = HoverColors.group_font;
+				(node_Title as any).stroke = HoverColors.font;
 			}
 		} else {
 			if (node_Body) {

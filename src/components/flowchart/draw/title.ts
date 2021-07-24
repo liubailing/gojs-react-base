@@ -1,5 +1,5 @@
 import go, { Margin } from '@octopus/gojs';
-import { DiagramSetting, BaseColors } from '../config';
+import { DiagramSetting, BaseColors,SelectedColors } from '../config';
 import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
@@ -12,9 +12,9 @@ export class DrawTitle {
 		$(
 			go.TextBlock,
 			{
-				stroke: BaseColors.tipfont_color,
+				stroke: BaseColors.tipfont,
 				wrap: go.TextBlock.WrapFit,
-				margin: 5
+				margin: new Margin(1,2)
 			},
 			new go.Binding('text', 'label')
 		)
@@ -39,8 +39,7 @@ export class DrawTitle {
 			case DiagramEnum.LoopGroup:
 				obj = {
 					name: 'group_Title',
-					margin: new Margin(0, 5, 0, 5),
-					// stroke: BaseColors.group_font
+					margin: new Margin(0, 5, 0, 5)
 				};
 				break;
 			default:
@@ -75,7 +74,7 @@ export class DrawTitle {
 	 */
 	 private getNodeStroke = (_val: any, _targetObj: any): string =>{
 	 // const node = (_targetObj as any).part;
-	  return _val ? BaseColors.highlight_font : BaseColors.font
+	  return _val ? SelectedColors.font : BaseColors.font
 	 }
 
 	/**
