@@ -1,7 +1,7 @@
 import { NodeEnum, DiagramEnum } from '../enum';
 import { INodeModel } from '../interface';
 import { DiagramSetting } from '../config';
-import lang from '../../locales';
+import lang from '../../../locales';
 
 /**
  * 得到节点展示的类型
