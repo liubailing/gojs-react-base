@@ -10,7 +10,7 @@ export default class baseChanges {
 	 */
 	static setGroupCss(node: go.Part, isShow: boolean) {
 		const group_main = node.findObject('group_main');
-		const group_Top = node.findObject('group_Top');
+		const group_top = node.findObject('group_top');
 		const group_Title = node.findObject('group_Title');
 
 		node.opacity = 1;
@@ -19,8 +19,8 @@ export default class baseChanges {
 				(group_main as any).fill = HoverColors.group_bg;
 				(group_main as any).stroke = HoverColors.group_bg;
 			}
-			if (group_Top) {
-				group_Top.background = HoverColors.group_bg;
+			if (group_top) {
+				group_top.background = HoverColors.group_bg;
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = HoverColors.group_font;
@@ -31,8 +31,8 @@ export default class baseChanges {
 				(group_main as any).stroke = BaseColors.group_bg;
 			}
 
-			if (group_Top) {
-				group_Top.background = BaseColors.group_bg;
+			if (group_top) {
+				group_top.background = BaseColors.group_bg;
 			}
 			if (group_Title) {
 				(group_Title as any).stroke = BaseColors.group_font;

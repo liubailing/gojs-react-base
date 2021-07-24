@@ -55,7 +55,7 @@ export default class DrawLoop extends Base {
 				go.Panel,
 				'Vertical',
 				{
-					name: 'group_Top',
+					name: 'group_top',
 					background: BaseColors.group_bg,
 					defaultAlignment: go.Spot.Left,
 					cursor: 'pointer'

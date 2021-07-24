@@ -92,7 +92,7 @@ export default class DrawBranch extends Base {
 					go.Panel,
 					'Vertical',
 					{
-						name: 'group_Top',
+						name: 'group_top',
 						// background: BaseColors.group_bg,
 						background: "red",
 						defaultAlignment: go.Spot.Left,

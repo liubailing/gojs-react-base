@@ -60,7 +60,7 @@ export default class DrawCondition extends Base {
 				go.Panel,
 				'Vertical',
 				{
-					name: 'group_Top',
+					name: 'group_top',
 					background: BaseColors.group_bg,
 					defaultAlignment: go.Spot.Left,
 					cursor: 'pointer'
