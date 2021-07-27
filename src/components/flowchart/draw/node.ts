@@ -42,7 +42,7 @@ export default class DrawNode extends Base {
 					name: 'node_Body',
 					strokeWidth: 1,
 					// stroke: BaseColors.border
-					// fill: BaseColors.backgroud
+					// fill: BaseColors.background
 				},
 				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject(),
 				new go.Binding('stroke', 'isSelected', this.getNodeStroke).ofObject()
@@ -69,7 +69,7 @@ export default class DrawNode extends Base {
 	 * 返回背景颜色
 	 */
 	private getNodeFill = (_val: any, _targetObj: any): string =>
-		_val ? SelectedColors.background : BaseColors.backgroud;
+		_val ? SelectedColors.background : BaseColors.background;
 
 	/**
 	 * 返回名字

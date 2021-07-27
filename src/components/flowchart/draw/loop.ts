@@ -1,5 +1,5 @@
 import go, { GraphObject } from '@octopus/gojs';
-import { DiagramSetting, BaseColors } from '../config';
+import { DiagramSetting, BaseColors, HoverColors, SelectedColors } from '../config';
 import { DiagramEnum, HandleEnum } from '../enum';
 import Base from './base';
 import BaseChanges from './baseChanges';
@@ -67,9 +67,57 @@ export default class DrawLoop extends Base {
 						padding: 5
 					},
 					$('SubGraphExpanderButton', {
-						alignment: go.Spot.Center
+						alignment: go.Spot.Center,
+						// "_buttonExpandedFigure": "M0 0 L10 0",
+						// "_buttonCollapsedFigure": "M0 5 L10 5 M5 0 L5 10",
+						"ButtonIcon.stroke": BaseColors.font,
+						// "Button.fill": "blue",
+						// "ButtonBorder.opacity": 0.5
+						// height: 16
+						// "_subGraphExpandedFigure": "TriangleUp",
+						// "_subGraphCollapsedFigure": "TriangleDown",
+						// _buttonFill:BaseColors.transparent,
+						"ButtonBorder.fill": BaseColors.background,
+						"ButtonBorder.stroke": BaseColors.transparent,
+						// "_buttonFillNormal": "red",
+						// "_buttonStrokeNormal": "red",
+						"_buttonFillOver":SelectedColors.background,
+						"_buttonStrokeOver": BaseColors.transparent,
+						// "ButtonIcon.strokeOver":"red",
+						"_buttoniconStrokeOver": "red",
+						// click: function(e:any, obj:any) {
+						// 	// debugger
+						// 	// if(obj.panel.data) {
+						// 	// 	obj.findObject('ButtonIcon').fill = '#fb7e00';
+						// 	// 	obj._buttonFillOver = "#fb7e00";
+						// 	// } else {
+						// 	// 	obj._buttonFillNormal = "#red";
+						// 	// 	obj._buttonFillOver = "#dadada";
+						// 	// }
+						// 	// return true
+						// }
+						
 					}),
-					DrawTitle.getTitle(DiagramEnum.LoopGroup)
+					DrawTitle.getTitle(DiagramEnum.LoopGroup),
+					$(
+						go.Panel,
+						'Horizontal',
+						$(
+							go.TextBlock,
+							{
+								...{
+									editable: DiagramSetting.renameable,
+									font: DiagramSetting.font,
+									textEdited: (thisTextBlock: go.TextBlock, oldString: string, newString: string) => {
+										// todo 1
+										// this.props.store.iFlowchart.onSaveNodeNameHandler(newString);
+									}
+								}
+							},
+							new go.Binding('text', "tttest"),
+							// new go.Binding('stroke', 'isSelected', this.getNodeStroke).ofObject()
+						)
+					)
 				),
 				// create a placeholder to represent the area where the contents of the group are
 				$(go.Placeholder, {
@@ -108,7 +156,7 @@ export default class DrawLoop extends Base {
 					}
 				}
 			}
-		} catch (e) {}
+		} catch (e) { }
 	};
 
 	/**
@@ -130,7 +178,7 @@ export default class DrawLoop extends Base {
 					}
 				}
 			}
-		} catch (e) {}
+		} catch (e) { }
 	};
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {

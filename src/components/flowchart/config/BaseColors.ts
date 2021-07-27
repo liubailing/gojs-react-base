@@ -6,7 +6,7 @@ export const BaseColors = {
 
 	font: '#3f3f3f',
 	border: '#d5d5d5',
-	backgroud: '#fafafa',
+	background: '#fafafa',
 
 	group_font: '#3f3f3f',
 	group_border: '#d5d5d5',

@@ -37,7 +37,7 @@ export default class DrawBreak extends Base {
 					name: 'node_Body',
 					strokeWidth: 1,
 					stroke: BaseColors.transparent,
-					fill: BaseColors.backgroud
+					fill: BaseColors.background
 				},
 				new go.Binding('fill', 'color')
 				// new go.Binding('fill', 'isHighlighted', this.getHighlightedColor).ofObject() // binding source is Node.isHighlighted

@@ -180,7 +180,7 @@ export default class baseChanges {
 			}
 		} else {
 			if (node_Body) {
-				(node_Body as any).fill = BaseColors.backgroud;
+				(node_Body as any).fill = BaseColors.background;
 				(node_Body as any).stroke = BaseColors.border;
 			}
 			if (node_Title) {

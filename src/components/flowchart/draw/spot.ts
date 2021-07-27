@@ -1,10 +1,10 @@
 import go, { GraphObject, Margin } from '@octopus/gojs';
 import { DiagramEnum } from '../enum';
 import { HandleEnum } from '../enum';
-import IList from '../../../assets/images/flowchart/i-node-list.png';
-import IListHover from '../../../assets/images/flowchart/i-node-list-hover.png';
-import IMenu from '../../../assets/images/flowchart/i-node-menu.png';
-import IMenuHover from '../../../assets/images/flowchart/i-node-menu-hover.png';
+import IList from '../../../assets/images/flowchart/lct-list-black-hover.svg';
+import IListHover from '../../../assets/images/flowchart/lct-list-black-hover.svg';
+import IMenu from '../../../assets/images/flowchart/ilct-list-black-hover.svg';
+import IMenuHover from '../../../assets/images/flowchart/lct-list-black-hover.svg';
 import Base from './base';
 
 const $ = go.GraphObject.make;
