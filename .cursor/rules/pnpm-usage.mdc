@@ -1,0 +1,33 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# PNPM Usage
+
+This project uses [pnpm](https://pnpm.io/) for dependency management and as a task runner. It's configured as a workspace, with the configuration in [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml).
+
+## Installation
+
+To install dependencies, run:
+
+```bash
+pnpm install
+```
+
+## Running Scripts
+
+You can run scripts defined in [package.json](mdc:package.json) using `pnpm`.
+
+Available scripts in the root `package.json`:
+
+- `pnpm test`: Runs tests (currently a placeholder).
+- `pnpm run clean:modules`: Removes `node_modules` directories.
+- `pnpm run clean:dist`: Removes `dist` directories.
+- `pnpm lint`: Lints the project using ESLint.
+
+This project is a pnpm workspace, so you can also run commands in specific packages from the root. For example:
+
+```bash
+pnpm --filter <package-name> <command>
+```

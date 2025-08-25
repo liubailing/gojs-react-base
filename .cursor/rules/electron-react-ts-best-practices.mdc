@@ -1,0 +1,64 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Electron + React + TypeScript Project Guide
+
+This document outlines the structure, conventions, and best practices for this Electron project. The goal is to maintain a high-quality, secure, and maintainable codebase.
+
+## 1. Project Structure
+
+The project follows a standard Electron structure, separating code for the main, renderer, and preload processes.
+
+-   **Main Process**: Handles window creation, native OS integration, and backend tasks. The entry point is `[apps/octoparse/src/main/index.ts](mdc:apps/octoparse/src/main/index.ts)`.
+-   **Renderer Process**: Manages the user interface using React. The entry point is `[apps/octoparse/src/renderer/main.tsx](mdc:apps/octoparse/src/renderer/main.tsx)`.
+-   **Preload Script**: Bridges the main and renderer processes in a secure way. The script is located at `[apps/octoparse/src/preload/index.ts](mdc:apps/octoparse/src/preload/index.ts)`.
+-   **Configuration**: The Electron build and development process is configured in `[apps/octoparse/electron.vite.config.ts](mdc:apps/octoparse/electron.vite.config.ts)`.
+
+## 2. Best Practices
+
+### Electron
+
+-   **Security**:
+    -   Always enable `contextIsolation` and disable `nodeIntegration` in your web preferences for renderer processes.
+    -   Use the `[apps/octoparse/src/preload/index.ts](mdc:apps/octoparse/src/preload/index.ts)` script to expose a minimal, controlled API from the main process to the renderer. Avoid exposing entire Node.js modules.
+-   **Process Communication**:
+    -   Use `ipcMain` and `ipcRenderer` for asynchronous communication between the main and renderer processes.
+    -   Define a clear contract for IPC channels and payloads, preferably using TypeScript interfaces.
+
+### React
+
+-   **Component Structure**:
+    -   Organize reusable components in `[apps/octoparse/src/renderer/components/](mdc:apps/octoparse/src/renderer/components/)`.
+    -   Organize page-level components or views in `[apps/octoparse/src/renderer/views/](mdc:apps/octoparse/src/renderer/views/)`.
+-   **State Management**:
+    -   For local component state, use React Hooks (`useState`, `useReducer`).
+    -   For global or complex state, consider using a state management library like Redux or Zustand.
+-   **Styling**: Use a consistent styling approach, such as CSS Modules, styled-components, or a utility-first CSS framework like Tailwind CSS.
+
+### TypeScript
+
+-   **Strict Typing**: Enable `strict` mode in your `tsconfig.json` files to enforce strong typing.
+-   **Type Definitions**:
+    -   Define clear `interface` or `type` for component props, API payloads, and state objects.
+    -   Avoid using `any` whenever possible. Use `unknown` for values that are truly unknown at compile time and perform type checking.
+
+## 3. Internationalization (i18n)
+
+To support multiple languages, the project should adopt a structured i18n approach.
+
+-   **Recommended Library**: Use a library like `react-i18next` with `i18next` to manage translations.
+-   **File Structure**:
+    -   Create a `locales` or `i18n` directory within `apps/octoparse/src/renderer/`.
+    -   Store translations in JSON files, one for each language (e.g., `en.json`, `zh.json`).
+    -   Example structure:
+        ```
+        src/renderer/
+        └── locales/
+            ├── en.json
+            └── zh.json
+        ```
+-   **Usage**:
+    -   Do not hardcode user-facing strings in components.
+    -   Use the `useTranslation` hook from `react-i18next` to load and display translated strings.

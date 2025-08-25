@@ -1,0 +1,81 @@
+
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 八爪鱼数据采集器项目概览
+
+## 项目简介
+
+八爪鱼数据采集器是一个基于 TypeScript 的数据采集系统，采用 monorepo 架构，包含桌面应用和核心采集引擎。项目使用 [pnpm](mdc:pnpm-workspace.yaml) 作为包管理器，支持多包工作空间。
+
+## 核心技术栈
+
+- **语言**: TypeScript
+- **包管理**: pnpm (工作空间模式)
+- **桌面应用**: Electron + React + Vite
+- **构建工具**: electron-vite
+- **代码质量**: ESLint + Prettier
+- **开发环境**: Devbox
+
+## 项目结构
+
+### 根目录配置
+- [package.json](mdc:package.json) - 根项目配置和脚本
+- [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml) - pnpm 工作空间配置
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript 全局配置
+- [.eslintrc.js](mdc:.eslintrc.js) - ESLint 配置
+- [devbox.json](mdc:devbox.json) - 开发环境配置
+
+### 应用程序 (apps/)
+- [apps/octoparse/](mdc:apps/octoparse) - 主要的 Electron 桌面应用
+
+### 核心包 (packages/)
+- [packages/runner/](mdc:packages/runner) - 适配本地和云节点环境执行采集
+- [packages/workflow/](mdc:packages/workflow) - 驱动浏览器执行采集步骤
+- [packages/cloud-runner/](mdc:packages/cloud-runner) - 云端运行器
+
+## 开发指南
+
+### 环境要求
+- Node.js (推荐使用 Devbox)
+- pnpm (包管理器)
+
+### 常用命令
+```bash
+# 安装所有依赖
+pnpm install
+
+# 启动 runner 开发模式
+pnpm --filter runner dev
+
+# 清理所有 node_modules
+pnpm run clean:modules
+
+# 清理所有 dist 目录
+pnpm run clean:dist
+
+# 代码检查
+pnpm lint
+```
+
+### 包间依赖关系
+1. `workflow` 包提供核心采集工作流引擎
+2. `runner` 包依赖 `workflow`，负责执行环境适配
+3. `cloud-runner` 包提供云端执行能力
+4. `octoparse` 应用集成所有包，提供用户界面
+
+## 代码规范
+
+项目遵循以下代码规范和最佳实践：
+- 严格的 TypeScript 类型检查
+- ESLint 代码质量检查
+- Prettier 代码格式化
+- 统一的命名约定
+- 组件化架构设计
+
+参考相关规则文件：
+- [electron-react-ts-best-practices.mdc](mdc:.cursor/rules/electron-react-ts-best-practices.mdc)
+- [octoparse-view-naming-conventions.mdc](mdc:.cursor/rules/octoparse-view-naming-conventions.mdc)
+- [pnpm-usage.mdc](mdc:.cursor/rules/pnpm-usage.mdc)

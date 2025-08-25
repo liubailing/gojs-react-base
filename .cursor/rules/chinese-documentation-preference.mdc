@@ -1,0 +1,175 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 中文文档和注释偏好设置
+
+## 语言偏好原则
+
+在生成或更新项目文档、代码注释、描述文本时，**优先使用中文**。这有助于提高团队协作效率和代码可读性。
+
+## 适用范围
+
+### 1. 代码注释
+- 函数和方法的注释说明
+- 复杂逻辑的行内注释
+- TODO、FIXME 等标记注释
+- 类型定义的注释
+
+```typescript
+// 处理用户数据采集的核心函数
+function processUserData(data: UserData): ProcessedData {
+  // 验证输入数据的有效性
+  if (!validateInput(data)) {
+    throw new Error('输入数据格式无效');
+  }
+  
+  // TODO: 添加数据去重逻辑
+  return transformData(data);
+}
+```
+
+### 2. 文档文件
+- README.md 文件
+- API 文档
+- 用户指南
+- 开发文档
+- 变更日志 (CHANGELOG.md)
+
+### 3. 配置文件描述
+- package.json 中的 description 字段
+- 环境变量说明
+- 配置项注释
+
+### 4. 错误信息和提示文本
+- 用户界面提示信息
+- 错误消息文本
+- 警告和确认对话框
+
+### 5. Git 提交信息
+- 提交消息使用中文描述
+- 分支命名可使用英文，但描述使用中文
+
+```bash
+git commit -m "feat: 添加数据采集器的错误重试机制"
+git commit -m "fix: 修复浏览器自动化中的内存泄漏问题"
+```
+
+### 6. 测试用例描述
+- 测试用例的描述文本使用中文
+- 测试场景说明使用中文
+- 断言失败的错误信息使用中文
+- 测试数据的注释和说明使用中文
+
+```typescript
+describe('数据采集器核心功能', () => {
+  it('应该能够成功采集单个页面数据', async () => {
+    // 准备测试数据
+    const testUrl = 'https://example.com';
+    const expectedData = { title: '测试页面' };
+    
+    // 执行采集操作
+    const result = await scraper.scrape(testUrl);
+    
+    // 验证结果
+    expect(result.title).toBe(expectedData.title);
+  });
+  
+  it('当网络异常时应该正确处理错误', async () => {
+    // 模拟网络错误
+    mockNetworkError();
+    
+    // 验证错误处理
+    await expect(scraper.scrape('invalid-url'))
+      .rejects.toThrow('网络连接失败');
+  });
+});
+```
+
+## 例外情况
+
+以下情况可以使用英文：
+
+### 1. 技术术语
+保留英文技术术语，但可添加中文解释：
+```typescript
+// HTTP 请求处理器（用于处理网络请求）
+class HttpRequestHandler {
+  // REST API 端点配置
+  private apiEndpoints: ApiEndpoint[];
+}
+```
+
+### 2. 第三方库相关
+- 第三方库的配置文件
+- 与国际开源项目交互的代码
+- 标准协议或规范的实现
+
+### 3. 代码标识符
+- 变量名、函数名、类名等使用英文
+- 但相关注释和文档使用中文
+
+## 文档结构建议
+
+### 中英文混排格式
+当需要同时包含中英文时，建议使用以下格式：
+
+```markdown
+# 数据采集器 (Data Collector)
+
+## 快速开始 (Quick Start)
+
+八爪鱼数据采集器是一个强大的数据采集工具...
+
+### 安装 (Installation)
+\`\`\`bash
+npm install octopus-data-collector
+\`\`\`
+```
+
+### API 文档格式
+```typescript
+/**
+ * 创建新的采集任务
+ * Creates a new scraping task
+ * 
+ * @param config 任务配置对象 - Task configuration object
+ * @param options 可选参数 - Optional parameters
+ * @returns 返回任务实例 - Returns task instance
+ */
+function createTask(config: TaskConfig, options?: TaskOptions): Task {
+  // 实现逻辑...
+}
+```
+
+## 工具和自动化
+
+### 代码生成
+- 使用中文模板生成新组件
+- 自动生成的文档优先使用中文
+- IDE 代码片段使用中文注释
+
+### 文档生成
+- 自动生成的 API 文档使用中文描述
+- JSDoc 注释优先使用中文
+- 类型定义的描述使用中文
+
+### 测试文档
+- 测试计划和测试报告使用中文
+- 测试覆盖率报告的说明使用中文
+- 性能测试结果的分析使用中文
+
+## 团队协作
+
+### Code Review
+- 代码审查意见使用中文
+- 文档改进建议使用中文
+- 问题讨论和解决方案使用中文
+
+### 知识分享
+- 技术分享文档使用中文
+- 最佳实践指南使用中文
+- 故障排查文档使用中文
+
+这个规则有助于保持项目文档的一致性，提高团队成员的理解效率，特别是对于中文为母语的开发团队。

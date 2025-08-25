@@ -1,0 +1,311 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# TypeScript 编码规范
+
+## 基本原则
+
+### 1. 类型安全优先
+- **必须**: 启用 `strict` 模式在所有 [tsconfig.json](mdc:tsconfig.json) 文件中
+- **禁止**: 使用 `any` 类型，除非有充分理由
+- **推荐**: 使用 `unknown` 替代 `any` 进行未知类型声明
+- **必须**: 为所有函数参数和返回值提供明确类型
+
+### 2. 命名约定
+- **接口**: 使用 PascalCase，以 `I` 开头 (例: `IUserData`)
+- **类型**: 使用 PascalCase (例: `UserType`)
+- **枚举**: 使用 PascalCase，值使用 UPPER_SNAKE_CASE
+- **常量**: 使用 UPPER_SNAKE_CASE
+- **变量/函数**: 使用 camelCase
+- **类**: 使用 PascalCase
+
+## 类型定义规范
+
+### 1. 接口定义
+```typescript
+// ✅ 正确示例
+interface IWorkflowConfig {
+  readonly id: string;
+  name: string;
+  steps: IWorkflowStep[];
+  metadata?: IMetadata;
+}
+
+interface IWorkflowStep {
+  type: StepType;
+  config: Record<string, unknown>;
+  timeout?: number;
+}
+```
+
+### 2. 类型联合与枚举
+```typescript
+// ✅ 枚举定义
+enum WorkflowStatus {
+  PENDING = 'pending',
+  RUNNING = 'running',
+  COMPLETED = 'completed',
+  FAILED = 'failed'
+}
+
+// ✅ 类型联合
+type DataSource = 'local' | 'cloud' | 'hybrid';
+type ResponseStatus = 'success' | 'error' | 'timeout';
+```
+
+### 3. 泛型使用
+```typescript
+// ✅ 泛型接口
+interface IApiResponse<T> {
+  data: T;
+  status: ResponseStatus;
+  message?: string;
+}
+
+// ✅ 泛型函数
+function createRunner<T extends IRunnerConfig>(config: T): IRunner<T> {
+  // 实现
+}
+```
+
+## 文件组织规范
+
+### 1. 类型文件结构
+```
+src/
+├── types/
+│   ├── index.ts          // 导出所有类型
+│   ├── workflow.ts       // 工作流相关类型
+│   ├── runner.ts         // 运行器相关类型
+│   └── common.ts         // 通用类型
+├── interfaces/
+│   ├── IWorkflow.ts      // 工作流接口
+│   ├── IRunner.ts        // 运行器接口
+│   └── index.ts          // 导出所有接口
+```
+
+### 2. 导入导出约定
+```typescript
+// ✅ 类型导入
+import type { IWorkflowConfig, WorkflowStatus } from '../types';
+
+// ✅ 默认导出 (类/主要功能)
+export default class WorkflowRunner {
+  // 实现
+}
+
+// ✅ 命名导出 (类型/工具函数)
+export { IWorkflowConfig, WorkflowStatus };
+export type { RunnerOptions };
+```
+
+## 错误处理规范
+
+### 1. 自定义错误类型
+```typescript
+// ✅ 错误基类
+abstract class AppError extends Error {
+  abstract readonly code: string;
+  abstract readonly statusCode: number;
+  
+  constructor(message: string, public readonly details?: unknown) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+// ✅ 具体错误类型
+class WorkflowExecutionError extends AppError {
+  readonly code = 'WORKFLOW_EXECUTION_ERROR';
+  readonly statusCode = 500;
+}
+```
+
+### 2. 结果类型模式
+```typescript
+// ✅ Result 模式
+type Result<T, E = Error> = 
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+// ✅ 使用示例
+async function executeWorkflow(config: IWorkflowConfig): Promise<Result<IWorkflowResult>> {
+  try {
+    const result = await runWorkflow(config);
+    return { success: true, data: result };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+```
+
+## 函数和类规范
+
+### 1. 函数声明
+```typescript
+// ✅ 函数类型定义
+type WorkflowExecutor = (config: IWorkflowConfig) => Promise<IWorkflowResult>;
+
+// ✅ 箭头函数 (简单函数)
+const validateConfig = (config: unknown): config is IWorkflowConfig => {
+  // 类型守卫实现
+};
+
+// ✅ 普通函数 (复杂逻辑)
+async function executeWorkflowSteps(
+  steps: IWorkflowStep[],
+  context: IExecutionContext
+): Promise<IStepResult[]> {
+  // 实现
+}
+```
+
+### 2. 类定义规范
+```typescript
+// ✅ 类定义
+class WorkflowRunner implements IRunner {
+  private readonly config: IWorkflowConfig;
+  private status: WorkflowStatus = WorkflowStatus.PENDING;
+  
+  constructor(config: IWorkflowConfig) {
+    this.config = Object.freeze(config);
+  }
+  
+  public async execute(): Promise<IWorkflowResult> {
+    // 实现
+  }
+  
+  private validateStep(step: IWorkflowStep): boolean {
+    // 私有方法实现
+  }
+}
+```
+
+## 工具类型使用
+
+### 1. 实用工具类型
+```typescript
+// ✅ 部分类型
+type PartialWorkflowConfig = Partial<IWorkflowConfig>;
+
+// ✅ 必需类型
+type RequiredMetadata = Required<IMetadata>;
+
+// ✅ 选择类型
+type WorkflowBasicInfo = Pick<IWorkflowConfig, 'id' | 'name'>;
+
+// ✅ 排除类型
+type WorkflowWithoutMetadata = Omit<IWorkflowConfig, 'metadata'>;
+```
+
+### 2. 条件类型
+```typescript
+// ✅ 条件类型定义
+type ApiEndpoint<T> = T extends 'workflow' 
+  ? '/api/workflow' 
+  : T extends 'runner' 
+  ? '/api/runner' 
+  : never;
+
+// ✅ 映射类型
+type ReadonlyWorkflow = {
+  readonly [K in keyof IWorkflowConfig]: IWorkflowConfig[K];
+};
+```
+
+## 配置文件规范
+
+### 1. tsconfig.json 设置
+参考项目中的 [tsconfig.json](mdc:tsconfig.json) 配置：
+- 启用 `strict` 模式
+- 配置路径映射
+- 设置适当的编译目标
+- 启用增量编译
+
+### 2. 特定配置
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
+```
+
+## 最佳实践
+
+### 1. 类型安全检查
+```typescript
+// ✅ 类型守卫
+function isWorkflowConfig(obj: unknown): obj is IWorkflowConfig {
+  return typeof obj === 'object' && 
+         obj !== null && 
+         'id' in obj && 
+         'name' in obj;
+}
+
+// ✅ 断言函数
+function assertIsNumber(value: unknown): asserts value is number {
+  if (typeof value !== 'number') {
+    throw new Error('Expected number');
+  }
+}
+```
+
+### 2. 性能考虑
+- 使用 `const assertions` 避免不必要的类型推断
+- 合理使用 `as const` 创建只读元组
+- 避免复杂的条件类型影响编译性能
+
+### 3. 代码质量
+- 编写有意义的类型注释
+- 使用 JSDoc 注释增强 IDE 体验
+- 定期重构复杂类型定义
+- 保持类型定义与实现同步更新
+
+## 禁止事项
+
+### ❌ 不良实践
+```typescript
+// ❌ 使用 any
+function processData(data: any): any {
+  return data;
+}
+
+// ❌ 类型断言滥用
+const result = data as IWorkflowResult;
+
+// ❌ 忽略错误
+// @ts-ignore
+const value = someUnsafeOperation();
+
+// ❌ 空接口
+interface IEmptyInterface {}
+```
+
+### ✅ 推荐替代
+```typescript
+// ✅ 使用泛型
+function processData<T>(data: T): T {
+  return data;
+}
+
+// ✅ 类型守卫
+if (isWorkflowResult(data)) {
+  // data 现在是 IWorkflowResult 类型
+}
+
+// ✅ 预期错误处理
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+const value = someUnsafeOperation();
+
+// ✅ 有意义的接口
+interface IConfigurable {
+  configure(options: Record<string, unknown>): void;
+}
+```

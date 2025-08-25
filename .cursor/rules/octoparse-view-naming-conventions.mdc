@@ -1,0 +1,66 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Octoparse View Component Naming Conventions
+
+## Window View Components
+
+All window view components in the Octoparse project must follow these naming conventions:
+
+### Component Naming
+- **MUST**: All view components must end with "View" suffix
+- **Location**: View components should be placed in [src/renderer/views/](mdc:apps/octoparse/src/renderer/views/)
+- **Examples**: 
+  - `HomeView.tsx` ✅
+  - `SettingsView.tsx` ✅
+  - `DemoView.tsx` ✅
+  - `AuthView.tsx` ✅
+  - `UpdaterView.tsx` ✅
+
+### Route Path Naming
+- **MUST**: Route paths must NOT include the "View" suffix
+- **Format**: Use lowercase, descriptive path names
+- **Examples**:
+  - Component: `HomeView` → Route: `/home` ✅
+  - Component: `SettingsView` → Route: `/settings` ✅
+  - Component: `DemoView` → Route: `/demo` ✅
+  - Component: `AuthView` → Route: `/auth` ✅
+  - Component: `UpdaterView` → Route: `/updater` ✅
+
+### Routing Configuration
+The routing configuration is managed in [App.tsx](mdc:apps/octoparse/src/renderer/App.tsx):
+
+```tsx
+import HomeView from './views/HomeView'
+import SettingsView from './views/SettingsView'
+
+<Route path="/home" element={<HomeView />} />
+<Route path="/settings" element={<SettingsView />} />
+```
+
+### File Structure
+```
+apps/octoparse/src/renderer/
+├── App.tsx                 // Main routing configuration
+└── views/
+    ├── HomeView.tsx        // Home window view
+    ├── SettingsView.tsx    // Settings window view
+    ├── DemoView.tsx        // Demo window view
+    ├── AuthView.tsx        // Authentication window view
+    └── UpdaterView.tsx     // Updater window view
+```
+
+### Best Practices
+1. Use PascalCase for component names with "View" suffix
+2. Use kebab-case for route paths without "View" suffix
+3. Keep component files in the dedicated `views/` directory
+4. Import and register routes in the main [App.tsx](mdc:apps/octoparse/src/renderer/App.tsx) file
+5. Ensure route paths are descriptive and match the component's purpose
+
+### Violations to Avoid
+- ❌ View components without "View" suffix: `Home.tsx`, `Settings.tsx`
+- ❌ Route paths with "View" suffix: `/homeview`, `/settingsview`
+- ❌ Inconsistent casing in route paths: `/Home`, `/SETTINGS`
+- ❌ View components outside the `views/` directory

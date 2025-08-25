@@ -1,0 +1,521 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 测试策略指南
+
+## 测试架构概览
+
+八爪鱼数据采集器项目采用多层次测试策略，确保代码质量和系统稳定性。测试覆盖从单元测试到端到端集成测试的完整链路。
+
+## 测试层次结构
+
+### 1. 测试金字塔
+```
+    E2E Tests (端到端测试)
+      ↑ 少量，高价值
+  ══════════════════════
+    Integration Tests (集成测试)
+      ↑ 适量，关键路径
+  ══════════════════════════════
+      Unit Tests (单元测试)
+        ↑ 大量，快速反馈
+```
+
+### 2. 测试类型分布
+- **单元测试**: 80% - 快速、独立、覆盖面广
+- **集成测试**: 15% - 验证组件协作
+- **端到端测试**: 5% - 验证用户流程
+
+## 单元测试 (Unit Tests)
+
+### 1. 工具栈
+- **框架**: [Vitest](mdc:https:/vitest.dev) (配置在 [apps/octoparse/vitest.config.ts](mdc:apps/octoparse/vitest.config.ts))
+- **断言**: Vitest 内置断言
+- **模拟**: vi.mock(), vi.fn()
+- **覆盖率**: c8/v8
+
+### 2. 测试文件结构
+```
+packages/workflow/
+├── src/
+│   ├── actions/
+│   │   ├── click.ts
+│   │   └── __tests__/
+│   │       └── click.test.ts
+│   ├── utils/
+│   │   ├── common.ts
+│   │   └── __tests__/
+│   │       └── common.test.ts
+└── tests/
+    ├── setup.ts
+    └── helpers/
+```
+
+### 3. 单元测试示例
+```typescript
+// packages/workflow/src/utils/__tests__/common.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { createId, validateConfig } from '../common';
+
+describe('Common Utils', () => {
+  describe('createId', () => {
+    it('应该生成唯一的 ID', () => {
+      const id1 = createId();
+      const id2 = createId();
+      
+      expect(id1).toMatch(/^wf_\d+_\d+/);
+      expect(id1).not.toBe(id2);
+    });
+  });
+
+  describe('validateConfig', () => {
+    it('应该验证有效配置', () => {
+      const validConfig = {
+        id: 'test-id',
+        name: 'Test Workflow',
+        steps: []
+      };
+      
+      expect(validateConfig(validConfig)).toBe(true);
+    });
+
+    it('应该拒绝无效配置', () => {
+      const invalidConfig = { name: 'Test' };
+      
+      expect(validateConfig(invalidConfig)).toBe(false);
+    });
+  });
+});
+```
+
+### 4. 测试命令
+```bash
+# 运行所有单元测试
+pnpm test
+
+# 运行特定包的测试
+pnpm --filter workflow test
+
+# 监听模式
+pnpm --filter workflow test --watch
+
+# 覆盖率报告
+pnpm --filter workflow test --coverage
+```
+
+## 集成测试 (Integration Tests)
+
+### 1. 测试目标
+- 包之间的交互
+- 数据库集成
+- 外部 API 调用
+- 文件系统操作
+
+### 2. 集成测试示例
+```typescript
+// packages/runner/tests/integration/workflow-runner.test.ts
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { WorkflowRunner } from '../src/runner';
+import { MockWorkflow } from './mocks/workflow';
+
+describe('WorkflowRunner Integration', () => {
+  let runner: WorkflowRunner;
+  let mockWorkflow: MockWorkflow;
+
+  beforeEach(() => {
+    mockWorkflow = new MockWorkflow();
+    runner = new WorkflowRunner(mockWorkflow);
+  });
+
+  afterEach(async () => {
+    await runner.cleanup();
+  });
+
+  it('应该成功执行简单工作流', async () => {
+    const config = {
+      id: 'test-workflow',
+      name: 'Test Workflow',
+      steps: [
+        { type: 'navigate', url: 'https://example.com' },
+        { type: 'click', selector: '#button' }
+      ]
+    };
+
+    const result = await runner.execute(config);
+
+    expect(result.success).toBe(true);
+    expect(result.steps).toHaveLength(2);
+    expect(mockWorkflow.getExecutedSteps()).toEqual(['navigate', 'click']);
+  });
+
+  it('应该处理执行错误', async () => {
+    const config = {
+      id: 'failing-workflow',
+      name: 'Failing Workflow',
+      steps: [
+        { type: 'invalid-action' }
+      ]
+    };
+
+    const result = await runner.execute(config);
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBeDefined();
+  });
+});
+```
+
+### 3. 数据库集成测试
+```typescript
+// packages/runner/tests/integration/database.test.ts
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { DatabaseManager } from '../src/database';
+import { TestDatabase } from './helpers/test-database';
+
+describe('Database Integration', () => {
+  let db: DatabaseManager;
+  let testDb: TestDatabase;
+
+  beforeAll(async () => {
+    testDb = new TestDatabase();
+    await testDb.setup();
+    db = new DatabaseManager(testDb.getConnectionString());
+  });
+
+  afterAll(async () => {
+    await testDb.teardown();
+  });
+
+  it('应该保存和检索工作流结果', async () => {
+    const result = {
+      workflowId: 'test-wf-1',
+      status: 'completed',
+      data: { count: 10 }
+    };
+
+    await db.saveResult(result);
+    const retrieved = await db.getResult('test-wf-1');
+
+    expect(retrieved).toEqual(result);
+  });
+});
+```
+
+## 端到端测试 (E2E Tests)
+
+### 1. 工具栈
+- **框架**: Playwright
+- **应用**: Electron 应用测试
+- **环境**: 隔离的测试环境
+
+### 2. E2E 测试结构
+```
+apps/octoparse/tests/e2e/
+├── fixtures/
+│   ├── test-workflows/
+│   └── mock-data/
+├── pages/
+│   ├── home.page.ts
+│   ├── settings.page.ts
+│   └── workflow.page.ts
+├── specs/
+│   ├── workflow-creation.spec.ts
+│   ├── data-extraction.spec.ts
+│   └── settings.spec.ts
+└── helpers/
+    ├── app-launcher.ts
+    └── test-data.ts
+```
+
+### 3. E2E 测试示例
+```typescript
+// apps/octoparse/tests/e2e/specs/workflow-creation.spec.ts
+import { test, expect } from '@playwright/test';
+import { AppLauncher } from '../helpers/app-launcher';
+import { HomePage } from '../pages/home.page';
+import { WorkflowPage } from '../pages/workflow.page';
+
+test.describe('工作流创建', () => {
+  let app: AppLauncher;
+  let homePage: HomePage;
+  let workflowPage: WorkflowPage;
+
+  test.beforeEach(async () => {
+    app = new AppLauncher();
+    await app.launch();
+    homePage = new HomePage(app.page);
+    workflowPage = new WorkflowPage(app.page);
+  });
+
+  test.afterEach(async () => {
+    await app.close();
+  });
+
+  test('应该创建新的工作流', async () => {
+    await homePage.clickCreateWorkflow();
+    await workflowPage.setWorkflowName('测试工作流');
+    await workflowPage.addStep('navigate', { url: 'https://example.com' });
+    await workflowPage.addStep('extract', { selector: '.content' });
+    await workflowPage.save();
+
+    await expect(workflowPage.getSuccessMessage()).toBeVisible();
+    
+    const workflows = await homePage.getWorkflowList();
+    expect(workflows).toContain('测试工作流');
+  });
+
+  test('应该执行工作流并显示结果', async () => {
+    await homePage.selectWorkflow('测试工作流');
+    await workflowPage.run();
+
+    await expect(workflowPage.getExecutionStatus()).toHaveText('运行中');
+    await workflowPage.waitForCompletion();
+    await expect(workflowPage.getExecutionStatus()).toHaveText('已完成');
+
+    const results = await workflowPage.getResults();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+```
+
+## 性能测试
+
+### 1. 性能基准测试
+```typescript
+// packages/workflow/tests/performance/benchmark.test.ts
+import { describe, it, expect } from 'vitest';
+import { performance } from 'perf_hooks';
+import { WorkflowEngine } from '../src/engine';
+
+describe('性能基准测试', () => {
+  it('应该在合理时间内处理大量步骤', async () => {
+    const engine = new WorkflowEngine();
+    const steps = Array(1000).fill(0).map((_, i) => ({
+      id: `step-${i}`,
+      type: 'extract',
+      selector: `.item-${i}`
+    }));
+
+    const startTime = performance.now();
+    await engine.processSteps(steps);
+    const endTime = performance.now();
+
+    const executionTime = endTime - startTime;
+    expect(executionTime).toBeLessThan(5000); // 5秒内完成
+  });
+
+  it('应该在内存限制内运行', async () => {
+    const initialMemory = process.memoryUsage().heapUsed;
+    
+    const engine = new WorkflowEngine();
+    await engine.processLargeDataset();
+    
+    const finalMemory = process.memoryUsage().heapUsed;
+    const memoryIncrease = finalMemory - initialMemory;
+    
+    expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024); // 100MB 限制
+  });
+});
+```
+
+## 测试数据管理
+
+### 1. 测试夹具 (Fixtures)
+```typescript
+// tests/fixtures/workflow-fixtures.ts
+export const SAMPLE_WORKFLOWS = {
+  simple: {
+    id: 'simple-workflow',
+    name: '简单工作流',
+    steps: [
+      { type: 'navigate', url: 'https://example.com' },
+      { type: 'extract', selector: '.title' }
+    ]
+  },
+  
+  complex: {
+    id: 'complex-workflow',
+    name: '复杂工作流',
+    steps: [
+      { type: 'navigate', url: 'https://example.com' },
+      { type: 'waitFor', selector: '.content' },
+      { type: 'loop', iterations: 10, steps: [
+        { type: 'click', selector: '.next' },
+        { type: 'extract', selector: '.item' }
+      ]}
+    ]
+  }
+};
+```
+
+### 2. Mock 数据生成
+```typescript
+// tests/helpers/mock-generator.ts
+import { faker } from '@faker-js/faker';
+
+export class MockDataGenerator {
+  static generateWorkflow() {
+    return {
+      id: faker.string.uuid(),
+      name: faker.lorem.words(3),
+      description: faker.lorem.sentence(),
+      steps: this.generateSteps(faker.number.int({ min: 3, max: 10 }))
+    };
+  }
+
+  static generateSteps(count: number) {
+    return Array(count).fill(0).map(() => ({
+      id: faker.string.uuid(),
+      type: faker.helpers.arrayElement(['navigate', 'click', 'extract']),
+      config: this.generateStepConfig()
+    }));
+  }
+
+  private static generateStepConfig() {
+    return {
+      selector: faker.internet.domainName(),
+      timeout: faker.number.int({ min: 1000, max: 10000 })
+    };
+  }
+}
+```
+
+## 持续集成测试
+
+### 1. CI/CD 测试流水线
+```yaml
+# .github/workflows/test.yml
+name: 测试流水线
+
+on: [push, pull_request]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: pnpm install
+      - run: pnpm test
+      - run: pnpm test:coverage
+
+  integration-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: test
+    steps:
+      - uses: actions/checkout@v3
+      - run: pnpm install
+      - run: pnpm test:integration
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm test:e2e
+```
+
+### 2. 测试报告
+```bash
+# 生成测试报告
+pnpm test:coverage
+pnpm test:e2e --reporter=html
+
+# 上传覆盖率报告
+pnpm coverage:upload
+```
+
+## 测试最佳实践
+
+### 1. 编写原则
+- **AAA 模式**: Arrange, Act, Assert
+- **单一断言**: 每个测试只验证一个行为
+- **独立性**: 测试之间不应相互依赖
+- **可重复**: 测试结果应该一致
+
+### 2. 命名约定
+```typescript
+// ✅ 好的测试命名
+describe('WorkflowRunner', () => {
+  describe('execute', () => {
+    it('应该在配置有效时成功执行工作流', async () => {
+      // 测试实现
+    });
+
+    it('应该在步骤失败时返回错误信息', async () => {
+      // 测试实现
+    });
+  });
+});
+```
+
+### 3. Mock 策略
+```typescript
+// ✅ 合适的 Mock 使用
+import { vi } from 'vitest';
+
+// Mock 外部依赖
+vi.mock('puppeteer', () => ({
+  launch: vi.fn().mockResolvedValue({
+    newPage: vi.fn().mockResolvedValue({
+      goto: vi.fn(),
+      click: vi.fn()
+    })
+  })
+}));
+
+// Mock 内部模块
+vi.mock('../utils/logger', () => ({
+  log: vi.fn(),
+  error: vi.fn()
+}));
+```
+
+### 4. 测试维护
+- **定期重构**: 重构代码时同步更新测试
+- **清理过时测试**: 删除无效或重复的测试
+- **文档化**: 为复杂测试添加说明注释
+- **代码审查**: 测试代码也需要进行代码审查
+
+## 故障排除
+
+### 1. 常见问题
+```bash
+# 测试超时
+# 解决方案: 增加超时时间或优化测试性能
+
+# 内存泄漏
+# 解决方案: 正确清理资源，使用 afterEach
+
+# 不稳定测试
+# 解决方案: 移除时间依赖，使用确定性数据
+```
+
+### 2. 调试技巧
+```typescript
+// 调试测试
+import { debug } from 'vitest';
+
+test('调试示例', async () => {
+  const result = await someAsyncFunction();
+  
+  // 调试输出
+  debug(result);
+  
+  // 条件断点
+  if (result.status !== 'success') {
+    debugger;
+  }
+  
+  expect(result.status).toBe('success');
+});
+```
