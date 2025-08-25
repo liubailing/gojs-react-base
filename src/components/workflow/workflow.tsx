@@ -5,10 +5,10 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import Flowchart from '../flowchart/flowchartDiagram';
-import workflowHandle from './workflowHandle';
+import workflowHandle from '../test/workflowHandle';
 import './base.css';
-import FlowChartMenu from './components';
-import TestMenu from './menu';
+import TestMenu from '../test/menu';
+// import FlowChartMenu from './components';
 /**
  * Use a linkDataArray since we'll be using a GraphLinksModel,
  * and modelData for demonstration purposes. Note, though, that
@@ -37,7 +37,7 @@ class WorkflowTest extends React.Component<WorkflowProps> {
 				<div className="div-flowchart-main" id={`div-Main${this.props.taskId}`}>
 					<TestMenu Workflow={this.Workflow}></TestMenu>
 					<div className="div-flowchart">
-						<FlowChartMenu store={this.Workflow} />
+						{/* <FlowChartMenu store={this.Workflow} /> */}
 						<Flowchart
 							ref={(ref) => (this.Workflow.flowchartRef = ref)}
 							taskId={this.props.taskId}

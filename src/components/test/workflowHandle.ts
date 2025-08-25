@@ -2,7 +2,7 @@ import { IFlowchartHander, INodeModel, ILineModel } from '../flowchart/interface
 import { HanderFlowchart } from '../flowchart/handle';
 import { observable, reaction } from 'mobx';
 import { NodeEnum } from '../flowchart/enum';
-import { WorkflowHelper } from './index';
+import { WorkflowHelper } from './workflowHelper';
 import { FlowchartModel } from '../flowchart/model';
 import TestDataJson from './testData';
 import ReactDOM from 'react-dom';
