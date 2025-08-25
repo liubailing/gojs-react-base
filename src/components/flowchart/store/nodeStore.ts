@@ -2,6 +2,7 @@ import { t } from 'i18next';
 import { DiagramSetting } from '../config';
 import { DiagramEnum, NodeEnum } from '../enum';
 import { INodeModel } from '../interface';
+import lang from '../../../locales';
 
 /**
  * 得到节点展示的类型
@@ -9,38 +10,49 @@ import { INodeModel } from '../interface';
  */
 export class NodeStore {
 	static get strWFGuideLine() {
-		return t('main:FCEntities.WFGuideLine');
+		// return t('main:FCEntities.WFGuideLine');
+		return lang.FCEntities.WFGuideLine;
 	}
 	static get strCondition() {
-		return t('main:FCEntities.Condition');
+		// return t('main:FCEntities.Condition');
+		return lang.FCEntities.Condition;
 	}
 	static get strExtractData() {
-		return t('main:FCEntities.ExtractData');
+		// return t('main:FCEntities.ExtractData');
+		return lang.FCEntities.ExtractData;
 	}
 	static get strComplete() {
-		return t('main:FCEntities.Complete');
+		// return t('main:FCEntities.Complete');
+		return lang.FCEntities.Complete;
 	}
 	static get strEnterText() {
-		return t('main:FCEntities.EnterText');
+		// return t('main:FCEntities.EnterText');
+		return lang.FCEntities.EnterText;
 	}
 	static get strLoop() {
-		return t('main:FCEntities.Loop');
+		// return t('main:FCEntities.Loop');
+		return lang.FCEntities.Loop;
 	}
 
 	static get strLoopScrollWeb() {
-		return t('main:FCEntities.LoopScrollWeb');
+		// return t('main:FCEntities.LoopScrollWeb');
+		return lang.FCEntities.LoopScrollWeb;
 	}
 	static get strBreakActivity() {
-		return t('main:FCEntities.BreakActivity');
+		// return t('main:FCEntities.BreakActivity');
+		return lang.FCEntities.BreakActivity;
 	}
 	static get strClick() {
-		return t('main:FCEntities.Click');
+		// return t('main:FCEntities.Click');
+		return lang.FCEntities.Click;
 	}
 	static get strMouseOver() {
-		return t('main:FCEntities.MouseOver');
+		// return t('main:FCEntities.MouseOver');
+		return lang.FCEntities.MouseOver;
 	}
 	static get strNavigate() {
-		return t('main:FCEntities.Navigate');
+		// return t('main:FCEntities.Navigate');
+		return lang.FCEntities.Navigate;
 	}
 	static get strSwitchCombo() {
 		return t('main:FCEntities.SwitchCombo');
@@ -49,13 +61,16 @@ export class NodeStore {
 		return t('main:FCEntities.EnterCapacha');
 	}
 	static get strBranch() {
-		return t('main:FCEntities.Branch');
+		// return t('main:FCEntities.Branch');
+		return lang.FCEntities.Branch;
 	}
 	static get strWFGuideNode() {
-		return t('main:FCEntities.WFGuideNode');
+		// return t('main:FCEntities.WFGuideNode');
+		return lang.FCEntities.WFGuideNode;
 	}
 	static get strWFGuideBranch() {
-		return t('main:FCEntities.WFGuideBranch');
+		// return t('main:FCEntities.WFGuideBranch');
+		return lang.FCEntities.WFGuideBranch;
 	}
 	static get strBackPreWebPage() {
 		return t('main:FCEntities.BackPreWebPage');

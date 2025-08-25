@@ -5,6 +5,7 @@ export const lang = {
 		Complete: '结束流程',
 		EnterText: '输入文本',
 		Loop: '循环',
+		LoopScrollWeb: '循环滚动网页',
 		BreakActivity: '结束循环',
 		Click: '点击元素',
 		MouseOver: '移动鼠标到元素上',
