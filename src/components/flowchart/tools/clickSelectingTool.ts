@@ -1,6 +1,7 @@
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 
 export default class ClickSelectingTool extends go.ClickSelectingTool {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	constructor(_doDragEvent: any = null) {
 		super();
 	}

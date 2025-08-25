@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
-// import go from 'gojs';
+// import go from '@octopus/gojs';
 import { INodeModel } from './iNodeModel';
 import { ILineModel } from './iLineModel';
 
@@ -40,12 +40,12 @@ export interface IFlowchartHander {
 	 * 流程图对外回调接口，
 	 * 显示节点编辑页面
 	 */
-	onShowEditPage: () => void;
+	onShowEditPage(): void;
 
 	/**
 	 * 修改名称后的操作
 	 */
-	handlerSaveNodeName: (key: string, newName: string) => void;
+	handlerSaveNodeName(key: string, newName: string): void;
 
 	/**
 	 * 流程改变后 触发事件
@@ -171,4 +171,9 @@ export interface IFlowchartHander {
 	 * 目前只有loop放开有这个事件
 	 */
 	handlerMouseEnter(node: INodeModel): void;
+
+	/**
+	 * 隐藏流程图底部菜单
+	 */
+	handlerBeforeShowLineMenu(): void;
 }

@@ -1,0 +1,33 @@
+{
+  "i18nSettings": "Langues",
+  "aibutton": "Analyse",
+  "flowchart": {
+    "nodeName":{
+      "condition": "Conditions de la branche",
+      "extractData": "Extraire des données",
+      "complete": "Fin du processus",
+      "enterText": "Saisir le texte",
+      "groupEnterText": "Saisir le texte",
+      "loop": "Boucle",
+      "breakActivity": "Fin de la boucle",
+      "click": "Cliquer",
+      "mouseOver": "Survol activé",
+      "navigate": "Ouvrir la page",
+      "switchCombo": "Changer le menu déroulant",
+      "backPreWebPage": "Retourner à la page précédente",
+      "enterCapacha": "Résoudre CAPTCHA",
+      "branch": "Conditions de la branche",
+      "wfGuideNode": "Déposez une action ici ",
+      "wfGuideLine": "Ajouter une étape",
+      "wfGuideBranch": "Ajouter une condition de branche",
+      "loopScrollWeb": "Défilement"
+    },
+    "action":{
+      "modifyName": "Renommer",
+      "copy": "Copier",
+      "paste": "Coller",
+      "delete": "Supprimer",
+      "cut": "Couper"
+    }
+  }
+}

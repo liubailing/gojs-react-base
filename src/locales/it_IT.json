@@ -1,0 +1,33 @@
+{
+  "i18nSettings": "Lingue",
+  "aibutton": "Analisi",
+  "flowchart": {
+    "nodeName":{
+      "condition": "Ramificazione condizionale",
+      "extractData": "Estrae dati",
+      "complete": "Termina il flusso di lavoro",
+      "enterText": "Inserisci il testo",
+      "groupEnterText": "Inserisci il testo",
+      "loop": "Loop",
+      "breakActivity": "Termina il loop",
+      "click": "Clicca",
+      "mouseOver": "Passaggio del mouse",
+      "navigate": "Apri la pagina",
+      "switchCombo": "Cambia tra opzioni del menu a tendina",
+      "backPreWebPage": "Torna alla pagina precedente",
+      "enterCapacha": "Risolvi CAPTCHA",
+      "branch": "Ramificazione condizionale",
+      "wfGuideNode": "Depone un'azione qui",
+      "wfGuideLine": "Aggiungi un passaggio",
+      "wfGuideBranch": "Aggiungi una ramificazione condizionale",
+      "loopScrollWeb": "Scorrimento"
+    },
+    "action":{
+      "modifyName": "Rinomina",
+      "copy": "Copia",
+      "paste": "Incolla",
+      "delete": "Cancella",
+      "cut": "Taglia"
+    }
+  } 
+}

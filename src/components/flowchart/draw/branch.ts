@@ -1,4 +1,4 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum, HandleEnum } from '../enum';
 import Base from './base';
@@ -63,9 +63,10 @@ export default class DrawBranch extends Base {
 			new go.Binding('height', 'height').makeTwoWay(),
 
 			$(go.Shape, 'RoundedRectangle', {
-				name: 'groupBranch_main',
+				// name: 'groupBranch_main',
 				parameter1: DiagramSetting.parameter1Group,
 				fill: BaseColors.transparent,
+				// fill: "#000",
 				stroke: BaseColors.transparent,
 				strokeWidth: 1
 			}),
@@ -79,15 +80,23 @@ export default class DrawBranch extends Base {
 					padding: new go.Margin(0, 8, 0, 8),
 					cursor: 'pointer'
 				},
-
+				$(go.Shape, 'RoundedRectangle', {
+					name: 'group_main',
+					parameter1: DiagramSetting.parameter1Group,
+					fill: BaseColors.transparent,
+					// fill: "#000",
+					stroke: BaseColors.group_border,
+					strokeWidth: 1
+				}),
 				$(
 					go.Panel,
 					'Vertical',
 					{
-						name: 'group_Top',
+						name: 'group_body',
 						background: BaseColors.group_bg,
 						defaultAlignment: go.Spot.Left,
-						padding: new go.Margin(0, 1, 1, 1)
+						margin: new go.Margin(0, 0, -5, 1)
+						// padding: new go.Margin(0, 1, 1, 1)
 					},
 
 					$(
@@ -184,9 +193,7 @@ export default class DrawBranch extends Base {
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		// console.log('node', node);
-
-		if (node && node.diagram) {
+		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
 			BaseChanges.setActionCss(node, true);
@@ -195,40 +202,23 @@ export default class DrawBranch extends Base {
 
 	onLeftClick = (e: go.InputEvent, obj: GraphObject): void => {
 		super.doFlowchartEvent(e, obj, HandleEnum.AddBranchToLeft, this.callBack);
-		// let node = (obj as any).part;
-		// // console.log('node', node);
-		// if (node && node.diagram) {
-		// 	BaseChanges.setSpotCss(node, true);
-		// 	BaseChanges.setBranchCss(node, true);
-		// }
 	};
 
 	onRightClick = (e: go.InputEvent, obj: GraphObject): void => {
 		super.doFlowchartEvent(e, obj, HandleEnum.AddBranchToRight, this.callBack);
-
-		// let node = (obj as any).part;
-		// console.log('node', node);
-		// if (node && node.diagram) {
-		// 	BaseChanges.setSpotCss(node, true);
-		// 	BaseChanges.setBranchCss(node, true);
-		// }
 	};
 
 	doGroupCss_SelectionChanged = (_targetObj: any) => {
+		if (_targetObj) {
+			super.doBranchCss_SelectionChanged(_targetObj);
+		}
 		/** 点击无效区域 */
 		const node = (_targetObj as any).part;
 		if (node && node.isSelected) {
-			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setBranchCss(node, true);
 		} else {
-			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setBranchCss(node, false);
 			BaseChanges.setActionHide(node);
 		}
-		// }
 	};
 }
-
-// const drawBranch = new DrawBranch();
-
-// export default drawBranch;

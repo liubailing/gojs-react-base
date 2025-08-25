@@ -1,0 +1,33 @@
+{
+  "i18nSettings": "界面语音",
+  "aibutton": "AI 分析",
+  "flowchart": {
+    "nodeName":{
+      "condition": "判断条件",
+      "extractData": "提取数据",
+      "complete": "结束流程",
+      "enterText": "输入文本",
+      "groupEnterText": "组合输入文本",
+      "loop": "循环",
+      "breakActivity": "结束循环",
+      "click": "点击元素",
+      "mouseOver": "移动鼠标到元素上",
+      "navigate": "打开网页",
+      "switchCombo": "切换下拉选项",
+      "backPreWebPage": "返回上一级网页",
+      "enterCapacha": "识别验证码",
+      "branch": "条件分支",
+      "wfGuideNode": "将要执行的流程拖放在此",
+      "wfGuideLine": "添加流程",
+      "wfGuideBranch": "添加分支条件",
+      "loopScrollWeb": "循环滚动网页"
+    },
+    "action":{
+      "modifyName": "修改名称",
+      "copy": "复制",
+      "paste": "粘贴",
+      "delete": "删除",
+      "cut": "剪切"
+    }
+  }
+}

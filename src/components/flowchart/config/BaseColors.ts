@@ -1,27 +1,26 @@
 /* eslint-disable camelcase */
 export const BaseColors = {
-	start: '#95CD9A',
-	end: '#E99898',
+	start: '#99b7ff',
+	end: '#efb3b3',
 	diagram_bg: '#fff',
 
-	font: '#fff',
-	border: '#6383BC',
-	backgroud: '#6383BC',
-	highlight: '#2b71ed', // #5685d6
+	font: '#3f3f3f',
+	border: '#d5d5d5',
+	backgroud: '#fafafa',
 
-	group_font: '#555',
-	group_border: '#E1E4EB',
-	group_bg: '#E1E4EB',
+	group_font: '#3f3f3f',
+	group_border: '#d5d5d5',
+	group_bg: '#fafafa',
 	group_panel_bg: '#fff',
 
-	icon_bg: '#2b71ed',
+	icon_bg: '#3470ff',
 	icon: '#fff',
 
-	link: '#9EA3AF',
+	link: '#d5d5d5',
 	link_icon: '#fff',
-	link_icon_bg: '#BFC5D3',
+	link_icon_bg: '#3470ff',
 
-	tip: '#ddd',
-	tipfont_color: '#666',
+	tip: 'rgba(0, 0, 0, 0.75)',
+	tipfont: '#fff',
 	transparent: 'transparent'
 };

@@ -33,4 +33,7 @@ export interface INodeModel {
 	 * FCNode | LoopGroup | ConditionGroup | Condition | Start | End
 	 * */
 	category?: string | DiagramEnum;
+
+	/** 是否循环是滚动网页 */
+	isLoopScrollWeb?: boolean;
 }

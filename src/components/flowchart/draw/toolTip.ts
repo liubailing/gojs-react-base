@@ -1,18 +1,19 @@
-import go from 'gojs';
-import { BaseColors } from '../config';
+import go from '@octopus/gojs';
+import { BaseColors, DiagramSetting } from '../config';
 const $ = go.GraphObject.make;
 
 export class ToolTip {
 	// define tooltips for nodes
 	static getTitle(strText: string) {
 		return {
-			name: 'node_Title',
+			name: 'tooltip_Title',
 			toolTip: $(
 				'ToolTip',
 				{ 'Border.fill': BaseColors.tip, 'Border.stroke': BaseColors.tip, visible: true },
 				$(go.TextBlock, {
 					wrap: go.TextBlock.WrapFit,
-					stroke: BaseColors.tipfont_color,
+					stroke: BaseColors.tipfont,
+					font: DiagramSetting.tipFont,
 					margin: 5,
 					text: strText
 				})

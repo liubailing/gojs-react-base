@@ -1,4 +1,4 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import Base from './base';
 import BaseChangese from './baseChanges';

@@ -1,15 +1,13 @@
-/* eslint-disable camelcase */
-/* eslint-disable accessor-pairs */
 /* eslint-disable complexity */
-import go from 'gojs';
+import go from '@octopus/gojs';
 import { observable } from 'mobx';
 import { IDiagramHander, IFlowchartHander, IDiagramModel, INodeModel, ILineModel, INodeEvent } from '../interface';
 import BaseChanges from '../draw/baseChanges';
-import flowchartStore from './flowchartStore';
 import { HandleEnum, NodeEnum } from '../enum';
 import { NodeStore, LineStore } from '../store';
 import { FlowchartModel } from '../model';
-declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
+import flowchartStore from './flowchartStore';
+import { t } from 'i18next';
 
 /**
  *
@@ -82,18 +80,17 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 			case 'ChangedSelection':
 				// 都会执行的方法 ObjectSingleClicked、ObjectContextClicked、BackgroundSingleClicked
 				this._hideContextMenu();
+				this._setNodeBlur(this._preActiveNodeKey);
 				const firstNode = e.subject.first();
-				if (
-					firstNode &&
-					firstNode.part &&
-					firstNode.data &&
-					(firstNode.part instanceof go.Node || firstNode.part instanceof go.Group)
-				) {
+				if (firstNode && firstNode.part && firstNode.data && (firstNode.part instanceof go.Node || firstNode.part instanceof go.Group)) {
 					const changedNode = firstNode.data;
 					if (changedNode) {
+						if (changedNode.type === NodeEnum.WFGuideNode) {
+							return;
+						}
+
 						if (this._preActiveNodeKey !== changedNode.key) {
 							// 清除上一个节点的 Spot样式
-							this._setNodeBlur(this._preActiveNodeKey);
 							this._preActiveNodeKey = changedNode.key;
 						}
 						// 同步当前节点的 Spot样式
@@ -102,9 +99,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 						// 如果只设置选中 且 只是选中不触发click回调函数
 						if (this._afterRenderEvent && this._afterRenderEvent.eType === 'setSelected') {
 							return;
-						} else {
-							this.flowchartHander.handlerClickNode(changedNode);
 						}
+						this.flowchartHander.handlerClickNode(changedNode);
 					} else {
 						/**
 						 * 当出现不符合条件的节点时候，走这里。
@@ -115,11 +111,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			case 'ObjectSingleClicked': // 默认会先触发 ChangedSelection
-				if (
-					e.subject &&
-					e.subject.part &&
-					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
-				) {
+				if (e.subject && e.subject.part && (e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)) {
 					const clickNode = e.subject.part.data;
 					if (clickNode && clickNode.key && this._preActiveNodeKey === clickNode.key) {
 						this.flowchartHander.handlerClickNodeAgain(clickNode);
@@ -128,11 +120,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				}
 				break;
 			case 'ObjectContextClicked': // 默认会先触发 ChangedSelection
-				if (
-					e.subject &&
-					e.subject.part &&
-					(e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)
-				) {
+				if (e.subject && e.subject.part && (e.subject.part instanceof go.Node || e.subject.part instanceof go.Group)) {
 					const contextNode = e.subject.part.data;
 					if (contextNode) {
 						const { x } = this._getPostion();
@@ -160,9 +148,8 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * This method iterates over those changes and updates state to keep in sync with the GoJS model.
 	 * @param obj a JSON-formatted string
 	 */
-	public handleModelChange(obj: go.IncrementalData) {
-		// console.log(`>>>>>>> chenged model`, obj);
-	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	public handleModelChange(obj: go.IncrementalData) {}
 
 	/**
 	 * Handle inspector changes, and on input field blurs, update node/link data state.
@@ -170,14 +157,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param value the new value of that property
 	 * @param isBlur whether the input event was a blur, indicating the edit is complete
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public handleInputChange(path: string, value: string, isBlur: boolean) {}
 
 	/**
 	 * Handle changes to the checkbox on whether to allow relinking.
 	 * @param e a change event from the checkbox
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public handleRelinkChange(e: any) {
-		// console.log(`>>>>>>> handleRelinkChange`);
 		// this.props.flowchart.handleModelChange(e);
 		// const target = e.target;
 		// const value = target.checked;
@@ -218,6 +206,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				break;
 			/** 打开点菜单 */
 			case HandleEnum.ShowNodeMenu:
+				this.flowchartHander.handlerBeforeShowLineMenu();
 				pos = this._getNodeDocumentOffset(node);
 				this.flowchartHander.handlerShowNodeMenu(node, pos.x, pos.y);
 				break;
@@ -226,6 +215,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				this.flowchartHander.handlerShowNodeInfo(node, pos.x, pos.y);
 				break;
 			case HandleEnum.ShowLineMenu:
+				this.flowchartHander.handlerBeforeShowLineMenu();
 				pos = this._getLIneDocumentOffset(line);
 				this.flowchartHander.handlerShowLineMenu(line, pos.x, pos.y);
 				break;
@@ -313,11 +303,15 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey  要添加的节点Id。
 	 * @param type 添加的节点类型
 	 */
-	onAdd2Pre8NodeId(nodeId: string, type: NodeEnum): string {
-		const res = this.add2Pre8NodeId(nodeId, type);
+	onAdd2Pre8NodeId(nodeId: string, type: NodeEnum, options?: { isLoopScrollWeb: boolean }): string {
+		const res = this.add2Pre8NodeId(nodeId, type, options);
 		if (res) {
 			this._refresDiagram();
 			const resNode = this.mapNode.get(res);
+			if (type === NodeEnum.Loop && options?.isLoopScrollWeb && resNode) {
+				resNode.isLoopScrollWeb = options.isLoopScrollWeb;
+				resNode.label = t('main:FCEntities.LoopScrollWeb');
+			}
 			if (resNode) {
 				this.flowchartHander.handlerAddNode(resNode);
 			}
@@ -442,6 +436,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	 * @param nodekey 要复制的nodeId
 	 * @param isCopyOnce 是否只复制一次，
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	onCopyNode(nodekey: string, setHight: boolean = false, isCopyOnce: boolean = false) {
 		this.getNodeLinked(nodekey);
 		if (setHight && this.flowchartDiagram) {
@@ -626,11 +621,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 	onGetNodeChildKeys(nodekey: string): string[] {
 		const data = this.mapNodeChildKeys.get(nodekey);
 		const currNodeType = this.mapNodeType.get(nodekey);
-		if (
-			(currNodeType === NodeEnum.Loop || currNodeType === NodeEnum.Branch || nodekey === 'root') &&
-			data &&
-			data.length > 1
-		) {
+		if ((currNodeType === NodeEnum.Loop || currNodeType === NodeEnum.Branch || nodekey === 'root') && data && data.length > 1) {
 			return data.slice(1, data.length - 1);
 		}
 		return data || [];
@@ -754,7 +745,6 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 				const _currentNode = this.flowchartDiagram.findNodeForKey(_centerKey);
 				if (_currentNode) {
 					this.flowchartDiagram.centerRect(_currentNode.actualBounds);
-					// this._centerKey = '';
 				}
 			}
 		}
@@ -788,6 +778,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		this.flowchartHander.handlerChanged();
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private _setNodeSelected(key: string, triggerClikckEvent: boolean) {
 		if (this.flowchartDiagram && key) {
 			const obj = this.flowchartDiagram.findNodeForKey(key);
@@ -813,9 +804,7 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (this.flowchartDiagram && key) {
 			const objPre = this.flowchartDiagram.findNodeForKey(key);
 			if (objPre) {
-				BaseChanges.setNodeCss(objPre, false);
 				BaseChanges.setListCss(objPre, false);
-				BaseChanges.setGroupCss(objPre, false);
 				BaseChanges.setActionCss(objPre, false);
 			}
 		}
@@ -829,9 +818,10 @@ export default class HanderFlowchart extends flowchartStore implements IDiagramH
 		if (this.flowchartDiagram && key) {
 			const objPre = this.flowchartDiagram.findNodeForKey(key);
 			if (objPre) {
-				BaseChanges.setNodeCss(objPre, true);
-				BaseChanges.setGroupCss(objPre, true);
-				BaseChanges.setListCss(objPre, true);
+				// 多余的渲染。暂留
+				// BaseChanges.setNodeCss(objPre, true);
+				// BaseChanges.setGroupCss(objPre, true);
+				// BaseChanges.setListCss(objPre, true);
 				BaseChanges.setActionCss(objPre, true);
 			}
 		}

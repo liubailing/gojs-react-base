@@ -1,6 +1,5 @@
-import go, { GraphObject, Margin } from 'gojs';
-import { DiagramEnum } from '../enum';
-import { HandleEnum } from '../enum';
+import go, { GraphObject, Margin } from '@octopus/gojs';
+import { DiagramEnum, HandleEnum } from '../enum';
 import IList from '../../../assets/images/flowchart/i-node-list.png';
 import IListHover from '../../../assets/images/flowchart/i-node-list-hover.png';
 import IMenu from '../../../assets/images/flowchart/i-node-menu.png';
@@ -69,6 +68,7 @@ export default class DrawSpot extends Base {
 	 * 分支节点操作菜单
 	 * @param diagramEnum
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	getSpotMenu(diagramEnum: DiagramEnum): go.Panel {
 		return $(
 			go.Panel,
@@ -92,6 +92,7 @@ export default class DrawSpot extends Base {
 				...baseCss,
 				...{
 					name: 'node_Imenu',
+					click: this.onMenuClick,
 					mouseEnter: this.onMenuMouseEnter
 				}
 			},
@@ -122,10 +123,12 @@ export default class DrawSpot extends Base {
 		);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private onMenuMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		this._showMenu(_obj, true, false);
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private onMenuMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		this._showMenu(_obj, false, true);
 	};
@@ -193,6 +196,7 @@ export default class DrawSpot extends Base {
 					...baseCss,
 					...{
 						name: 'node_Ilist',
+						click: this.onLoopInfoClick,
 						mouseEnter: this.onLoopInfoMouseEnter
 					}
 				},
@@ -229,6 +233,7 @@ export default class DrawSpot extends Base {
 	/**
 	 *
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private onLoopInfoMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		this._showLoopInfo(_obj, true, false);
 	};
@@ -236,6 +241,7 @@ export default class DrawSpot extends Base {
 	/**
 	 *
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private onLoopInfoMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		this._showLoopInfo(_obj, false, true);
 	};

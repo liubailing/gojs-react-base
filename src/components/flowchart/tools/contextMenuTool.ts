@@ -1,4 +1,4 @@
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 
 export default class ContextMenuTool extends go.ContextMenuTool {
 	private _doDragEvent: Function;
@@ -10,10 +10,12 @@ export default class ContextMenuTool extends go.ContextMenuTool {
 
 	doMouseDown(): void {}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	showContextMenu(contextmenu: go.Adornment | go.HTMLInfo, obj: go.GraphObject | null) {
 		super.showContextMenu(contextmenu, null);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	positionContextMenu(contextmenu: go.Adornment, obj: go.GraphObject | null): void {
 		// let pos = this.diagram.lastInput.documentPoint.copy();
 		// let node = this.diagram.findPartAt(this.diagram.lastInput.documentPoint);

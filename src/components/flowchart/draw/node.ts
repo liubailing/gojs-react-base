@@ -1,9 +1,9 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import Base from './base';
 import BaseChanges from './baseChanges';
 import DrawTitle from './title';
 import DrawSpot from './spot';
-import { DiagramSetting, BaseColors } from '../config';
+import { DiagramSetting, BaseColors, SelectedColors } from '../config';
 import { DiagramEnum } from '../enum';
 
 const $ = go.GraphObject.make;
@@ -20,7 +20,6 @@ export default class DrawNode extends Base {
 		return $(
 			go.Node,
 			'Auto',
-			// { name: 'node_Title', toolTip: this.tooltiptemplate },
 			new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
 			new go.Binding('desiredSize', 'size', go.Size.parse).makeTwoWay(go.Size.stringify),
 			{
@@ -41,11 +40,12 @@ export default class DrawNode extends Base {
 				{
 					parameter1: DiagramSetting.parameter1,
 					name: 'node_Body',
-					strokeWidth: 1,
-					stroke: BaseColors.transparent
+					strokeWidth: 1
+					// stroke: BaseColors.border
 					// fill: BaseColors.backgroud
 				},
-				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject()
+				new go.Binding('fill', 'isSelected', this.getNodeFill).ofObject(),
+				new go.Binding('stroke', 'isSelected', this.getNodeStroke).ofObject()
 			),
 			$(
 				go.Panel,
@@ -62,9 +62,15 @@ export default class DrawNode extends Base {
 	/**
 	 * 返回背景颜色
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	private getNodeStroke = (_val: any, _targetObj: any): string => (_val ? SelectedColors.border : BaseColors.border);
+
+	/**
+	 * 返回背景颜色
+	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private getNodeFill = (_val: any, _targetObj: any): string =>
-		// const node = (_targetObj as any).part;
-		_val ? BaseColors.highlight : BaseColors.backgroud;
+		_val ? SelectedColors.background : BaseColors.backgroud;
 
 	/**
 	 * 返回名字
@@ -76,7 +82,6 @@ export default class DrawNode extends Base {
 
 	onMouseLeave(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		// console.log('node', node);
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setActionCss(node, false);
 			BaseChanges.setNodeCss(node, false);
@@ -85,7 +90,7 @@ export default class DrawNode extends Base {
 
 	onMouseEnter(_e: go.InputEvent, obj: GraphObject): void {
 		const node = (obj as any).part;
-		if (node && node.diagram) {
+		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setActionCss(node, true);
 			BaseChanges.setNodeCss(node, true);
 		}

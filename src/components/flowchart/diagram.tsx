@@ -2,9 +2,9 @@
  *  Copyright (C) 1998-2020 by Northwoods Software Corporation. All Rights Reserved.
  */
 
-import go, { Diagram } from 'gojs';
-import { ReactDiagram } from 'gojs-react';
 import * as React from 'react';
+import go, { Diagram } from '@octopus/gojs';
+import { ReactDiagram } from '@octopus/gojs-react';
 import { DraggingTool, ClickSelectingTool, CommandHandler, ContextMenuTool } from './tools';
 import { DiagramSetting } from './config';
 import { DiagramEnum, HandleEnum } from './enum';
@@ -108,7 +108,7 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 			contextMenuTool: new ContextMenuTool(this.props.onFlowchartEvent),
 			contentAlignment: go.Spot.TopCenter,
 			initialContentAlignment: go.Spot.RightCenter,
-			// hoverDelay: 100,
+			hoverDelay: 100,
 			initialScale: 1,
 			layout: $(go.TreeLayout, {
 				angle: 90,
@@ -273,13 +273,13 @@ class FlowchartDiagram extends React.Component<FlowchartProps> {
 	/**
 	 *
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private InitialLayoutCompleted = (_e: go.DiagramEvent): void => {};
-
 	/**
 	 * 流程图画完
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private LayoutCompleted = (_e: go.DiagramEvent): void => {
-		console.log(`~ test flowchart ~ LayoutCompleted 123`);
 		const e: INodeEvent = {
 			eType: HandleEnum.ReRender
 		} as INodeEvent;

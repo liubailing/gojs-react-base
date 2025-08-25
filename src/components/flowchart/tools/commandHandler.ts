@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 import { HandleEnum } from '../enum';
 import { INodeEvent } from '../interface';
 
@@ -396,14 +396,12 @@ export default class CommandHandler extends go.CommandHandler {
 		// 	if (key === 'Del' && isWindows) {
 		// 		this._doEvent(e);
 		// 		return;
-		// 		// console.log(`~~isWindows~~`)
 		// 	}
 		// 	/** * 是否为mac系统（包含iphone手机） * */
 		// 	const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
 		// 	if (isMac) {
 		// 		this._doEvent(e);
 		// 	}
-		// 	// console.log(`~~isMac~~`);
 		// 	return;
 		// }
 

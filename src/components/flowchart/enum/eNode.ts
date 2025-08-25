@@ -11,6 +11,9 @@ export enum NodeEnum {
 	/** 循环 */
 	Loop = 'LoopAction',
 
+	/** 循环网页 */
+	LoopScrollWeb = 'LoopScrollWeb',
+
 	/** 判断条件 */
 	Condition = 'ConditionAction',
 
@@ -62,5 +65,10 @@ export enum NodeEnum {
 	/**
 	 * 辅助点, 某个流程 仅在构图时候使用
 	 */
-	WFGuideNode = 'wfgridenode'
+	WFGuideNode = 'wfgridenode',
+
+	/**
+	 * 返回上一级网页
+	 */
+	BackPreWebPage = 'BackPreWebPageAction'
 }

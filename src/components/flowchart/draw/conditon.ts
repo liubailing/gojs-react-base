@@ -1,4 +1,4 @@
-import go, { GraphObject } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum } from '../enum';
 import Base from './base';
@@ -60,7 +60,7 @@ export default class DrawCondition extends Base {
 				go.Panel,
 				'Vertical',
 				{
-					name: 'group_Top',
+					name: 'group_body',
 					background: BaseColors.group_bg,
 					defaultAlignment: go.Spot.Left,
 					cursor: 'pointer'

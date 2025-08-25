@@ -3,7 +3,6 @@ import { ILineModel, INodeModel, IDiagramModel } from '../interface';
 import { LineStore, NodeStore } from '../store';
 import { NodeEnum } from '../enum';
 
-declare const window: Window & { gojsCopyNodeData: Map<string, object> };
 export default class FlowchartModel extends Linked<INodeModel> {
 	/**
 	 * 以下是 点 相关的缓存数据
@@ -43,13 +42,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	/** 节点对应类型 */
 	allNodeName: Set<string> = new Set<string>();
 
-	guidNodeType: Array<NodeEnum> = [
-		NodeEnum.Start,
-		NodeEnum.End,
-		NodeEnum.SubOpen,
-		NodeEnum.WFGuideNode,
-		NodeEnum.SubClose
-	];
+	guidNodeType: Array<NodeEnum> = [NodeEnum.Start, NodeEnum.End, NodeEnum.SubOpen, NodeEnum.WFGuideNode, NodeEnum.SubClose];
 
 	hasChildsNodeType: Array<NodeEnum> = [NodeEnum.Condition, NodeEnum.Branch, NodeEnum.Loop];
 
@@ -89,7 +82,6 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 		if (item.value && item.value.group) {
 			this.toArray().forEach((x) => {
-				// console.log(x);
 				childKeys.push(x.key);
 			});
 			this.mapNodeChildKeys.set(item.value.group, childKeys);
@@ -119,7 +111,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				const v = this.mapNodeTypeKeys.get(item.value.type) || new Set();
 				this.mapNodeTypeKeys.set(item.value.type, v.add(item.value.key));
 			} else {
-				// 如果存在该类型
+				// 如果不存在该类型
 				this.mapNodeTypeKeys.set(item.value.type, new Set([item.value.key]));
 			}
 			// 完善缓存 5
@@ -154,35 +146,35 @@ export default class FlowchartModel extends Linked<INodeModel> {
 
 	doCacheh = (item: FlowchartModel) => {
 		item.mapNodeChildKeys.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k) {
 				this.mapNodeChildKeys.set(k, v);
 			}
 		});
 
 		item.mapNode.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k) {
 				this.mapNode.set(k, v);
 			}
 		});
 
 		item.mapNodePreNodeKey.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k) {
 				this.mapNodePreNodeKey.set(k, v);
 			}
 		});
 
 		item.mapNodeBrotherKeys.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k) {
 				this.mapNodeBrotherKeys.set(k, v);
 			}
 		});
 
 		item.mapNodeTypeKeys.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k) {
 				if (this.mapNodeTypeKeys.has(k)) {
 					const v1 = this.mapNodeTypeKeys.get(k) || new Set();
 
-					this.mapNodeTypeKeys.set(k, new Set([...[...v], ...[...v1]]));
+					this.mapNodeTypeKeys.set(k, new Set([...[...v1], ...[...v]]));
 				} else {
 					this.mapNodeTypeKeys.set(k, v);
 				}
@@ -192,13 +184,13 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		});
 
 		item.mapNodeParentKey.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k && k) {
 				this.mapNodeParentKey.set(k, v);
 			}
 		});
 
 		item.mapNodeType.forEach((v, k) => {
-			if (k !== '' && k !== null) {
+			if (k && k) {
 				this.mapNodeType.set(k, v);
 			}
 		});
@@ -218,12 +210,12 @@ export default class FlowchartModel extends Linked<INodeModel> {
 		return '';
 	}
 
-	add2Pre8NodeId(nodekey: string, type: NodeEnum): string {
+	add2Pre8NodeId(nodekey: string, type: NodeEnum, options?: { isLoopScrollWeb: boolean }): string {
 		let item = this._header.next;
 		let preItem = this._header;
 		while (item !== this._tail) {
 			if (item.value.key === nodekey) {
-				const newNode = this.getNodeModel8Type(type, item.value.group);
+				const newNode = this.getNodeModel8Type(type, item.value.group, '', options);
 				if (item.value.type === NodeEnum.SubClose) {
 					// 去判断下一次节点是不是 wfguide;
 					// let nextNode = item.next;
@@ -252,7 +244,7 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 
 			if (item.value.childs) {
-				const res = item.value.childs.add2Pre8NodeId(nodekey, type);
+				const res = item.value.childs.add2Pre8NodeId(nodekey, type, options);
 				if (res) {
 					if (item.value.type === NodeEnum.Condition) {
 						let cItem = item.value.childs._header.next;
@@ -351,7 +343,10 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			if (item.value.key === nodekey) {
 				const resV = item.value;
 				let resAct = false;
-				if (this.size() === 3 && preItem.value.type === NodeEnum.SubOpen) {
+				/** this.size() 为3 的时候 preItem.value undefined 导致报错，暂时先判空处理
+				 * 不知道为啥要这样写
+				 */
+				if (this.size() === 3 && preItem.value?.type === NodeEnum.SubOpen) {
 					const newNode = this.getNode(NodeEnum.WFGuideNode, item.value.group);
 					const res = this.replace(item.value, newNode);
 					if (res) {
@@ -426,6 +421,9 @@ export default class FlowchartModel extends Linked<INodeModel> {
 			}
 			if (res && newM) {
 				if (window.gojsCopyNodeData) {
+					window.gojsCopyNodeData.forEach((v, k) => {
+						this.cacheNodeData.set(k, v);
+					});
 					window.gojsCopyNodeData.clear();
 				}
 				return newM.key;
@@ -470,12 +468,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 				// 深拷贝
 				const json = JSON.parse(JSON.stringify({ ...data }));
 				// 深拷贝纠正 uid  belongTo
-				if (
-					json &&
-					json.ActionType === 'ExtractDataAction' &&
-					json.extractTemplate &&
-					json.extractTemplate.length > 1
-				) {
+				if (json && json.ActionType === 'ExtractDataAction' && json.extractTemplate && json.extractTemplate.length > 1) {
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					json.extractTemplate.forEach((e: any, idx: number) => {
 						e.uid = res.key + e.Id;
 						e.belongTo = res.key;
@@ -494,8 +488,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param nodekey
 	 * @param newNode
 	 */
-	private getNodeModel8Type(type: NodeEnum, group: string, groupName: string = ''): INodeModel {
-		const newNode = this.getNode(type, group);
+	private getNodeModel8Type(type: NodeEnum, group: string, groupName: string = '', options?: { isLoopScrollWeb: boolean }): INodeModel {
+		const newNode = this.getNode(type, group, options);
 		if (type === NodeEnum.Loop || type === NodeEnum.Branch) {
 			newNode.childs = new FlowchartModel();
 			newNode.childs.add(this.getNode(NodeEnum.SubOpen, newNode.key));
@@ -532,8 +526,8 @@ export default class FlowchartModel extends Linked<INodeModel> {
 	 * @param type
 	 * @param group
 	 */
-	private getNode(type: NodeEnum, group: string): INodeModel {
-		const node = NodeStore.getNode(type, group);
+	private getNode(type: NodeEnum, group: string, options?: { isLoopScrollWeb: boolean }): INodeModel {
+		const node = NodeStore.getNode(type, group, options);
 		node.label = this.getNodeName(type, node.label);
 		return node;
 	}

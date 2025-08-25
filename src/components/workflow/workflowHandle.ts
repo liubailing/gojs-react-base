@@ -307,6 +307,8 @@ export class WorkflowHandle implements IFlowchartHander {
 	 */
 	handlerClickExcludeNode(): void {}
 
+	handlerBeforeShowLineMenu(): void {}
+
 	private resetData(thisItme: FlowchartModel, parentNode: INodeModel | null = null): any {
 		let parentKey = 'root';
 		if (parentNode !== null && Object.keys(parentNode).length > 2) {

@@ -1,28 +1,65 @@
-import { NodeEnum, DiagramEnum } from '../enum';
-import { INodeModel } from '../interface';
+import { t } from 'i18next';
 import { DiagramSetting } from '../config';
-import lang from '../../../locales/index';
+import { DiagramEnum, NodeEnum } from '../enum';
+import { INodeModel } from '../interface';
 
 /**
  * 得到节点展示的类型
  * @param fcType
  */
 export class NodeStore {
-	static strCondition = lang.FCEntities.Condition;
-	static strExtractData = lang.FCEntities.ExtractData;
-	static strComplete = lang.FCEntities.Complete;
-	static strEnterText = lang.FCEntities.EnterText;
-	static strLoop = lang.FCEntities.Loop;
-	static strBreakActivity = lang.FCEntities.BreakActivity;
-	static strClick = lang.FCEntities.Click;
-	static strMouseOver = lang.FCEntities.MouseOver;
-	static strNavigate = lang.FCEntities.Navigate;
-	static strSwitchCombo = lang.FCEntities.SwitchCombo;
-	static strEnterCapacha = lang.FCEntities.EnterCapacha;
-	static strBranch = lang.FCEntities.Branch;
-	static strWFGuideNode = lang.FCEntities.WFGuideNode;
-	static strWFGuideLine = lang.FCEntities.WFGuideLine;
-	static strWFGuideBranch = lang.FCEntities.WFGuideBranch;
+	static get strWFGuideLine() {
+		return t('main:FCEntities.WFGuideLine');
+	}
+	static get strCondition() {
+		return t('main:FCEntities.Condition');
+	}
+	static get strExtractData() {
+		return t('main:FCEntities.ExtractData');
+	}
+	static get strComplete() {
+		return t('main:FCEntities.Complete');
+	}
+	static get strEnterText() {
+		return t('main:FCEntities.EnterText');
+	}
+	static get strLoop() {
+		return t('main:FCEntities.Loop');
+	}
+
+	static get strLoopScrollWeb() {
+		return t('main:FCEntities.LoopScrollWeb');
+	}
+	static get strBreakActivity() {
+		return t('main:FCEntities.BreakActivity');
+	}
+	static get strClick() {
+		return t('main:FCEntities.Click');
+	}
+	static get strMouseOver() {
+		return t('main:FCEntities.MouseOver');
+	}
+	static get strNavigate() {
+		return t('main:FCEntities.Navigate');
+	}
+	static get strSwitchCombo() {
+		return t('main:FCEntities.SwitchCombo');
+	}
+	static get strEnterCapacha() {
+		return t('main:FCEntities.EnterCapacha');
+	}
+	static get strBranch() {
+		return t('main:FCEntities.Branch');
+	}
+	static get strWFGuideNode() {
+		return t('main:FCEntities.WFGuideNode');
+	}
+	static get strWFGuideBranch() {
+		return t('main:FCEntities.WFGuideBranch');
+	}
+	static get strBackPreWebPage() {
+		return t('main:FCEntities.BackPreWebPage');
+	}
 
 	static getRandomKey = (): string => Math.random().toString(36).substring(2);
 
@@ -40,7 +77,8 @@ export class NodeStore {
 		return n;
 	}
 
-	static getNode = (fcType: string, group: string = ''): INodeModel => {
+	// eslint-disable-next-line complexity
+	static getNode = (fcType: string, group: string = '', options?: { isLoopScrollWeb: boolean }): INodeModel => {
 		const node: INodeModel = NodeStore.baseModel;
 		let title = '';
 		let isGroup = false;
@@ -63,7 +101,7 @@ export class NodeStore {
 				// src = 'input';
 				break;
 			case NodeEnum.Loop:
-				title = NodeStore.strLoop;
+				title = options?.isLoopScrollWeb ? NodeStore.strLoopScrollWeb : NodeStore.strLoop;
 				// src = 'loop';
 				isGroup = true;
 				break;
@@ -97,6 +135,9 @@ export class NodeStore {
 				break;
 			case NodeEnum.WFGuideNode:
 				title = NodeStore.strWFGuideNode;
+				break;
+			case NodeEnum.BackPreWebPage:
+				title = NodeStore.strBackPreWebPage;
 				break;
 			default:
 				break;
@@ -146,6 +187,7 @@ export class NodeStore {
 			case NodeEnum.Navigate:
 			case NodeEnum.SwitchCombo:
 			case NodeEnum.EnterCapacha:
+			case NodeEnum.BackPreWebPage:
 				cate = DiagramEnum.FCNode;
 				break;
 			case NodeEnum.Branch:

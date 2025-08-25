@@ -1,4 +1,4 @@
-import go, { GraphObject, Margin } from 'gojs';
+import go, { GraphObject } from '@octopus/gojs';
 import { DiagramSetting, BaseColors } from '../config';
 import { DiagramEnum, HandleEnum } from '../enum';
 import Base from './base';
@@ -55,7 +55,7 @@ export default class DrawLoop extends Base {
 				go.Panel,
 				'Vertical',
 				{
-					name: 'group_Top',
+					name: 'group_body',
 					background: BaseColors.group_bg,
 					defaultAlignment: go.Spot.Left,
 					cursor: 'pointer'
@@ -74,7 +74,7 @@ export default class DrawLoop extends Base {
 				// create a placeholder to represent the area where the contents of the group are
 				$(go.Placeholder, {
 					background: BaseColors.group_panel_bg,
-					padding: new go.Margin(10, 15),
+					padding: new go.Margin(10, 8),
 					minSize: new go.Size(DiagramSetting.ConditionWidth, DiagramSetting.groupHeight)
 				})
 			), // end Vertical Panel
@@ -93,6 +93,7 @@ export default class DrawLoop extends Base {
 	/**
 	 *
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	private onListMouseEnter = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
 		try {
 			if (_obj) {
@@ -114,11 +115,11 @@ export default class DrawLoop extends Base {
 	/**
 	 *
 	 */
-	private onListMouseLeave = (_e: go.InputEvent, _obj: GraphObject, _obj1: GraphObject): void => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	private onListMouseLeave = (_e: go.InputEvent, _obj: GraphObject,_obj1:GraphObject): void => {
 		try {
 			// this.changeNodeInfoOpacity(1);
 			if (_obj) {
-				// this.hideTitle();
 				const node = (_obj as any).part;
 				if (node) {
 					const list = node.findObject('node_Ilist');
@@ -136,8 +137,6 @@ export default class DrawLoop extends Base {
 
 	onMouseLeave = (_e: go.InputEvent, obj: GraphObject): void => {
 		const node = (obj as any).part;
-		// console.log('node', node);
-
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, false);
 			BaseChanges.setListCss(node, false);
@@ -147,7 +146,6 @@ export default class DrawLoop extends Base {
 
 	onMouseEnter = (_e: go.InputEvent, obj: GraphObject): void => {
 		const node = (obj as any).part;
-		// console.log('node', node);
 		if (node && node.diagram && !node.isSelected) {
 			BaseChanges.setGroupCss(node, true);
 			BaseChanges.setListCss(node, true);

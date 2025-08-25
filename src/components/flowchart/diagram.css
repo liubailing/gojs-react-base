@@ -9,6 +9,7 @@
 	outline: -webkit-focus-ring-color auto 0px;
 }
 
+/* 流程图样式 放开滚动条 */
 .diagram-component > div {
-	overflow: hidden !important;
+	/* overflow: hidden !important; */
 }

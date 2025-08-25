@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import * as go from 'gojs';
+import * as go from '@octopus/gojs';
 import { HandleEnum, DiagramEnum } from '../enum';
 import { INodeEvent } from '../interface';
 // import baseChanges from '../draw/baseChanges';
@@ -46,9 +46,8 @@ export default class DraggingTool extends go.DraggingTool {
 	 * consists of just one Part, the image, added to the Diagram at the current mouse point.
 	 */
 	public doActivate(): void {
-		// console.log(`~test flowchart~  doActivate`, this.diagram.scroll("pixel", "down", 11))
 		super.doActivate();
-		if (this._imagePart !== null) {
+		if (this._imagePart) {
 			this._imagePart.location = this.diagram.lastInput.documentPoint;
 			this.diagram.add(this._imagePart);
 			this._originalDraggedParts = this.draggedParts;
@@ -65,8 +64,7 @@ export default class DraggingTool extends go.DraggingTool {
 	 * When deactivated, make sure any image is removed from the Diagram and all references are cleared out.
 	 */
 	public doDeactivate(): void {
-		// console.log(`~test flowchart~  doDeactivate`);
-		if (this._imagePart !== null) {
+		if (this._imagePart) {
 			this.diagram.remove(this._imagePart);
 		}
 
@@ -124,7 +122,7 @@ export default class DraggingTool extends go.DraggingTool {
 	 * Do the normal mouse-up behavior, but only after restoring {@link #draggedParts}.
 	 */
 	public doMouseUp(): void {
-		if (this._originalDraggedParts !== null) {
+		if (this._originalDraggedParts) {
 			this.draggedParts = this._originalDraggedParts;
 		}
 		super.doMouseUp();
@@ -136,8 +134,8 @@ export default class DraggingTool extends go.DraggingTool {
 	 */
 	public doKeyDown(): void {
 		if (
-			this._imagePart !== null &&
-			this._originalDraggedParts !== null &&
+			this._imagePart &&
+			this._originalDraggedParts &&
 			(this.diagram.lastInput.control || this.diagram.lastInput.meta) &&
 			this.mayCopy()
 		) {
@@ -153,7 +151,7 @@ export default class DraggingTool extends go.DraggingTool {
 	 * show the image again and go back to dragging the ghost dragged parts.
 	 */
 	public doKeyUp(): void {
-		if (this._imagePart !== null && this._ghostDraggedParts !== null && this.mayMove()) {
+		if (this._imagePart && this._ghostDraggedParts && this.mayMove()) {
 			this._imagePart.location = this.diagram.lastInput.documentPoint;
 			this.diagram.add(this._imagePart);
 			this.draggedParts = this._ghostDraggedParts;
@@ -166,7 +164,6 @@ export default class DraggingTool extends go.DraggingTool {
 	 * show the image again and go back to dragging the ghost dragged parts.
 	 */
 	public doMouseMove(): void {
-		// console.log(`~test flowchart:doMouseMove~****`);
 		if (this.diagram.div) {
 			if (this.diagram.div.clientHeight < this.diagram.lastInput.viewPoint.y + 100) {
 				this.diagram.scroll('pixel', 'down', 10);
@@ -188,7 +185,6 @@ export default class DraggingTool extends go.DraggingTool {
 	}
 
 	doDragOver(pt: go.Point, obj: go.GraphObject | null) {
-		// console.log(`~test flowchart~  1`);
 		super.doDragOver(pt, obj);
 	}
 }

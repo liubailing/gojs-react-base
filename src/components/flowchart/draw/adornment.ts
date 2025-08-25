@@ -1,5 +1,4 @@
-import go, { Diagram } from 'gojs';
-// import { BaseColors } from '../config';
+import go, { Diagram } from '@octopus/gojs';
 
 const $ = go.GraphObject.make;
 

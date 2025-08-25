@@ -2,8 +2,6 @@ import { NodeEnum } from '../enum';
 import { INodeModel } from '../interface';
 import { FlowchartModel } from '../model';
 
-declare const window: Window & { gojsCopyNodelinked: INodeModel | null };
-
 /**
  * 处理数据
  */
@@ -82,8 +80,8 @@ export default class FlowchartStore {
 	 * @param nodekey
 	 * @param type
 	 */
-	add2Pre8NodeId(nodeId: string, type: NodeEnum): string {
-		const res = this._data.add2Pre8NodeId(nodeId, type);
+	add2Pre8NodeId(nodeId: string, type: NodeEnum, options?: { isLoopScrollWeb: boolean }): string {
+		const res = this._data.add2Pre8NodeId(nodeId, type, options);
 		if (res) {
 			return res;
 		}
